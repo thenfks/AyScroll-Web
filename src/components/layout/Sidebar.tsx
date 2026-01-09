@@ -1,4 +1,4 @@
-import { Home, Search, Library, Bookmark, Settings, History } from 'lucide-react';
+import { Home, Search, Library, Bookmark, Settings, History, BarChart2 } from 'lucide-react';
 import { Link, useLocation } from 'react-router-dom';
 import { useAuth } from '@/contexts/AuthContext';
 import { cn } from '@/lib/utils';
@@ -9,6 +9,7 @@ const mainNavItems = [
   { icon: Search, label: 'Discover', path: '/discover', public: true },
   { icon: Library, label: 'Library', path: '/library', public: false },
   { icon: Bookmark, label: 'Saved', path: '/saved', public: false },
+  { icon: BarChart2, label: 'Analysis', path: '/analysis', public: false },
 ];
 
 const topics = [
@@ -20,17 +21,13 @@ const topics = [
 
 export const Sidebar = () => {
   const location = useLocation();
-  const { user, isGuest } = useAuth();
+  const { user } = useAuth();
 
   return (
     <aside className="fixed left-0 top-0 h-screen w-[240px] bg-sidebar flex flex-col border-r border-sidebar-border">
       {/* Logo */}
       <div className="p-6 flex items-center gap-3">
-        <div className="w-8 h-8 bg-primary rounded-lg flex items-center justify-center">
-          <svg className="w-5 h-5 text-primary-foreground" viewBox="0 0 24 24" fill="currentColor">
-            <path d="M8 5v14l11-7z" />
-          </svg>
-        </div>
+        <img src="/logo.png" alt="AyScroll Logo" className="w-8 h-8" />
         <span className="text-xl font-bold text-foreground">AyScroll</span>
       </div>
 
@@ -54,9 +51,6 @@ export const Sidebar = () => {
                 >
                   <Icon className="w-5 h-5" />
                   <span>{item.label}</span>
-                  {!item.public && isGuest && (
-                    <span className="ml-auto text-xs text-muted-foreground">🔒</span>
-                  )}
                 </Link>
               </li>
             );
@@ -99,15 +93,15 @@ export const Sidebar = () => {
           <Avatar className="w-10 h-10">
             <AvatarImage src={user?.user_metadata?.avatar_url} />
             <AvatarFallback className="bg-primary/20 text-primary">
-              {user ? user.email?.charAt(0).toUpperCase() : 'G'}
+              {user ? user.user_metadata.name?.charAt(0).toUpperCase() : 'G'}
             </AvatarFallback>
           </Avatar>
           <div className="flex-1 min-w-0">
             <p className="text-sm font-medium text-foreground truncate">
-              {user ? user.email?.split('@')[0] : 'Guest'}
+              {user ? user.user_metadata.name : 'Guest'}
             </p>
             <p className="text-xs text-muted-foreground">
-              {user ? '@' + user.email?.split('@')[0] : '@Guest'}
+              {user ? `@${user.user_metadata.username}` : '@guest'}
             </p>
           </div>
         </div>
