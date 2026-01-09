@@ -89,7 +89,7 @@ export const Sidebar = () => {
         </Link>
 
         {/* User Profile / Guest */}
-        <div className="flex items-center gap-3 px-4 py-3 rounded-xl bg-sidebar-accent">
+        <Link to="/profile" className="flex items-center gap-3 px-4 py-3 rounded-xl bg-sidebar-accent">
           <Avatar className="w-10 h-10">
             <AvatarImage src={user?.user_metadata?.avatar_url} />
             <AvatarFallback className="bg-primary/20 text-primary">
@@ -104,7 +104,7 @@ export const Sidebar = () => {
               {user ? `@${user.user_metadata.username}` : '@guest'}
             </p>
           </div>
-        </div>
+        </Link>
       </div>
     </aside>
   );

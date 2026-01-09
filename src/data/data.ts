@@ -196,7 +196,7 @@ const videos = [
 const generatedReels: Reel[] = Array.from({ length: 47 }, (_, i) => {
   const creator = creators[i % creators.length];
   const topic = creator.topics[Math.floor(Math.random() * creator.topics.length)];
-  const id = (i + INITIAL_REELS.length).toString();
+  const id = (i + INITIAL_REELS.length + 1).toString();
   
   return {
     id,

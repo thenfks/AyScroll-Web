@@ -3,6 +3,9 @@ import { ThumbsUp, ThumbsDown, Bookmark, Download, MoreVertical, Share2, Play, P
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { Button } from '@/components/ui/button';
 import { cn } from '@/lib/utils';
+import { FlashcardIcon } from '@/components/ui/flashcardsicon';
+import { BottomNav } from '@/components/feed/nav/BottomNav';
+import { SideNav } from '@/components/feed/nav/SideNav';
 import { Reel } from '@/data/types';
 
 interface VideoCardProps extends Reel {
@@ -59,7 +62,7 @@ export const VideoCard: React.FC<VideoCardProps> = ({
         {/* Play/Pause Icon */}
         {!isPlaying && (
           <div className="absolute inset-0 flex items-center justify-center bg-black/40">
-            <Play className="w-16 h-16 text-white" />
+            <Play className="w-20 h-20 text-white" />
           </div>
         )}
 
@@ -78,26 +81,7 @@ export const VideoCard: React.FC<VideoCardProps> = ({
         </div>
 
         {/* Action Buttons - Right Side */}
-        <div className="absolute right-4 bottom-32 flex flex-col gap-4">
-          <button className="flex flex-col items-center gap-1 text-foreground hover:text-primary transition-colors">
-            <div className="w-11 h-11 rounded-full bg-black/30 backdrop-blur-sm flex items-center justify-center hover:bg-primary/20 transition-colors">
-              <ThumbsUp className="w-5 h-5" />
-            </div>
-            <span className="text-xs">{likes}</span>
-          </button>
-          <button className="w-11 h-11 rounded-full bg-black/30 backdrop-blur-sm flex items-center justify-center text-foreground hover:text-primary hover:bg-primary/20 transition-colors">
-            <ThumbsDown className="w-5 h-5" />
-          </button>
-          <button className="w-11 h-11 rounded-full bg-black/30 backdrop-blur-sm flex items-center justify-center text-foreground hover:text-primary hover:bg-primary/20 transition-colors">
-            <Share2 className="w-5 h-5" />
-          </button>
-          <button className="w-11 h-11 rounded-full bg-black/30 backdrop-blur-sm flex items-center justify-center text-foreground hover:text-primary hover:bg-primary/20 transition-colors">
-            <Download className="w-5 h-5" />
-          </button>
-          <button className="w-11 h-11 rounded-full bg-black/30 backdrop-blur-sm flex items-center justify-center text-foreground hover:text-primary hover:bg-primary/20 transition-colors">
-            <MoreVertical className="w-5 h-5" />
-          </button>
-        </div>
+        <SideNav likes={likes} />
 
         {/* Author & Content Info */}
         <div className="absolute bottom-20 left-4 right-16">
@@ -116,20 +100,8 @@ export const VideoCard: React.FC<VideoCardProps> = ({
           <h3 className="font-bold text-foreground mb-1 line-clamp-2">{title}</h3>
           <p className="text-sm text-foreground/80 line-clamp-2">{description}</p>
         </div>
-      </div>
-
-      {/* Bottom Actions */}
-      <div className="absolute bottom-4 left-4 right-4 flex items-center gap-3">
-        <Button variant="primary" size="icon" className="rounded-full w-12 h-12" onClick={togglePlay}>
-          {isPlaying ? <Pause className="w-5 h-5" /> : <Play className="w-5 h-5" />}
-        </Button>
-        <Button 
-          variant="outline" 
-          size="icon" 
-          className="rounded-full w-12 h-12 bg-black/30 border-0 backdrop-blur-sm hover:bg-primary/20"
-        >
-          <Bookmark className="w-5 h-5" />
-        </Button>
+      {/* Bottom Left Actions */}
+        <BottomNav />
       </div>
     </div>
   );
