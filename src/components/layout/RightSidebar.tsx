@@ -98,7 +98,7 @@ export const RightSidebar = () => {
           <a href="#" className="hover:text-foreground transition-colors">Cookies</a>
         </div>
         <p className="text-xs text-muted-foreground mt-4">
-          &copy; {new Date().getFullYear()} AyScroll
+          &copy; {new Date().getFullYear()} AyScroll. All rights reserved.
         </p>
       </footer>
     </aside>
