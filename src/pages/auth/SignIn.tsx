@@ -6,7 +6,6 @@ import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Checkbox } from '@/components/ui/checkbox';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
-import { Github, Gitlab } from 'lucide-react';
 
 const SignIn = () => {
   const [loginIdentifier, setLoginIdentifier] = useState('');
@@ -14,7 +13,7 @@ const SignIn = () => {
   const [rememberMe, setRememberMe] = useState(false);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
-  const { signIn, signInWithUsername, signInWithGitHub, signInWithGitLab } = useAuth();
+  const { signIn, signInWithUsername, signInWithGoogle } = useAuth();
   const navigate = useNavigate();
 
   const handleSignIn = async (e: React.FormEvent) => {
@@ -89,13 +88,15 @@ const SignIn = () => {
             </div>
           </div>
           <div className="grid grid-cols-2 gap-4">
-            <Button variant="outline" onClick={signInWithGitHub}>
-              <Github className="mr-2 h-4 w-4" />
-              GitHub
+            <Button variant="outline" onClick={signInWithGoogle}>
+              <img src="/google_logo.svg" alt="Google" className="mr-2 h-4 w-4" />
+              Google
             </Button>
-            <Button variant="outline" onClick={signInWithGitLab}>
-              <Gitlab className="mr-2 h-4 w-4" />
-              GitLab
+            <Button variant="outline" asChild>
+              <a href="https://auth.nfks.co.in/?app=AyScroll">
+                <img src="/nfks_logo.png" alt="nFKs ID" className="mr-2 h-4 w-4" />
+                nFKs ID
+              </a>
             </Button>
           </div>
           <div className="mt-4 text-center text-sm">

@@ -9,8 +9,7 @@ interface AuthContextType {
   signIn: (credentials: SignInWithPasswordCredentials) => Promise<{ error: Error | null }>;
   signUp: (credentials: SignUpWithPasswordCredentials) => Promise<{ error: Error | null }>;
   signOut: () => Promise<void>;
-  signInWithGitHub: () => Promise<void>;
-  signInWithGitLab: () => Promise<void>;
+  signInWithGoogle: () => Promise<void>;
   resetPassword: (email: string) => Promise<{ error: Error | null }>;
   signInWithUsername: (username: string, password: string) => Promise<{ error: Error | null }>;
   isGuest: boolean;
@@ -61,18 +60,9 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
     await supabase.auth.signOut();
   };
 
-  const signInWithGitHub = async () => {
+  const signInWithGoogle = async () => {
     await supabase.auth.signInWithOAuth({
-      provider: 'github',
-      options: {
-        redirectTo: window.location.origin,
-      },
-    });
-  };
-
-  const signInWithGitLab = async () => {
-    await supabase.auth.signInWithOAuth({
-      provider: 'gitlab',
+      provider: 'google',
       options: {
         redirectTo: window.location.origin,
       },
@@ -107,8 +97,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
     signIn,
     signUp,
     signOut,
-    signInWithGitHub,
-    signInWithGitLab,
+    signInWithGoogle,
     resetPassword,
     signInWithUsername,
     isGuest: !user,
