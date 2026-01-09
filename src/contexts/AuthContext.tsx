@@ -1,14 +1,18 @@
 import React, { createContext, useContext, useEffect, useState } from 'react';
-import { User, Session } from '@supabase/supabase-js';
+import { User, Session, SignInWithPasswordCredentials, SignUpWithPasswordCredentials } from '@supabase/supabase-js';
 import { supabase } from '@/integrations/supabase/client';
 
 interface AuthContextType {
   user: User | null;
   session: Session | null;
   loading: boolean;
-  signIn: (email: string, password: string) => Promise<{ error: Error | null }>;
-  signUp: (email: string, password: string) => Promise<{ error: Error | null }>;
+  signIn: (credentials: SignInWithPasswordCredentials) => Promise<{ error: Error | null }>;
+  signUp: (credentials: SignUpWithPasswordCredentials) => Promise<{ error: Error | null }>;
   signOut: () => Promise<void>;
+  signInWithGitHub: () => Promise<void>;
+  signInWithGitLab: () => Promise<void>;
+  resetPassword: (email: string) => Promise<{ error: Error | null }>;
+  signInWithUsername: (username: string, password: string) => Promise<{ error: Error | null }>;
   isGuest: boolean;
 }
 
@@ -20,7 +24,6 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    // Set up auth state listener BEFORE checking session
     const { data: { subscription } } = supabase.auth.onAuthStateChange(
       async (event, session) => {
         setSession(session);
@@ -29,7 +32,6 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
       }
     );
 
-    // Check for existing session
     supabase.auth.getSession().then(({ data: { session } }) => {
       setSession(session);
       setUser(session?.user ?? null);
@@ -39,16 +41,16 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
     return () => subscription.unsubscribe();
   }, []);
 
-  const signIn = async (email: string, password: string) => {
-    const { error } = await supabase.auth.signInWithPassword({ email, password });
+  const signIn = async (credentials: SignInWithPasswordCredentials) => {
+    const { error } = await supabase.auth.signInWithPassword(credentials);
     return { error };
   };
 
-  const signUp = async (email: string, password: string) => {
+  const signUp = async (credentials: SignUpWithPasswordCredentials) => {
     const { error } = await supabase.auth.signUp({
-      email,
-      password,
+      ...credentials,
       options: {
+        ...credentials.options,
         emailRedirectTo: window.location.origin,
       },
     });
@@ -59,6 +61,45 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
     await supabase.auth.signOut();
   };
 
+  const signInWithGitHub = async () => {
+    await supabase.auth.signInWithOAuth({
+      provider: 'github',
+      options: {
+        redirectTo: window.location.origin,
+      },
+    });
+  };
+
+  const signInWithGitLab = async () => {
+    await supabase.auth.signInWithOAuth({
+      provider: 'gitlab',
+      options: {
+        redirectTo: window.location.origin,
+      },
+    });
+  };
+
+  const resetPassword = async (email: string) => {
+    const { error } = await supabase.auth.resetPasswordForEmail(email, {
+      redirectTo: `${window.location.origin}/reset-password`,
+    });
+    return { error };
+  };
+
+  const signInWithUsername = async (username: string, password: string) => {
+    const { data: email, error: rpcError } = await supabase.rpc('get_email_by_username', { p_username: username });
+
+    if (rpcError) {
+      return { error: rpcError };
+    }
+
+    if (!email) {
+      return { error: new Error('User not found') };
+    }
+
+    return signIn({ email, password });
+  };
+
   const value = {
     user,
     session,
@@ -66,6 +107,10 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
     signIn,
     signUp,
     signOut,
+    signInWithGitHub,
+    signInWithGitLab,
+    resetPassword,
+    signInWithUsername,
     isGuest: !user,
   };
 
