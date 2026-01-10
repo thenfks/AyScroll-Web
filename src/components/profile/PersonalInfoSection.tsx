@@ -6,10 +6,10 @@ const PersonalInfoSection: React.FC = () => {
   const recentLearning = MOCK_REELS.slice(0, 2);
 
   return (
-    <div className="space-y-8 animate-in fade-in slide-in-from-left-4 duration-500">
+    <div className="space-y-6 animate-in fade-in slide-in-from-left-4 duration-500">
       {/* Activity Section */}
-      <section className="p-8 rounded-[40px] bg-white/[0.02] border border-white/5 shadow-xl relative overflow-hidden">
-        <div className="flex items-center justify-between mb-10">
+      <section className="p-6 rounded-[40px] bg-white/[0.02] border border-white/5 shadow-xl relative overflow-hidden">
+        <div className="flex items-center justify-between mb-8">
           <h3 className="text-lg font-bold text-white tracking-tight">Weekly Activity</h3>
           <button className="text-[11px] font-black uppercase tracking-widest text-white/30 flex items-center gap-2">This Week <ChevronRight className="w-3 h-3" /></button>
         </div>
@@ -28,10 +28,10 @@ const PersonalInfoSection: React.FC = () => {
         </div>
       </section>
 
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
         {/* Jump Back In */}
-        <section className="p-8 rounded-[40px] bg-white/[0.02] border border-white/5 shadow-xl">
-          <div className="flex items-center justify-between mb-8">
+        <section className="p-6 rounded-[40px] bg-white/[0.02] border border-white/5 shadow-xl">
+          <div className="flex items-center justify-between mb-6">
             <h3 className="text-lg font-bold text-white tracking-tight">Jump Back In</h3>
             <button className="text-[10px] font-black uppercase tracking-widest text-pink-500 hover:text-pink-400 transition-colors">View All</button>
           </div>
@@ -59,8 +59,8 @@ const PersonalInfoSection: React.FC = () => {
         </section>
 
         {/* Achievements */}
-        <section className="p-8 rounded-[40px] bg-white/[0.02] border border-white/5 shadow-xl">
-          <div className="flex items-center justify-between mb-8">
+        <section className="p-6 rounded-[40px] bg-white/[0.02] border border-white/5 shadow-xl">
+          <div className="flex items-center justify-between mb-6">
             <h3 className="text-lg font-bold text-white tracking-tight">Achievements</h3>
             <button className="text-[10px] font-black uppercase tracking-widest text-pink-500 hover:text-pink-400 transition-colors">See All</button>
           </div>
@@ -89,8 +89,8 @@ const PersonalInfoSection: React.FC = () => {
       </div>
 
       {/* Collections */}
-      <section className="p-8 rounded-[40px] bg-white/[0.02] border border-white/5 shadow-xl">
-        <div className="flex items-center justify-between mb-8">
+      <section className="p-6 rounded-[40px] bg-white/[0.02] border border-white/5 shadow-xl">
+        <div className="flex items-center justify-between mb-6">
           <h3 className="text-lg font-bold text-white tracking-tight">My Collections</h3>
           <button className="flex items-center gap-2 px-6 py-2 bg-gradient-to-r from-pink-500 to-orange-500 rounded-xl text-[10px] font-black uppercase tracking-widest text-white shadow-lg transition-all hover:scale-105">
             <Plus className="w-4 h-4" /> New

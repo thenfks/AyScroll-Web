@@ -6,17 +6,17 @@ const SecuritySection: React.FC = () => {
   const [tfaEnabled, setTfaEnabled] = useState(true);
 
   return (
-    <div className="space-y-8 animate-in fade-in slide-in-from-right-4 duration-500">
-      <div className="flex items-center justify-between mb-4">
+    <div className="space-y-6 animate-in fade-in slide-in-from-right-4 duration-500">
+      <div className="flex items-center justify-between mb-3">
         <h3 className="text-2xl font-black text-white tracking-tighter">Login & Security</h3>
         <span className="px-4 py-1.5 bg-emerald-500/10 border border-emerald-500/20 text-emerald-400 rounded-full text-[10px] font-black uppercase tracking-widest flex items-center gap-2">
           <div className="w-1.5 h-1.5 rounded-full bg-emerald-400"></div> All Systems Secure
         </span>
       </div>
 
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
         {/* Authentication Info */}
-        <section className="p-8 rounded-[40px] bg-white/[0.02] border border-white/5 shadow-xl">
+        <section className="p-6 rounded-[40px] bg-white/[0.02] border border-white/5 shadow-xl">
           <div className="flex items-center gap-4 mb-8">
             <div className="w-12 h-12 rounded-2xl bg-indigo-500/10 flex items-center justify-center text-indigo-400">
               <Key className="w-6 h-6" />
@@ -47,7 +47,7 @@ const SecuritySection: React.FC = () => {
         </section>
 
         {/* 2FA Section */}
-        <section className="p-8 rounded-[40px] bg-white/[0.02] border border-white/5 shadow-xl flex flex-col justify-between">
+        <section className="p-6 rounded-[40px] bg-white/[0.02] border border-white/5 shadow-xl flex flex-col justify-between">
           <div className="flex items-center gap-4 mb-6">
             <div className="w-12 h-12 rounded-2xl bg-pink-500/10 flex items-center justify-center text-pink-400">
               <ShieldCheck className="w-6 h-6" />
@@ -70,8 +70,8 @@ const SecuritySection: React.FC = () => {
       </div>
 
       {/* Login History / Devices */}
-      <section className="p-8 rounded-[40px] bg-white/[0.02] border border-white/5 shadow-xl">
-        <div className="flex items-center justify-between mb-10">
+      <section className="p-6 rounded-[40px] bg-white/[0.02] border border-white/5 shadow-xl">
+        <div className="flex items-center justify-between mb-8">
           <h3 className="text-lg font-bold text-white tracking-tight">Active Devices</h3>
           <button className="text-[10px] font-black uppercase tracking-widest text-white/30 hover:text-pink-500 transition-colors">Revoke All Other Sessions</button>
         </div>

@@ -16,14 +16,14 @@ const AccountNavigation: React.FC<AccountNavigationProps> = ({ activeTab, setAct
   ];
 
   return (
-    <section className="p-8 rounded-[40px] bg-white/[0.02] border border-white/5 shadow-xl">
-      <h3 className="text-sm font-black uppercase tracking-[0.2em] text-white/20 mb-8 px-2">Account</h3>
+    <section className="p-6 rounded-[40px] bg-white/[0.02] border border-white/5 shadow-xl">
+      <h3 className="text-sm font-black uppercase tracking-[0.2em] text-white/20 mb-6 px-2">Account</h3>
       <div className="space-y-2">
         {accountItems.map((item) => (
           <button 
             key={item.name}
             onClick={() => setActiveTab(item.name)}
-            className={`w-full flex items-center justify-between px-6 py-4 rounded-2xl transition-all group ${activeTab === item.name ? 'bg-pink-500/10 text-pink-500' : 'text-white/40 hover:bg-white/5 hover:text-white/80'}`}
+            className={`w-full flex items-center justify-between px-6 py-3 rounded-2xl transition-all group ${activeTab === item.name ? 'bg-pink-500/10 text-pink-500' : 'text-white/40 hover:bg-white/5 hover:text-white/80'}`}
           >
             <div className="flex items-center gap-4">
               {(() => {

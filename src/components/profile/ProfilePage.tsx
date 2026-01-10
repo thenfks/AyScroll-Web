@@ -59,13 +59,13 @@ const ProfilePage: React.FC = () => {
     <div className="flex h-screen overflow-hidden bg-transparent">
       <Sidebar />
       <div className="flex-1 flex flex-col min-w-0 overflow-y-auto no-scrollbar pb-32 pl-[240px]">
-        <div className="px-6 md:px-12 py-10 max-w-[1400px] mx-auto w-full space-y-8">
+        <div className="px-4 md:px-8 py-6 max-w-[1400px] mx-auto w-full space-y-6">
           
           <ProfileHeader user={user} />
 
-          <div className="grid grid-cols-12 gap-8">
+          <div className="grid grid-cols-12 gap-6">
             {/* Left Column: Account & Preferences */}
-            <div className="col-span-12 lg:col-span-4 space-y-8">
+            <div className="col-span-12 lg:col-span-4 space-y-6">
               <AccountNavigation activeTab={activeTab} setActiveTab={setActiveTab} logout={logout} />
               <PreferencesSection 
                 darkMode={darkMode} 

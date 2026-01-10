@@ -79,8 +79,8 @@ const SubscriptionSection: React.FC = () => {
   ];
 
   return (
-    <div className="space-y-10 animate-in fade-in slide-in-from-right-4 duration-500">
-      <div className="flex flex-col items-center text-center space-y-6">
+    <div className="space-y-8 animate-in fade-in slide-in-from-right-4 duration-500">
+      <div className="flex flex-col items-center text-center space-y-4">
         <h3 className="text-3xl font-black text-white tracking-tighter">Choose Your Orbit</h3>
         
         {/* Billing Toggle */}
@@ -97,11 +97,11 @@ const SubscriptionSection: React.FC = () => {
         </div>
       </div>
 
-      <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
+      <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
         {plans.map((plan) => (
           <div 
             key={plan.name}
-            className={`relative p-8 rounded-[40px] flex flex-col transition-all duration-500 border overflow-hidden ${plan.highlight ? 'bg-gradient-to-b from-pink-500/10 to-transparent border-pink-500/30 shadow-2xl scale-[1.02]' : 'bg-white/[0.02] border-white/5 shadow-xl'}`}
+            className={`relative p-6 rounded-[40px] flex flex-col transition-all duration-500 border overflow-hidden ${plan.highlight ? 'bg-gradient-to-b from-pink-500/10 to-transparent border-pink-500/30 shadow-2xl scale-[1.02]' : 'bg-white/[0.02] border-white/5 shadow-xl'}`}
           >
             {plan.badge && (
               <div className="absolute top-6 right-6">
@@ -111,7 +111,7 @@ const SubscriptionSection: React.FC = () => {
               </div>
             )}
 
-            <div className="text-center mb-10 pt-4">
+            <div className="text-center mb-8 pt-4">
               <h4 className={`text-2xl font-black mb-6 ${plan.highlight ? 'text-pink-500' : 'text-white'}`}>{plan.name}</h4>
               <p className="text-white/30 text-[11px] font-black uppercase tracking-widest mb-8">{plan.description}</p>
               
@@ -125,7 +125,7 @@ const SubscriptionSection: React.FC = () => {
               </div>
             </div>
 
-            <div className="space-y-4 flex-1 mb-10 px-2">
+            <div className="space-y-4 flex-1 mb-8 px-2">
               {plan.features.map((feature, i) => (
                 <div key={i} className="flex items-center gap-4 group">
                   <div className={`w-5 h-5 rounded-full flex items-center justify-center shrink-0 ${plan.highlight ? 'bg-pink-500/20 text-pink-500' : 'bg-emerald-500/10 text-emerald-400'}`}>
