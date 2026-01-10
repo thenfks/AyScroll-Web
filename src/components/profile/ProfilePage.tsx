@@ -95,6 +95,10 @@ const ProfilePage: React.FC = () => {
               )}
             </div>
           </div>
+          {/* Copyright Notice */}
+          <div className="text-center text-white/30 text-xs mt-10">
+            &copy; Ayscroll 2025-2026. All rights reserved.
+          </div>
         </div>
       </div>
     </div>
