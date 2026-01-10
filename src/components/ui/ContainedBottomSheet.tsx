@@ -9,52 +9,86 @@ interface ContainedBottomSheetProps {
 }
 
 const MIN_HEIGHT = 60; // Minimum height in pixels
-const DEFAULT_EXPANDED_HEIGHT = MIN_HEIGHT * 4; // Default height after drag if not closed
 const MAX_HEIGHT_PERCENT = 80; // Maximum height as a percentage of parent
 const CLOSE_THRESHOLD_PERCENT = 10; // Close if dragged below 10% of parent height
 
-const ContainedBottomSheet: React.FC<ContainedBottomSheetProps> = ({ isOpen, onClose, children, className }) => {
-  const [currentHeight, setCurrentHeight] = useState<number>(DEFAULT_EXPANDED_HEIGHT);
+const ContainedBottomSheet: React.FC<ContainedBottomSheetProps> = ({
+  isOpen,
+  onClose,
+  children,
+  className,
+}) => {
+  const [initialHeight, setInitialHeight] = useState<number>(MIN_HEIGHT * 4);
+  const [currentHeight, setCurrentHeight] = useState<number>(initialHeight);
   const [isDragging, setIsDragging] = useState(false);
   const sheetRef = useRef<HTMLDivElement>(null);
+  const contentRef = useRef<HTMLDivElement>(null);
   const startY = useRef(0);
   const startHeight = useRef(0);
+
+  useEffect(() => {
+    if (isOpen && contentRef.current) {
+      const contentHeight = contentRef.current.scrollHeight;
+      const parentHeight = sheetRef.current?.parentElement?.offsetHeight || window.innerHeight;
+      const calculatedHeight = Math.min(
+        contentHeight + 80, // Add some padding and handle height
+        (parentHeight * MAX_HEIGHT_PERCENT) / 100
+      );
+      const newInitialHeight = Math.max(calculatedHeight, MIN_HEIGHT);
+      setInitialHeight(newInitialHeight);
+      setCurrentHeight(newInitialHeight);
+    }
+  }, [isOpen, children]);
 
   // Reset height when sheet opens
   useEffect(() => {
     if (isOpen) {
-      setCurrentHeight(DEFAULT_EXPANDED_HEIGHT);
+      setCurrentHeight(initialHeight);
     }
-  }, [isOpen]);
+  }, [isOpen, initialHeight]);
 
-  const handleDragStart = useCallback((clientY: number) => {
-    setIsDragging(true);
-    startY.current = clientY;
-    startHeight.current = sheetRef.current?.offsetHeight || currentHeight;
-  }, [currentHeight]);
+  const handleDragStart = useCallback(
+    (clientY: number) => {
+      setIsDragging(true);
+      startY.current = clientY;
+      startHeight.current = sheetRef.current?.offsetHeight || currentHeight;
+    },
+    [currentHeight],
+  );
 
-  const handleDragMove = useCallback((clientY: number) => {
-    if (!isDragging || !sheetRef.current) return;
+  const handleDragMove = useCallback(
+    (clientY: number) => {
+      if (!isDragging || !sheetRef.current) return;
 
-    const deltaY = startY.current - clientY; // Dragging up increases height
-    const parentHeight = sheetRef.current.parentElement?.offsetHeight || window.innerHeight;
-    const newHeight = Math.max(MIN_HEIGHT, Math.min(startHeight.current + deltaY, (parentHeight * MAX_HEIGHT_PERCENT) / 100));
-    
-    setCurrentHeight(newHeight);
-  }, [isDragging]);
+      const deltaY = startY.current - clientY; // Dragging up increases height
+      const parentHeight =
+        sheetRef.current.parentElement?.offsetHeight || window.innerHeight;
+      const newHeight = Math.max(
+        MIN_HEIGHT,
+        Math.min(
+          startHeight.current + deltaY,
+          (parentHeight * MAX_HEIGHT_PERCENT) / 100,
+        ),
+      );
+
+      setCurrentHeight(newHeight);
+    },
+    [isDragging],
+  );
 
   const handleDragEnd = useCallback(() => {
     setIsDragging(false);
     if (!sheetRef.current) return;
 
-    const parentHeight = sheetRef.current.parentElement?.offsetHeight || window.innerHeight;
+    const parentHeight =
+      sheetRef.current.parentElement?.offsetHeight || window.innerHeight;
     const currentHeightPercent = (currentHeight / parentHeight) * 100;
 
     if (currentHeightPercent < CLOSE_THRESHOLD_PERCENT) {
       onClose();
     } else {
-      // Snap back to default expanded height if not closed
-      setCurrentHeight(DEFAULT_EXPANDED_HEIGHT);
+      // Save the current height as the new initial height for the next open
+      setInitialHeight(currentHeight);
     }
   }, [currentHeight, onClose]);
 
@@ -135,7 +169,7 @@ const ContainedBottomSheet: React.FC<ContainedBottomSheetProps> = ({ isOpen, onC
         onMouseDown={handleMouseDown}
         onTouchStart={handleTouchStart}
       />
-      <div className="flex-1 overflow-y-auto p-4">
+      <div ref={contentRef} className="flex-1 overflow-y-auto p-4">
         {children}
       </div>
     </div>
