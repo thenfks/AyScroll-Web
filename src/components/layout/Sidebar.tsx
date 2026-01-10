@@ -1,4 +1,4 @@
-import { Home, Search, Library, Bookmark, Settings, History, BarChart2 } from 'lucide-react';
+import { Home, Search, Library, Bookmark, Settings, BarChart2 } from 'lucide-react';
 import { Link, useLocation } from 'react-router-dom';
 import { useAuth } from '@/contexts/AuthContext';
 import { cn } from '@/lib/utils';
@@ -6,7 +6,7 @@ import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 
 const mainNavItems = [
   { icon: Home, label: 'Home', path: '/', public: true },
-  { icon: Search, label: 'Discover', path: '/discover', public: true },
+  { icon: Search, label: 'Explore', path: '/explore', public: true },
   { icon: Library, label: 'Library', path: '/library', public: false },
   { icon: Bookmark, label: 'Saved', path: '/saved', public: false },
   { icon: BarChart2, label: 'Analysis', path: '/analysis', public: false },
@@ -24,7 +24,7 @@ export const Sidebar = () => {
   const { user } = useAuth();
 
   return (
-    <aside className="fixed left-0 top-0 h-screen w-[240px] bg-sidebar flex flex-col border-r border-sidebar-border">
+    <aside className="fixed left-0 top-0 h-screen w-[240px] bg-sidebar flex-col border-r border-sidebar-border hidden md:flex">
       {/* Logo */}
       <div className="p-6 flex items-center gap-3">
         <img src="/logo.png" alt="AyScroll Logo" className="w-8 h-8" />
@@ -93,15 +93,15 @@ export const Sidebar = () => {
           <Avatar className="w-10 h-10">
             <AvatarImage src={user?.user_metadata?.avatar_url} />
             <AvatarFallback className="bg-primary/20 text-primary">
-              {user ? user.user_metadata.name?.charAt(0).toUpperCase() : 'G'}
+              {user ? user.user_metadata?.name?.charAt(0).toUpperCase() : 'G'}
             </AvatarFallback>
           </Avatar>
           <div className="flex-1 min-w-0">
             <p className="text-sm font-medium text-foreground truncate">
-              {user ? user.user_metadata.name : 'Guest'}
+              {user ? user.user_metadata?.name : 'Guest'}
             </p>
             <p className="text-xs text-muted-foreground">
-              {user ? `@${user.user_metadata.username}` : '@guest'}
+              {user ? `@${user.user_metadata?.username}` : '@guest'}
             </p>
           </div>
         </Link>

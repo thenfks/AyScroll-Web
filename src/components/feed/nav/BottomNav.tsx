@@ -4,23 +4,28 @@ import { Button } from '@/components/ui/button';
 import { FlashcardIcon } from '@/components/ui/flashcardsicon';
 
 interface BottomNavProps {
-  // Add any props if needed
+  onFlashcardsClick?: () => void;
 }
 
-export const BottomNav: React.FC<BottomNavProps> = () => {
+export const BottomNav: React.FC<BottomNavProps> = ({ onFlashcardsClick }) => {
   return (
     <div className="absolute bottom-4 left-4 flex items-center gap-3">
       <Button 
         variant="outline" 
         size="icon" 
-        className="rounded-full w-12 h-12 border-0 backdrop-blur-sm hover:bg-white/20 hover:text-white bg-flashcard-gradient glass" // Added glass effect
+        onClick={(e) => {
+          e.stopPropagation();
+          onFlashcardsClick?.();
+        }}
+        className="rounded-full w-12 h-12 border-0 backdrop-blur-sm hover:bg-white/20 hover:text-white bg-flashcard-gradient glass"
       >
         <FlashcardIcon size="w-6 h-6" color="white" />
       </Button>
       <Button 
         variant="outline" 
         size="icon" 
-        className="rounded-full w-12 h-12 bg-black/30 border-0 backdrop-blur-sm hover:bg-white/20 hover:text-white glass" // Added glass effect
+        onClick={(e) => e.stopPropagation()}
+        className="rounded-full w-12 h-12 bg-black/30 border-0 backdrop-blur-sm hover:bg-white/20 hover:text-white glass"
       >
         <Bookmark className="w-6 h-6" />
       </Button>
