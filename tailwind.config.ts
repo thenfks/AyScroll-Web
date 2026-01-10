@@ -98,6 +98,10 @@ export default {
           "0%, 100%": { boxShadow: "0 0 20px hsl(350, 89%, 60%, 0.3)" },
           "50%": { boxShadow: "0 0 40px hsl(350, 89%, 60%, 0.5)" },
         },
+        "scroll-slow": {
+          "0%": { transform: "translateY(0)" },
+          "100%": { transform: "translateY(-10%)" },
+        },
       },
       animation: {
         "accordion-down": "accordion-down 0.2s ease-out",
@@ -106,6 +110,7 @@ export default {
         "slide-in-left": "slide-in-left 0.3s ease-out",
         "scale-in": "scale-in 0.2s ease-out",
         "pulse-glow": "pulse-glow 2s ease-in-out infinite",
+        "scroll-slow": "scroll-slow 20s linear infinite",
       },
     },
   },

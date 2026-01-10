@@ -6,7 +6,7 @@ import { MobileHeader } from '@/components/layout/MobileHeader';
 import { MobileNavDrawer } from '@/components/layout/MobileNavDrawer';
 import { useIsMobile } from '@/hooks/use-mobile';
 
-const Index = () => {
+const Feed = () => {
   const [mobileNavOpen, setMobileNavOpen] = useState(false);
   const isMobile = useIsMobile();
 
@@ -20,7 +20,7 @@ const Index = () => {
             <img src="/logo.png" alt="AyScroll" className="w-8 h-8" />
             <span className="text-lg font-bold text-white">AyScroll</span>
           </div>
-          <button 
+          <button
             onClick={() => setMobileNavOpen(true)}
             className="p-2 rounded-xl bg-white/10 backdrop-blur-sm"
           >
@@ -29,10 +29,10 @@ const Index = () => {
             </svg>
           </button>
         </div>
-        
+
         {/* Mobile Nav Drawer */}
         <MobileNavDrawer open={mobileNavOpen} onOpenChange={setMobileNavOpen} />
-        
+
         {/* Full Screen Reels */}
         <div className="h-screen snap-y snap-mandatory overflow-y-auto">
           {MOCK_REELS.slice(0, 10).map((reel) => (
@@ -62,4 +62,4 @@ const Index = () => {
   );
 };
 
-export default Index;
+export default Feed;
