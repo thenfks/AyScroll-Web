@@ -59,12 +59,6 @@ export const VideoCard: React.FC<VideoCardProps> = (props) => {
         return (
           <>
             <div className="relative border-b border-white/5 pb-4 px-4">
-              <button
-                onClick={() => setActiveSheet(null)}
-                className="absolute right-6 top-6 p-2 rounded-full bg-white/5 hover:bg-white/10 transition-colors"
-              >
-                <X className="w-4 h-4 text-white/60" />
-              </button>
               <h2 className="text-xl font-black text-white tracking-tight flex items-center gap-3">
                 <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-purple-500 via-pink-500 to-orange-500 flex items-center justify-center">
                   <Lightbulb className="w-5 h-5 text-white" />
@@ -107,12 +101,6 @@ export const VideoCard: React.FC<VideoCardProps> = (props) => {
         return (
           <>
             <div className="relative border-b border-white/5 pb-4 px-4">
-              <button
-                onClick={() => setActiveSheet(null)}
-                className="absolute right-6 top-6 p-2 rounded-full bg-white/5 hover:bg-white/10 transition-colors"
-              >
-                <X className="w-4 h-4 text-white/60" />
-              </button>
               <h2 className="text-xl font-black text-white tracking-tight flex items-center gap-3">
                 <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-indigo-500 to-purple-500 flex items-center justify-center">
                   <FileText className="w-5 h-5 text-white" />
@@ -190,13 +178,6 @@ export const VideoCard: React.FC<VideoCardProps> = (props) => {
         return (
           <>
             <div className="relative border-b border-white/5 pb-4 px-4">
-              <button
-                onClick={() => setActiveSheet(null)}
-                className="absolute right-6 top-6 p-2 rounded-full bg-white/5 hover:bg-white/10 transition-colors"
-              >
-                <X className="w-4 h-4 text-white/60" />
-              </button>
-
               <div className="flex items-center gap-3 mb-3">
                 <img
                   src={creator_avatar}
