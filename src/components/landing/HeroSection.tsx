@@ -2,14 +2,34 @@ import { Button } from "@/components/ui/button";
 import { Link } from "react-router-dom";
 import { ChevronRight } from "lucide-react";
 import { RollingText } from "@/components/effects/rollingText";
+import { useState, useEffect } from "react";
 
 const RotatingTextWrapper = () => {
+  const [showAnimation, setShowAnimation] = useState(false);
   const words = ["Scrolling", "Watching", "Thinking", "Scrolling"];
+
+  useEffect(() => {
+    // Start animation after splash screen completes (3s duration + 0.5s fade out)
+    const timer = setTimeout(() => {
+      setShowAnimation(true);
+    }, 3500);
+
+    return () => clearTimeout(timer);
+  }, []);
+
   return (
-    <RollingText
-      text={words[0]}
-      className="text-pink-500 ml-3 font-bold bg-gradient-to-r from-pink-500 to-orange-500 bg-clip-text text-transparent"
-    />
+    <>
+      {showAnimation ? (
+        <RollingText
+          text={words[0]}
+          className="text-pink-500 ml-3 font-bold bg-gradient-to-r from-pink-500 to-orange-500 bg-clip-text text-transparent"
+        />
+      ) : (
+        <span className="text-pink-500 ml-3 font-bold bg-gradient-to-r from-pink-500 to-orange-500 bg-clip-text text-transparent">
+          {words[0]}
+        </span>
+      )}
+    </>
   );
 };
 

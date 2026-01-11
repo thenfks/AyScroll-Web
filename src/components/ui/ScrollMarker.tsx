@@ -43,7 +43,7 @@ export const ScrollMarker: React.FC<ScrollMarkerProps> = ({ sections = 5 }) => {
     };
 
     return (
-        <div className="fixed right-6 top-1/2 -translate-y-1/2 z-50 flex flex-col gap-3">
+        <div className="fixed right-6 top-1/2 -translate-y-1/2 z-50 hidden md:flex flex-col gap-3">
             {Array.from({ length: sections }).map((_, index) => (
                 <button
                     key={index}
@@ -54,8 +54,8 @@ export const ScrollMarker: React.FC<ScrollMarkerProps> = ({ sections = 5 }) => {
                     {/* Dot */}
                     <motion.div
                         className={`w-2 h-2 rounded-full transition-all duration-300 ${activeSection === index
-                                ? 'bg-white scale-150'
-                                : 'bg-zinc-600 hover:bg-zinc-400'
+                            ? 'bg-white scale-150'
+                            : 'bg-zinc-600 hover:bg-zinc-400'
                             }`}
                         animate={{
                             scale: activeSection === index ? 1.5 : 1,
