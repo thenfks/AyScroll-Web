@@ -33,6 +33,23 @@ export default function Landing() {
     });
     const y = useTransform(scrollYProgress, [0, 1], [-100, 100]);
 
+    // Parallax & Device Section State
+    const devicesRef = useRef(null);
+    const { scrollYProgress: scrollYProgressDevices } = useScroll({
+        target: devicesRef,
+        offset: ["start end", "end start"],
+    });
+    const yIpad = useTransform(scrollYProgressDevices, [0, 1], [100, -100]);
+    const yIphone = useTransform(scrollYProgressDevices, [0, 1], [200, -200]);
+
+    // Sticky Parallax State
+    const stickyRef = useRef(null);
+    const { scrollYProgress: scrollYProgressSticky } = useScroll({
+        target: stickyRef,
+        offset: ["start end", "end start"],
+    });
+    const ySticky = useTransform(scrollYProgressSticky, [0, 1], [-50, 50]);
+
     const features = [
         {
             title: "Your Feed",
@@ -107,7 +124,6 @@ export default function Landing() {
                                 "https://images.unsplash.com/photo-1507413245164-6160d8298b31?w=500&q=80", // Physics
                                 "https://images.unsplash.com/photo-1451187580459-43490279c0fa?w=500&q=80", // Space
                                 "https://images.unsplash.com/photo-1516035069371-29a1b244cc32?w=500&q=80", // Camera
-                                "https://images.unsplash.com/photo-1478720568477-152d9b164e63?w=500&q=80", // Story
                                 "https://images.unsplash.com/photo-1581091226825-a6a2a5aee158?w=500&q=80", // Lab
                                 "https://images.unsplash.com/photo-1518770660439-4636190af475?w=500&q=80", // Chips
                                 "https://images.unsplash.com/photo-1503676260728-1c00da094a0b?w=500&q=80", // Education
@@ -181,7 +197,7 @@ export default function Landing() {
             </section>
 
             {/* NEW: Sticky Layout Section */}
-            <section className="relative bg-black">
+            <section ref={stickyRef} className="relative bg-black">
                 <div className="max-w-7xl mx-auto px-6">
                     <div className="flex flex-col md:flex-row items-start">
 
@@ -190,13 +206,13 @@ export default function Landing() {
                             {features.map((feature, index) => (
                                 <motion.div
                                     key={index}
-                                    className="h-screen flex flex-col justify-center p-6"
+                                    className="min-h-[60vh] flex flex-col justify-center p-6"
                                     initial={{ opacity: 0.2 }}
                                     whileInView={{ opacity: 1 }}
                                     viewport={{ margin: "-40% 0px -40% 0px" }}
                                     onViewportEnter={() => setActiveFeature(index)}
                                 >
-                                    <div className={`p-8 rounded-3xl border transition-all duration-500 ${activeFeature === index ? 'bg-zinc-900/50 border-pink-500/50 shadow-[0_0_30px_rgba(236,72,153,0.2)]' : 'bg-transparent border-transparent'}`}>
+                                    <div className={`p-8 rounded-3xl border transition-all duration-500 ${activeFeature === index ? 'bg-zinc-900/50 border-white/5 shadow-[0_0_30px_rgba(236,72,153,0.1)]' : 'bg-transparent border-transparent'}`}>
                                         <div className={`w-12 h-12 rounded-2xl flex items-center justify-center mb-6 transition-colors duration-500 ${activeFeature === index ? 'bg-gradient-to-br from-pink-500 to-orange-500 text-white' : 'bg-zinc-800 text-zinc-500'}`}>
                                             <feature.icon className="w-6 h-6" />
                                         </div>
@@ -209,34 +225,52 @@ export default function Landing() {
 
                         {/* Right Column: Sticky iPhone */}
                         <div className="hidden md:flex w-1/2 h-screen sticky top-0 items-center justify-center">
-                            <div className="scale-90 xl:scale-100 transition-all duration-500">
+                            <motion.div style={{ y: ySticky }} className="scale-90 xl:scale-100 transition-all duration-500">
                                 <AyscrollIPhone
                                     image={features[activeFeature].image}
                                     dynamicIslandContentLine1={features[activeFeature].islandLine1}
                                     dynamicIslandContentLine2={features[activeFeature].islandLine2}
                                     forceExpandedIsland={true}
                                 />
-                            </div>
+                            </motion.div>
                         </div>
                     </div>
                 </div>
             </section>
 
             {/* Feature 2 (Reversed) - Keep for now as "Save your knowledge base" but with static iphone? Or remove? User asked for Parallax then Sticky. I will leave this as "Save your knowledge base" but maybe revert it to the static display or keep the interactive one if it adds value. User said "then in next Section Add iphonemockup and as we scroll down make different feature appear". That's the Sticky section. I'll keep the "Feature 2" (Download) as another section below or remove if redundant. I'll keep it as a "Download/Offline" feature block. */}
-            <section className="py-20 px-6 bg-black border-b-8 border-zinc-800">
+            <section className="py-20 px-6 bg-black">
                 <div className="max-w-7xl mx-auto grid md:grid-cols-2 gap-12 items-center">
-                    <div className="order-2 md:order-1 relative flex justify-center scale-90 md:scale-100">
-                        <div className="relative z-10 w-full flex items-center justify-center p-8">
-                            {/* Reusing the IPhone here as a static showcase of offline mode maybe? Or just the feed image. */}
-                            <AyscrollIPhone
-                                image="/images/Ayscroll_App_FeedPage.png"
-                                dynamicIslandContentLine1="Offline Mode"
-                                dynamicIslandContentLine2="45MB Downloaded"
+                    <motion.div
+                        className="order-2 md:order-1 relative flex justify-center h-[600px] md:h-[800px] items-center"
+                        ref={devicesRef}
+                        initial={{ opacity: 0, scale: 0.9 }}
+                        whileInView={{ opacity: 1, scale: 1 }}
+                        viewport={{ once: true, margin: "-20%" }}
+                        transition={{ duration: 0.8, ease: "easeOut" }}
+                    >
+                        <div className="relative w-full h-full flex items-center justify-center">
+                            {/* iPad - Back Layer - Slower Parallax */}
+                            <motion.img
+                                style={{ y: yIpad }}
+                                src="/images/ayscroll_ipad.png"
+                                alt="AyScroll on iPad"
+                                className="absolute w-[100%] md:w-[90%] max-w-[900px] z-10 left-[-10%] md:left-[-5%] drop-shadow-2xl"
+                            />
+
+                            {/* iPhone - Front Layer - Faster Parallax */}
+                            <motion.img
+                                style={{ y: yIphone }}
+                                src="/images/ayscroll_iphone.png"
+                                alt="AyScroll on iPhone"
+                                className="absolute w-[50%] md:w-[45%] max-w-[450px] z-20 right-[-5%] md:right-[5%] bottom-[-5%] drop-shadow-[0_20px_50px_rgba(0,0,0,0.5)]"
                             />
                         </div>
-                    </div>
+                    </motion.div>
                     <div className="order-1 md:order-2 space-y-6 text-center md:text-left">
-                        <h2 className="text-4xl md:text-5xl font-extrabold">Save your knowledge base.</h2>
+                        <h2 className="text-4xl md:text-5xl font-extrabold">
+                            <span className="text-transparent bg-clip-text bg-gradient-to-r from-pink-500 to-orange-500">Save</span> your <span className="text-transparent bg-clip-text bg-gradient-to-r from-pink-500 to-orange-500">knowledge</span> base.
+                        </h2>
                         <p className="text-xl md:text-2xl text-zinc-300">
                             Save interesting snippets, build your personal library, and access your wisdom offline anywhere.
                         </p>
