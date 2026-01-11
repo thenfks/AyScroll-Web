@@ -1,11 +1,23 @@
-import React from 'react';
+import React, { useRef } from 'react';
 import { Apple, Play } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { AntigravityBackground } from '@/components/effects/AntigravityBackground';
+import { motion, useScroll, useTransform } from 'framer-motion';
 
 export const DownloadSection: React.FC = () => {
+    const containerRef = useRef<HTMLDivElement>(null);
+
+    const { scrollYProgress } = useScroll({
+        target: containerRef,
+        offset: ["start end", "end start"]
+    });
+
+    // Parallax effects for the two phones
+    const yPhone1 = useTransform(scrollYProgress, [0, 1], [100, -100]);
+    const yPhone2 = useTransform(scrollYProgress, [0, 1], [150, -150]);
+
     return (
-        <section className="relative min-h-screen flex items-center justify-center overflow-hidden bg-black py-20 px-4 sm:px-6">
+        <section ref={containerRef} className="relative min-h-screen flex items-center justify-center overflow-hidden bg-black py-20 px-4 sm:px-6">
             {/* Antigravity Background */}
             <AntigravityBackground />
 
@@ -32,7 +44,7 @@ export const DownloadSection: React.FC = () => {
                         >
                             <div className="absolute inset-0 rounded-2xl opacity-0 group-hover:opacity-100 transition-opacity duration-500 bg-gradient-to-r from-transparent via-white/5 to-transparent -skew-x-12 translate-x-[-100%] group-hover:animate-shine pointer-events-none" />
 
-                            <Apple className="w-8 h-8 text-white fill-current relative z-10" />
+                            <img src="/images/apple-logo.svg" alt="Apple" className="w-8 h-8 text-white relative z-10" />
                             <div className="text-left relative z-10">
                                 <div className="text-[10px] uppercase text-zinc-400 font-bold leading-none mb-1">
                                     Download on the
@@ -50,7 +62,7 @@ export const DownloadSection: React.FC = () => {
                         >
                             <div className="absolute inset-0 rounded-2xl opacity-0 group-hover:opacity-100 transition-opacity duration-500 bg-gradient-to-r from-transparent via-white/5 to-transparent -skew-x-12 translate-x-[-100%] group-hover:animate-shine pointer-events-none" />
 
-                            <Play className="w-7 h-7 text-white fill-current relative z-10" />
+                            <img src="/images/playstore.svg" alt="Google Play" className="w-7 h-7 relative z-10" />
                             <div className="text-left relative z-10">
                                 <div className="text-[10px] uppercase text-zinc-400 font-bold leading-none mb-1">
                                     Get it on
@@ -85,9 +97,35 @@ export const DownloadSection: React.FC = () => {
                     </div>
                 </div>
 
-                {/* Right Side - Particle Sphere (visible space) */}
+                {/* Right Side - iPhone Mockups with Parallax */}
                 <div className="hidden md:block relative h-[600px]">
-                    {/* This space is for the particle sphere which renders on the right */}
+                    {/* Phone 1 - Back */}
+                    <motion.div
+                        style={{ y: yPhone1 }}
+                        className="absolute top-[10%] right-[20%] w-[280px] z-10"
+                    >
+                        <motion.img
+                            src="/images/ayscroll-app-mobile-view.png"
+                            alt="AyScroll iPhone App"
+                            className="w-full h-auto drop-shadow-2xl"
+                            whileHover={{ scale: 1.05 }}
+                            transition={{ duration: 0.3 }}
+                        />
+                    </motion.div>
+
+                    {/* Phone 2 - Front */}
+                    <motion.div
+                        style={{ y: yPhone2 }}
+                        className="absolute top-[20%] right-[5%] w-[300px] z-20"
+                    >
+                        <motion.img
+                            src="/images/ayscroll-app-mobile-view.png"
+                            alt="AyScroll iPhone App"
+                            className="w-full h-auto drop-shadow-[0_25px_50px_rgba(0,0,0,0.6)]"
+                            whileHover={{ scale: 1.05 }}
+                            transition={{ duration: 0.3 }}
+                        />
+                    </motion.div>
                 </div>
             </div>
         </section>

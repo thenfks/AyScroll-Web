@@ -62,22 +62,9 @@ export default function CategoryGlobe({ icons, radius = 300 }: CategoryGlobeProp
     return (
         <div
             ref={containerRef}
-            onMouseMove={onMouseMove}
             className="relative flex items-center justify-center w-full h-[800px] overflow-hidden perspective-container group/card"
             style={{ perspective: `${perspective}px` }}
         >
-            {/* Blurry Gradient Follower */}
-            <div className="absolute inset-0 z-0 pointer-events-none overflow-hidden">
-                <motion.div
-                    className="absolute w-[150px] h-[150px] bg-gradient-to-r from-pink-500/30 via-violet-500/30 to-orange-500/30 rounded-full blur-[40px]"
-                    style={{
-                        x: mouseX,
-                        y: mouseY,
-                        translateX: "-50%",
-                        translateY: "-50%"
-                    }}
-                />
-            </div>
 
 
             <div className="relative transform-style-3d w-full h-full flex items-center justify-center">
@@ -112,7 +99,7 @@ export default function CategoryGlobe({ icons, radius = 300 }: CategoryGlobeProp
                     return (
                         <motion.div
                             key={index}
-                            className="absolute flex flex-col items-center justify-center gap-2 px-4 py-2 rounded-xl backdrop-blur-sm border border-white/10 bg-black/40 transition-colors hover:bg-white/10 hover:scale-110 cursor-pointer group"
+                            className="absolute flex flex-col items-center justify-center gap-2 px-4 py-2 rounded-xl border border-white/10 bg-black/40 transition-colors hover:bg-white/10 hover:scale-110 cursor-pointer group"
                             style={{
                                 transform: `translate3d(${x1}px, ${y1}px, ${z2}px) scale(${Math.max(0.5, Math.min(1.2, scale))})`,
                                 zIndex: Math.floor(z2 + radius),

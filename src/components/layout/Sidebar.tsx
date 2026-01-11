@@ -5,7 +5,7 @@ import { cn } from '@/lib/utils';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 
 const mainNavItems = [
-  { icon: Home, label: 'Home', path: '/', public: true },
+  { icon: Home, label: 'Home', path: '/feed', public: true },
   { icon: Search, label: 'Explore', path: '/explore', public: true },
   { icon: Library, label: 'Library', path: '/library', public: false },
   { icon: Bookmark, label: 'Saved', path: '/saved', public: false },
