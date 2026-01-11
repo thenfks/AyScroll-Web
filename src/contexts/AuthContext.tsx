@@ -41,14 +41,22 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
 
           if (isEmailConfirmed || isOAuthUser) {
             try {
+              // Get the session token for authenticated requests
+              const sessionToken = session?.access_token;
+
+              if (!sessionToken) {
+                console.warn('⚠️ No session token available');
+                return;
+              }
+
               // Add user to Brevo contact list
-              await fetch(
+              const brevoResponse = await fetch(
                 "https://wbsepuoccppuqirtowzg.supabase.co/functions/v1/brevo-add-contact",
                 {
                   method: "POST",
                   headers: {
                     "Content-Type": "application/json",
-                    "Authorization": `Bearer ${import.meta.env.VITE_SUPABASE_ANON_KEY || 'sb_publishable_k--ni6qtOBjAjUrTDigxUA_nEMp3eeA'}`,
+                    "Authorization": `Bearer ${sessionToken}`,
                   },
                   body: JSON.stringify({
                     email: user.email,
@@ -57,16 +65,22 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
                   }),
                 }
               );
-              console.log('✅ User added to Brevo contact list');
+
+              if (brevoResponse.ok) {
+                console.log('✅ User added to Brevo contact list');
+              } else {
+                const errorData = await brevoResponse.json();
+                console.error('❌ Failed to add user to Brevo:', errorData);
+              }
 
               // Send welcome email
-              await fetch(
+              const emailResponse = await fetch(
                 "https://wbsepuoccppuqirtowzg.supabase.co/functions/v1/send-welcome-email",
                 {
                   method: "POST",
                   headers: {
                     "Content-Type": "application/json",
-                    "Authorization": `Bearer ${import.meta.env.VITE_SUPABASE_ANON_KEY || 'sb_publishable_k--ni6qtOBjAjUrTDigxUA_nEMp3eeA'}`,
+                    "Authorization": `Bearer ${sessionToken}`,
                   },
                   body: JSON.stringify({
                     email: user.email,
@@ -75,9 +89,15 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
                   }),
                 }
               );
-              console.log('✅ Welcome email sent successfully');
+
+              if (emailResponse.ok) {
+                console.log('✅ Welcome email sent successfully');
+              } else {
+                const errorData = await emailResponse.json();
+                console.error('❌ Failed to send welcome email:', errorData);
+              }
             } catch (error) {
-              console.error('❌ Failed to add user to Brevo:', error);
+              console.error('❌ Error in Brevo integration:', error);
             }
           }
         }

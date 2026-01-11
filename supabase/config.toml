@@ -1,7 +1,7 @@
 
 [functions.brevo-add-contact]
 enabled = true
-verify_jwt = true
+verify_jwt = false
 import_map = "./functions/brevo-add-contact/deno.json"
 # Uncomment to specify a custom file path to the entrypoint.
 # Supported file extensions are: .ts, .js, .mjs, .jsx, .tsx
@@ -12,6 +12,7 @@ entrypoint = "./functions/brevo-add-contact/index.ts"
 
 [functions.send-welcome-email]
 enabled = true
-verify_jwt = true
+verify_jwt = false
 import_map = "./functions/send-welcome-email/deno.json"
 entrypoint = "./functions/send-welcome-email/index.ts"
+

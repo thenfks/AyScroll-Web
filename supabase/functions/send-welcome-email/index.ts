@@ -30,7 +30,7 @@ serve(async (req) => {
             body: JSON.stringify({
                 sender: {
                     name: "AyScroll Team",
-                    email: "support@ayscroll.com"
+                    email: "noreply@ayscroll.com"
                 },
                 to: [
                     {
@@ -190,22 +190,20 @@ serve(async (req) => {
                             }
                             .footer {
                                 margin-top: 50px;
-                                padding: 30px 20px;
-                                background-color: #f7fafc;
-                                border: 2px dashed #cbd5e0;
-                                border-radius: 8px;
+                                padding: 30px 20px 20px;
                                 text-align: center;
+                                border-top: 1px solid #e2e8f0;
                             }
                             .footer-logo {
-                                width: 60px;
+                                width: 50px;
                                 height: auto;
-                                margin-bottom: 15px;
+                                margin-bottom: 10px;
                             }
                             .footer-brand {
-                                font-size: 18px;
+                                font-size: 16px;
                                 font-weight: 600;
                                 color: #2d3748;
-                                margin-bottom: 10px;
+                                margin-bottom: 8px;
                             }
                             .footer-location {
                                 font-size: 13px;
@@ -220,17 +218,140 @@ serve(async (req) => {
                             .footer-disclaimer {
                                 font-size: 12px;
                                 color: #a0aec0;
-                                margin-top: 15px;
+                                margin-top: 10px;
+                                margin-bottom: 15px;
                             }
-                            .footer-unsubscribe {
+                            .footer-links {
                                 font-size: 13px;
                                 color: #4a5568;
-                                margin-top: 10px;
+                                margin: 15px 0;
                             }
-                            .footer-unsubscribe a {
+                            .footer-links a {
                                 color: #4a5568;
+                                text-decoration: none;
+                                margin: 0 10px;
+                            }
+                            .footer-links a:hover {
                                 text-decoration: underline;
                             }
+                            .footer-copyright {
+                                font-size: 12px;
+                                color: #a0aec0;
+                                margin-top: 15px;
+                            }
+                            
+                            /* Mobile Responsive Styles */
+                            @media only screen and (max-width: 600px) {
+                                .container {
+                                    padding: 20px 15px;
+                                }
+                                .logo-section {
+                                    margin-bottom: 25px;
+                                }
+                                .logo-section img {
+                                    width: 50px;
+                                    margin-bottom: 20px;
+                                }
+                                .greeting {
+                                    font-size: 24px;
+                                    margin-bottom: 8px;
+                                }
+                                .welcome-text {
+                                    font-size: 14px;
+                                    margin-bottom: 8px;
+                                }
+                                .welcome-text .emoji {
+                                    font-size: 18px;
+                                }
+                                .tagline {
+                                    font-size: 13px;
+                                    margin-bottom: 25px;
+                                }
+                                .mission-statement {
+                                    margin: 20px 0;
+                                }
+                                .mission-statement p {
+                                    font-size: 13px;
+                                }
+                                .welcome-image {
+                                    margin: 20px auto;
+                                    border-radius: 6px;
+                                }
+                                .section-title {
+                                    font-size: 18px;
+                                    margin: 30px 0 15px;
+                                }
+                                .description {
+                                    font-size: 13px;
+                                    margin-bottom: 12px;
+                                }
+                                .info-box {
+                                    padding: 15px;
+                                    margin: 20px 0;
+                                    font-size: 12px;
+                                    border-radius: 6px;
+                                }
+                                .divider {
+                                    margin: 20px 0;
+                                }
+                                .cta-button {
+                                    padding: 12px 35px;
+                                    font-size: 13px;
+                                    margin: 15px 0;
+                                }
+                                .cta-section {
+                                    margin: 20px 0;
+                                }
+                                .support-text {
+                                    font-size: 13px;
+                                    margin: 20px 0;
+                                }
+                                .closing {
+                                    font-size: 13px;
+                                    margin: 20px 0 8px;
+                                }
+                                .signature {
+                                    font-size: 13px;
+                                }
+                                .footer {
+                                    margin-top: 30px;
+                                    padding: 20px 15px 15px;
+                                }
+                                .footer-logo {
+                                    width: 25%;
+                                    max-width: 40px;
+                                    margin-bottom: 8px;
+                                }
+                                .footer-brand {
+                                    font-size: 14px;
+                                    margin-bottom: 6px;
+                                }
+                                .footer-location {
+                                    font-size: 11px;
+                                    margin-bottom: 12px;
+                                }
+                                .footer-email {
+                                    font-size: 11px;
+                                }
+                                .footer-disclaimer {
+                                    font-size: 10px;
+                                    margin-top: 8px;
+                                    margin-bottom: 12px;
+                                }
+                                .footer-links {
+                                    font-size: 11px;
+                                    margin: 12px 0;
+                                }
+                                .footer-links a {
+                                    margin: 0 6px;
+                                    display: inline-block;
+                                }
+                                .footer-copyright {
+                                    font-size: 10px;
+                                    margin-top: 12px;
+                                }
+                            }
+                        
                         </style>
                     </head>
                     <body>
@@ -301,9 +422,12 @@ serve(async (req) => {
                                 <div class="footer-location">Bhopal, Madhya Pradesh, India</div>
                                 <div class="footer-email">This email was sent to <strong>${email}</strong>.</div>
                                 <div class="footer-disclaimer">You've received this email because you've subscribed to our newsletter.</div>
-                                <div class="footer-unsubscribe">
-                                    <a href="https://ayscroll.com/unsubscribe">Unsubscribe</a>
+                                <div class="footer-links">
+                                    <a href="https://ayscroll.com/privacy">Privacy</a> • 
+                                    <a href="https://ayscroll.com/terms">Terms</a> • 
+                                    <a href="mailto:support@ayscroll.com">Help</a>
                                 </div>
+                                <div class="footer-copyright">© 2026 AyScroll. All Rights Reserved.</div>
                             </div>
                         </div>
                     </body>
