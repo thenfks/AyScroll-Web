@@ -41,6 +41,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
 
           if (isEmailConfirmed || isOAuthUser) {
             try {
+              // Add user to Brevo contact list
               await fetch(
                 "https://wbsepuoccppuqirtowzg.supabase.co/functions/v1/brevo-add-contact",
                 {
@@ -57,6 +58,24 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
                 }
               );
               console.log('✅ User added to Brevo contact list');
+
+              // Send welcome email
+              await fetch(
+                "https://wbsepuoccppuqirtowzg.supabase.co/functions/v1/send-welcome-email",
+                {
+                  method: "POST",
+                  headers: {
+                    "Content-Type": "application/json",
+                    "Authorization": `Bearer ${import.meta.env.VITE_SUPABASE_ANON_KEY || 'sb_publishable_k--ni6qtOBjAjUrTDigxUA_nEMp3eeA'}`,
+                  },
+                  body: JSON.stringify({
+                    email: user.email,
+                    firstName: user.user_metadata?.first_name || user.user_metadata?.full_name?.split(' ')[0] || '',
+                    lastName: user.user_metadata?.last_name || user.user_metadata?.full_name?.split(' ')[1] || '',
+                  }),
+                }
+              );
+              console.log('✅ Welcome email sent successfully');
             } catch (error) {
               console.error('❌ Failed to add user to Brevo:', error);
             }

@@ -9,3 +9,9 @@ entrypoint = "./functions/brevo-add-contact/index.ts"
 # Specifies static files to be bundled with the function. Supports glob patterns.
 # For example, if you want to serve static HTML pages in your function:
 # static_files = [ "./functions/brevo-add-contact/*.html" ]
+
+[functions.send-welcome-email]
+enabled = true
+verify_jwt = true
+import_map = "./functions/send-welcome-email/deno.json"
+entrypoint = "./functions/send-welcome-email/index.ts"
