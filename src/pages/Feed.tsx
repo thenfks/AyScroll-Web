@@ -13,9 +13,9 @@ const Feed = () => {
   // Mobile full-screen reel view
   if (isMobile) {
     return (
-      <div className="min-h-screen bg-background">
-        {/* Transparent Mobile Header */}
-        <div className="fixed top-0 left-0 right-0 z-50 flex items-center justify-between px-4 py-3 bg-gradient-to-b from-black/60 to-transparent">
+      <div className="fixed inset-0 bg-background overflow-hidden">
+        {/* Transparent Mobile Header - overlaid on video */}
+        <div className="fixed top-0 left-0 right-0 z-50 flex items-center justify-between px-4 py-3 safe-area-top bg-gradient-to-b from-black/60 to-transparent">
           <div className="flex items-center gap-2">
             <img src="/ayscroll-official-logo.png" alt="AyScroll Micro Learning Logo" className="w-8 h-8" />
             <span className="text-lg font-bold text-white">AyScroll</span>
@@ -33,11 +33,11 @@ const Feed = () => {
         {/* Mobile Nav Drawer */}
         <MobileNavDrawer open={mobileNavOpen} onOpenChange={setMobileNavOpen} />
 
-        {/* Full Screen Reels */}
-        <div className="h-screen snap-y snap-mandatory overflow-y-auto">
+        {/* Full Screen Reels - covers entire viewport */}
+        <div className="h-full w-full snap-y snap-mandatory overflow-y-auto">
           {MOCK_REELS.slice(0, 10).map((reel) => (
-            <div key={reel.id} className="h-screen snap-start snap-always">
-              <VideoCard {...reel} className="h-full max-w-none rounded-none" />
+            <div key={reel.id} className="h-[100dvh] w-full snap-start snap-always">
+              <VideoCard {...reel} className="h-full w-full" />
             </div>
           ))}
         </div>

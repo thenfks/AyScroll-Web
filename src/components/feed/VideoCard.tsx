@@ -287,12 +287,15 @@ export const VideoCard: React.FC<VideoCardProps> = (props) => {
     <>
       <div
         className={cn(
-          "relative w-full max-w-[400px] mx-auto rounded-3xl overflow-hidden bg-card group animate-scale-in h-full", // Added h-full
+          "relative w-full max-w-[400px] mx-auto rounded-3xl overflow-hidden bg-card group animate-scale-in",
+          "md:max-w-[400px] md:aspect-[9/16]",
+          // Mobile: full screen with no max-width or rounded corners
+          "max-md:max-w-none max-md:rounded-none max-md:h-full max-md:w-full",
           className
         )}
       >
         {/* Video Player */}
-        <div className="relative aspect-[9/16] bg-secondary overflow-hidden" onClick={togglePlay}>
+        <div className="relative aspect-[9/16] md:aspect-[9/16] max-md:aspect-auto max-md:h-full bg-secondary overflow-hidden" onClick={togglePlay}>
           <video
             ref={videoRef}
             src={video_url}
@@ -333,7 +336,7 @@ export const VideoCard: React.FC<VideoCardProps> = (props) => {
           />
 
           {/* Author & Content Info */}
-          <div className="absolute bottom-20 left-4 right-16">
+          <div className="absolute bottom-20 max-md:bottom-24 left-4 right-16">
             <div className="flex items-center gap-2 mb-2">
               <Avatar className="w-10 h-10 border-2 border-foreground">
                 <AvatarImage src={creator_avatar} />
