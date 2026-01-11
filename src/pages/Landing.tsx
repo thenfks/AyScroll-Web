@@ -67,7 +67,6 @@ export default function Landing() {
                                 "https://images.unsplash.com/photo-1507413245164-6160d8298b31?w=500&q=80", // Physics
                                 "https://images.unsplash.com/photo-1451187580459-43490279c0fa?w=500&q=80", // Space
                                 "https://images.unsplash.com/photo-1516035069371-29a1b244cc32?w=500&q=80", // Camera
-                                "https://images.unsplash.com/photo-1478720568477-152d9b164e63?w=500&q=80", // Story
                                 "https://images.unsplash.com/photo-1581091226825-a6a2a5aee158?w=500&q=80", // Lab
                                 "https://images.unsplash.com/photo-1518770660439-4636190af475?w=500&q=80", // Chips
                                 "https://images.unsplash.com/photo-1503676260728-1c00da094a0b?w=500&q=80", // Education
