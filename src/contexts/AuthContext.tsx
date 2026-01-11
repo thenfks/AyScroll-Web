@@ -29,9 +29,31 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
         setUser(session?.user ?? null);
         setLoading(false);
 
-        // Add user to Brevo contact list after email confirmation
+        // Send welcome email only when a new user signs up (not on every login)
         if (event === "SIGNED_IN" && session?.user) {
           const user = session.user;
+
+          // Check if we've already sent the welcome email for this user
+          const welcomeEmailSentKey = `welcome_email_sent_${user.id}`;
+          const alreadySent = localStorage.getItem(welcomeEmailSentKey);
+
+          if (alreadySent) {
+            console.log('ℹ️ Welcome email already sent to this user');
+            return;
+          }
+
+          // Check if this is a new user (created within the last 5 minutes)
+          const userCreatedAt = new Date(user.created_at);
+          const now = new Date();
+          const timeDiffMinutes = (now.getTime() - userCreatedAt.getTime()) / (1000 * 60);
+          const isNewUser = timeDiffMinutes < 5;
+
+          if (!isNewUser) {
+            console.log('ℹ️ Existing user login - skipping welcome email');
+            // Mark as sent for existing users to avoid checking again
+            localStorage.setItem(welcomeEmailSentKey, 'true');
+            return;
+          }
 
           // Add to Brevo if:
           // 1. Email is confirmed (regular signup), OR
@@ -73,7 +95,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
                 console.error('❌ Failed to add user to Brevo:', errorData);
               }
 
-              // Send welcome email
+              // Send welcome email (only on first signup)
               const emailResponse = await fetch(
                 "https://wbsepuoccppuqirtowzg.supabase.co/functions/v1/send-welcome-email",
                 {
@@ -91,7 +113,9 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
               );
 
               if (emailResponse.ok) {
-                console.log('✅ Welcome email sent successfully');
+                console.log('✅ Welcome email sent successfully (first time user)');
+                // Mark that we've sent the welcome email for this user
+                localStorage.setItem(welcomeEmailSentKey, 'true');
               } else {
                 const errorData = await emailResponse.json();
                 console.error('❌ Failed to send welcome email:', errorData);
