@@ -7,20 +7,24 @@ import { StickyFeaturesSection } from "@/components/landing/StickyFeaturesSectio
 import { DevicesParallaxSection } from "@/components/landing/DevicesParallaxSection";
 import { CategoryGlobeSection } from "@/components/landing/CategoryGlobeSection";
 import { Footer } from "@/components/landing/Footer";
+import { WaitlistSection } from "@/components/landing/WaitlistSection";
+import { FAQSection } from "@/components/landing/FAQSection";
 
 export default function Landing() {
-  return (
-    <div className="min-h-screen bg-black text-white selection:bg-pink-500 selection:text-white font-sans">
-      <SEOHead />
-      <ScrollMarker sections={6} />
+    return (
+        <div className="min-h-screen bg-black text-white selection:bg-pink-500 selection:text-white font-sans">
+            <SEOHead />
+            <ScrollMarker sections={6} />
 
-      <HeroSection />
-      <ParallaxFeatureSection />
-      <StickyFeaturesSection />
-      <DevicesParallaxSection />
-      <DownloadSection />
-      <CategoryGlobeSection />
-      <Footer />
-    </div>
-  );
+            <HeroSection />
+            <ParallaxFeatureSection />
+            <StickyFeaturesSection />
+            <DevicesParallaxSection />
+            <WaitlistSection />
+            <DownloadSection />
+            <CategoryGlobeSection />
+            <FAQSection />
+            <Footer />
+        </div>
+    );
 }
