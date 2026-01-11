@@ -7,6 +7,8 @@ import { SEOHead } from "@/components/seo/SEOHead";
 import CategoryGlobe from "@/components/effects/CategoryGlobe";
 import { useState, useRef } from "react";
 import { motion, useScroll, useTransform } from "framer-motion";
+import { DownloadSection } from "@/components/sections/DownloadSection";
+import { ScrollMarker } from "@/components/ui/ScrollMarker";
 import {
     Code, Beaker, History, Palette, Cpu, TreePalm, Gamepad2,
     Share2, Atom, Rocket, Camera, Book, FlaskConical,
@@ -89,23 +91,7 @@ export default function Landing() {
     return (
         <div className="min-h-screen bg-black text-white selection:bg-pink-500 selection:text-white font-sans">
             <SEOHead />
-            <nav className="fixed top-0 w-full z-50 bg-black/50 backdrop-blur-lg border-b border-white/10">
-                <div className="max-w-7xl mx-auto px-6 h-16 flex items-center justify-between">
-                    <Link to="/" className="flex items-center gap-2 group">
-                        <img src="/ayscroll-official-logo.png" alt="AyScroll Micro Learning Logo" className="h-10 w-auto object-contain group-hover:scale-105 transition-transform" />
-                        <span className="text-2xl font-bold tracking-tight text-white hidden sm:block">
-                            <span className="bg-clip-text text-transparent bg-gradient-to-r from-pink-500 to-orange-500">AyScroll</span>
-                        </span>
-                    </Link>
-                    <div className="flex items-center gap-4">
-                        <Link to="/signin">
-                            <Button className="bg-gradient-to-r from-pink-500 to-orange-500 hover:from-pink-600 hover:to-orange-600 text-white border-0 rounded-2xl font-bold px-6 py-2 transition-all shadow-lg shadow-pink-500/20">
-                                Sign In
-                            </Button>
-                        </Link>
-                    </div>
-                </div>
-            </nav>
+            <ScrollMarker sections={6} />
 
             {/* Hero Section */}
             <section className="relative min-h-screen flex items-center justify-center text-center px-4 sm:px-6 overflow-hidden pb-20 sm:pb-0">
@@ -280,9 +266,11 @@ export default function Landing() {
                 </div>
             </section>
 
+            {/* Download Section with Antigravity Effect */}
+            <DownloadSection />
+
             {/* NEW: Category Globe Section */}
             <section className="relative py-16 sm:py-24 md:py-32 bg-black overflow-hidden flex flex-col items-center justify-center min-h-[80vh] sm:min-h-screen">
-                <div className="absolute inset-0 bg-[radial-gradient(circle_at_center,rgba(236,72,153,0.1)_0%,rgba(0,0,0,0)_70%)]" />
 
                 <div className="relative z-10 text-center mb-12 sm:mb-16 px-4 sm:px-6">
                     <h2 className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-bold mb-4 sm:mb-6">
@@ -342,9 +330,9 @@ export default function Landing() {
                         </p>
                         <div className="flex items-center gap-4">
                             {[
-                                { icon: Twitter, href: "#" },
-                                { icon: Instagram, href: "#" },
-                                { icon: Linkedin, href: "#" },
+                                { icon: Twitter, href: "https://x.com/ayscrl" },
+                                { icon: Instagram, href: "https://www.instagram.com/ayscroll_/" },
+                                { icon: Linkedin, href: "https://www.linkedin.com/company/ayscroll/" },
                                 { icon: Github, href: "#" }
                             ].map((social, i) => (
                                 <a key={i} href={social.href} className="w-10 h-10 rounded-xl bg-zinc-900 flex items-center justify-center text-zinc-400 hover:bg-zinc-800 hover:text-white transition-all hover:scale-110">
@@ -369,9 +357,9 @@ export default function Landing() {
                             </p>
                             <div className="flex items-center gap-4">
                                 {[
-                                    { icon: Twitter, href: "#" },
-                                    { icon: Instagram, href: "#" },
-                                    { icon: Linkedin, href: "#" },
+                                    { icon: Twitter, href: "https://x.com/ayscrl" },
+                                    { icon: Instagram, href: "https://www.instagram.com/ayscroll_/" },
+                                    { icon: Linkedin, href: "https://www.linkedin.com/company/ayscroll/" },
                                     { icon: Github, href: "#" }
                                 ].map((social, i) => (
                                     <a key={i} href={social.href} className="w-10 h-10 rounded-xl bg-zinc-900 flex items-center justify-center text-zinc-400 hover:bg-zinc-800 hover:text-white transition-all hover:scale-110">
