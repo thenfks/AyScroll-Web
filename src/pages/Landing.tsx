@@ -1,11 +1,34 @@
-
 import { Button } from "@/components/ui/button";
 import { Link } from "react-router-dom";
 import { ChevronRight, Globe, Zap, Download, Monitor, Brain, BookOpen, Twitter, Instagram, Linkedin, Github } from "lucide-react";
+import { RollingText } from "@/components/effects/rollingText";
+import { useState, useEffect } from "react";
+
+
+const RotatingTextWrapper = () => {
+    const words = ["Scrolling", "Watching", "Thinking", "Scrolling"];
+    const [index, setIndex] = useState(0);
+
+    useEffect(() => {
+        const interval = setInterval(() => {
+            setIndex((prevIndex) => (prevIndex + 1) % words.length);
+        }, 3000); // Slower cycle for rolling effect
+        return () => clearInterval(interval);
+    }, []);
+
+    return (
+        <RollingText
+            key={words[index]} // Force re-render on word change to trigger animation
+            text={words[index]}
+            className="bg-clip-text text-transparent bg-gradient-to-r from-pink-500 to-orange-500 ml-3 font-bold px-1 pb-1"
+        />
+    );
+};
 
 export default function Landing() {
     return (
         <div className="min-h-screen bg-black text-white selection:bg-pink-500 selection:text-white font-sans overflow-x-hidden">
+
             {/* Navigation */}
             <nav className="fixed top-0 left-0 right-0 z-50 transition-all duration-300 bg-gradient-to-b from-black/90 via-black/60 to-transparent px-6 py-5">
                 <div className="max-w-7xl mx-auto flex items-center justify-between">
@@ -17,7 +40,7 @@ export default function Landing() {
                     </Link>
                     <div className="flex items-center gap-4">
                         <Link to="/signin">
-                            <Button className="bg-gradient-to-r from-pink-500 to-orange-500 hover:from-pink-600 hover:to-orange-600 text-white border-0 rounded-full font-bold px-6 py-2 transition-all shadow-lg shadow-pink-500/20">
+                            <Button className="bg-gradient-to-r from-pink-500 to-orange-500 hover:from-pink-600 hover:to-orange-600 text-white border-0 rounded-2xl font-bold px-6 py-2 transition-all shadow-lg shadow-pink-500/20">
                                 Sign In
                             </Button>
                         </Link>
@@ -26,12 +49,12 @@ export default function Landing() {
             </nav>
 
             {/* Hero Section */}
-            <section className="relative min-h-[90vh] flex items-center justify-center text-center px-4 overflow-hidden pb-32">
-                {/* Background - Netflix-style Content Collage */}
+            <section className="relative min-h-screen flex items-center justify-center text-center px-4 overflow-hidden pb-18 sm:pb-0">
+                {/* Background - Minimalistic Netflix-style Content Collage */}
                 <div className="absolute inset-0 z-0 overflow-hidden bg-black select-none pointer-events-none">
-                    {/* Skewed Grid Container */}
-                    <div className="absolute inset-0 min-w-[150%] -left-[25%] -top-[25%] opacity-60 transform -rotate-6 scale-105">
-                        <div className="grid grid-cols-4 md:grid-cols-5 gap-4 animate-scroll-slow">
+                    {/* Skewed Grid Container - Increased opacity for better visibility */}
+                    <div className="absolute inset-0 min-w-[150%] -left-[25%] -top-[25%] opacity-80 transform -rotate-6 scale-105">
+                        <div className="grid grid-cols-6 md:grid-cols-8 gap-2 animate-scroll-slow">
                             {[
                                 "https://images.unsplash.com/photo-1517976487492-5750f3195933?w=500&q=80", // Coding
                                 "https://images.unsplash.com/photo-1532094349884-543bc11b234d?w=500&q=80", // Science
@@ -53,56 +76,53 @@ export default function Landing() {
                                 "https://images.unsplash.com/photo-1532094349884-543bc11b234d?w=500&q=80", // Science Loop
                                 "https://images.unsplash.com/photo-1461360370896-922624d12aa1?w=500&q=80", // History Loop
                                 "https://images.unsplash.com/photo-1513364776144-60967b0f800f?w=500&q=80", // Art Loop
+                                "https://images.unsplash.com/photo-1517976487492-5750f3195933?w=500&q=80", // Extra 1
+                                "https://images.unsplash.com/photo-1532094349884-543bc11b234d?w=500&q=80", // Extra 2
+                                "https://images.unsplash.com/photo-1461360370896-922624d12aa1?w=500&q=80", // Extra 3
+                                "https://images.unsplash.com/photo-1513364776144-60967b0f800f?w=500&q=80", // Extra 4
                             ].map((src, i) => (
-                                <div key={i} className="relative aspect-[3/4] rounded-lg overflow-hidden shadow-2xl bg-zinc-800">
-                                    <img src={src} className="w-full h-full object-cover opacity-80" alt="" />
-                                    <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent" />
+                                <div key={i} className="relative aspect-[3/4] rounded-lg overflow-hidden bg-zinc-900 border border-white/5">
+                                    <img src={src} className="w-full h-full object-cover opacity-100 hover:scale-105 transition-transform duration-700" alt="" />
                                 </div>
                             ))}
                         </div>
                     </div>
 
-                    {/* Radial Viginette - Lighter to show images */}
-                    <div className="absolute inset-0 bg-[radial-gradient(circle_at_center,rgba(0,0,0,0.3)_0%,rgba(0,0,0,0.95)_100%)]" />
-                    <div className="absolute inset-0 bg-gradient-to-t from-black via-transparent to-black/60" />
+                    {/* Deep Vignette for focus - Lighter for visibility */}
+                    <div className="absolute inset-0 bg-[radial-gradient(circle_at_center,rgba(0,0,0,0.2)_0%,rgba(0,0,0,0.8)_100%)]" />
+                    <div className="absolute inset-0 bg-gradient-to-t from-black via-black/20 to-black/60" />
                 </div>
 
-                <div className="relative z-10 max-w-5xl space-y-8 pt-20">
-                    <h1 className="text-5xl md:text-7xl lg:text-8xl font-black tracking-tight leading-tight drop-shadow-2xl">
-                        Knowledge, <br />
-                        <span className="bg-clip-text text-transparent bg-gradient-to-r from-pink-500 to-orange-500">
-                            one scroll at a time.
-                        </span>
+                <div className="relative z-10 max-w-4xl space-y-8 pt-32">
+                    <h1 className="text-4xl md:text-6xl font-bold tracking-tight leading-tight flex flex-wrap justify-center items-center gap-2">
+                        Learn by
+                        <RotatingTextWrapper />
                     </h1>
-                    <p className="text-xl md:text-3xl font-medium text-white/90 max-w-3xl mx-auto text-shadow-sm">
-                        Experience micro-learning that flows with your natural rhythm. <br className="hidden md:block" /> Master new topics in seconds, not hours.
+                    <p className="text-lg md:text-xl font-normal text-zinc-300 max-w-2xl mx-auto">
+                        Experience micro-learning that flows with your natural rhythm. <br className="hidden md:block" /> Bite-sized lessons for curious minds.
                     </p>
-                    <div className="space-y-6 pt-8">
-                        <p className="text-lg md:text-xl text-white/80 font-medium">
+                    <div className="space-y-6 pt-6">
+                        <p className="text-base text-zinc-400">
                             Ready to learn? Enter your email to start your journey.
                         </p>
 
-                        <div className="flex flex-col sm:flex-row gap-3 justify-center items-center max-w-2xl mx-auto">
+                        <div className="flex flex-col sm:flex-row gap-3 justify-center items-center max-w-xl mx-auto">
                             <input
                                 type="email"
                                 placeholder="Email address"
-                                className="w-full sm:flex-1 h-12 sm:h-16 bg-black/40 border border-white/30 rounded-full px-6 text-white text-lg placeholder:text-white/60 focus:outline-none focus:border-pink-500 focus:ring-2 focus:ring-pink-500/50 transition-all backdrop-blur-md"
+                                className="w-full sm:flex-1 h-12 bg-black/50 border border-white/20 rounded-md px-4 text-white text-base placeholder:text-zinc-500 focus:outline-none focus:border-pink-500 focus:ring-1 focus:ring-pink-500/50 transition-all backdrop-blur-sm"
                             />
                             <Link to="/feed" className="w-full sm:w-auto">
-                                <Button className="w-full h-12 sm:h-16 px-10 text-xl sm:text-2xl font-bold bg-gradient-to-r from-pink-500 to-orange-500 hover:from-pink-600 hover:to-orange-600 text-white rounded-full flex items-center justify-center gap-2 group shadow-xl shadow-pink-500/30 border-0">
-                                    Get Started <ChevronRight className="w-6 h-6 group-hover:translate-x-1 transition-transform" />
+                                <Button className="w-full h-12 px-8 text-lg font-semibold bg-gradient-to-r from-pink-500 to-orange-500 hover:from-pink-600 hover:to-orange-600 text-white rounded-2xl flex items-center justify-center gap-2 group shadow-lg shadow-pink-500/20 border-0">
+                                    Get Started <ChevronRight className="w-5 h-5 group-hover:translate-x-1 transition-transform" />
                                 </Button>
                             </Link>
                         </div>
                     </div>
                 </div>
 
-                {/* Curved Bottom Separator */}
-                <div className="absolute bottom-0 left-0 right-0 z-20 overflow-hidden translate-y-[1px]">
-                    <svg viewBox="0 0 2880 48" fill="none" xmlns="http://www.w3.org/2000/svg" className="w-full h-12 sm:h-24 text-black block">
-                        <path d="M0 48H1440H2880V0C2880 0 2160 48 1440 48C720 48 0 0 0 0V48Z" fill="currentColor" />
-                    </svg>
-                </div>
+                {/* Seamless Fade Bottom */}
+                <div className="absolute bottom-0 left-0 right-0 h-32 bg-gradient-to-t from-black to-transparent z-20" />
             </section>
 
             {/* Feature 1 */}
