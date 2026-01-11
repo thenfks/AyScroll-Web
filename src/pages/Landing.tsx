@@ -3,6 +3,7 @@ import { Link } from "react-router-dom";
 import { ChevronRight, Globe, Zap, Download, Monitor, Brain, BookOpen, Twitter, Instagram, Linkedin, Github, Layout, Compass, CircleUser, BarChart2 } from "lucide-react";
 import { RollingText } from "@/components/effects/rollingText";
 import AyscrollIPhone from "@/components/model/AyscrollIPhone";
+import { SEOHead } from "@/components/seo/SEOHead";
 import CategoryGlobe from "@/components/effects/CategoryGlobe";
 import { useState, useRef } from "react";
 import { motion, useScroll, useTransform } from "framer-motion";
@@ -54,7 +55,7 @@ export default function Landing() {
         {
             title: "Your Feed",
             desc: "A personalized stream of micro-learning content tailored to your interests.",
-            image: "/images/Ayscroll_App_FeedPage.png",
+            image: "/images/ayscroll-personalized-feed-learning.png",
             islandLine1: "AyScroll Feed",
             islandLine2: "Learning via scrolling",
             icon: Layout
@@ -62,7 +63,7 @@ export default function Landing() {
         {
             title: "Explore",
             desc: "Discover new passions and dive deep into curated topics from around the world.",
-            image: "/images/ayscroll_iphone2.png",
+            image: "/images/ayscroll-explore-topics-mobile.png",
             islandLine1: "Explore Topics",
             islandLine2: "Curated for you",
             icon: Compass
@@ -70,7 +71,7 @@ export default function Landing() {
         {
             title: "Profile",
             desc: "Track your progress, save your favorite snippets, and build your knowledge base.",
-            image: "/images/ayscroll_iphone3.png",
+            image: "/images/ayscroll-profile-progress-mobile.png",
             islandLine1: "Your Profile",
             islandLine2: "Track your progress",
             icon: CircleUser
@@ -78,7 +79,7 @@ export default function Landing() {
         {
             title: "Smart Analytics",
             desc: "Visualize your learning journey. Identify strengths, spot gaps, and optimize your retention with AI-driven insights.",
-            image: "/images/Ayscroll_App_Analysis.png",
+            image: "/images/ayscroll-learning-analytics-dashboard.png",
             islandLine1: "Weekly Report",
             islandLine2: "+25% Retention Rate",
             icon: BarChart2
@@ -87,10 +88,11 @@ export default function Landing() {
 
     return (
         <div className="min-h-screen bg-black text-white selection:bg-pink-500 selection:text-white font-sans">
+            <SEOHead />
             <nav className="fixed top-0 w-full z-50 bg-black/50 backdrop-blur-lg border-b border-white/10">
                 <div className="max-w-7xl mx-auto px-6 h-16 flex items-center justify-between">
                     <Link to="/" className="flex items-center gap-2 group">
-                        <img src="/logo.png" alt="AyScroll" className="h-10 w-auto object-contain group-hover:scale-105 transition-transform" />
+                        <img src="/ayscroll-official-logo.png" alt="AyScroll Micro Learning Logo" className="h-10 w-auto object-contain group-hover:scale-105 transition-transform" />
                         <span className="text-2xl font-bold tracking-tight text-white hidden sm:block">
                             <span className="bg-clip-text text-transparent bg-gradient-to-r from-pink-500 to-orange-500">AyScroll</span>
                         </span>
@@ -186,7 +188,7 @@ export default function Landing() {
                 <div className="absolute inset-0 bg-gradient-to-b from-black via-zinc-900/20 to-black z-0" />
 
                 <motion.div style={{ y }} className="relative z-10 w-full max-w-5xl">
-                    <img src="/images/ayscroll_imac.png" alt="AyScroll Desktop Experience" className="w-full h-auto drop-shadow-2xl" />
+                    <img src="/images/ayscroll-app-desktop-experience.png" alt="AyScroll Desktop Experience - Micro Learning Platform" className="w-full h-auto drop-shadow-2xl" />
                 </motion.div>
 
                 <div className="relative z-20 text-center mt-[-10%] sm:mt-[-5%]">
@@ -253,16 +255,16 @@ export default function Landing() {
                             {/* iPad - Back Layer - Slower Parallax */}
                             <motion.img
                                 style={{ y: yIpad }}
-                                src="/images/ayscroll_ipad.png"
-                                alt="AyScroll on iPad"
+                                src="/images/ayscroll-app-tablet-view.png"
+                                alt="AyScroll App on iPad - Tablet Learning"
                                 className="absolute w-[100%] md:w-[90%] max-w-[900px] z-10 left-[-10%] md:left-[-5%] drop-shadow-2xl"
                             />
 
                             {/* iPhone - Front Layer - Faster Parallax */}
                             <motion.img
                                 style={{ y: yIphone }}
-                                src="/images/ayscroll_iphone.png"
-                                alt="AyScroll on iPhone"
+                                src="/images/ayscroll-app-mobile-view.png"
+                                alt="AyScroll App on iPhone - Mobile Knowledge"
                                 className="absolute w-[50%] md:w-[45%] max-w-[450px] z-20 right-[-5%] md:right-[5%] bottom-[-5%] drop-shadow-[0_20px_50px_rgba(0,0,0,0.5)]"
                             />
                         </div>
@@ -330,7 +332,7 @@ export default function Landing() {
                     <div className="grid md:grid-cols-4 gap-12 mb-16">
                         <div className="space-y-6">
                             <Link to="/" className="flex items-center gap-2 group">
-                                <img src="/logo.png" alt="AyScroll" className="h-10 w-auto object-contain group-hover:scale-105 transition-transform" />
+                                <img src="/ayscroll-official-logo.png" alt="AyScroll Micro Learning Logo" className="h-10 w-auto object-contain group-hover:scale-105 transition-transform" />
                                 <span className="text-2xl font-bold tracking-tight text-white hidden sm:block">
                                     <span className="bg-clip-text text-transparent bg-gradient-to-r from-pink-500 to-orange-500">AyScroll</span>
                                 </span>

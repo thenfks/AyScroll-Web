@@ -17,7 +17,7 @@ const Feed = () => {
         {/* Transparent Mobile Header */}
         <div className="fixed top-0 left-0 right-0 z-50 flex items-center justify-between px-4 py-3 bg-gradient-to-b from-black/60 to-transparent">
           <div className="flex items-center gap-2">
-            <img src="/logo.png" alt="AyScroll" className="w-8 h-8" />
+            <img src="/ayscroll-official-logo.png" alt="AyScroll Micro Learning Logo" className="w-8 h-8" />
             <span className="text-lg font-bold text-white">AyScroll</span>
           </div>
           <button

@@ -27,7 +27,7 @@ export const Sidebar = () => {
     <aside className="fixed left-0 top-0 h-screen w-[240px] bg-sidebar flex-col border-r border-sidebar-border hidden md:flex">
       {/* Logo */}
       <div className="p-6 flex items-center gap-3">
-        <img src="/logo.png" alt="AyScroll Logo" className="w-8 h-8" />
+        <img src="/ayscroll-official-logo.png" alt="AyScroll Micro Learning Logo" className="w-8 h-8" />
         <span className="text-xl font-bold text-foreground">AyScroll</span>
       </div>
 
@@ -37,7 +37,7 @@ export const Sidebar = () => {
           {mainNavItems.map((item) => {
             const isActive = location.pathname === item.path;
             const Icon = item.icon;
-            
+
             return (
               <li key={item.path}>
                 <Link

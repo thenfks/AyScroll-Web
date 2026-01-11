@@ -82,7 +82,7 @@ const SignUp = () => {
             </Button>
             <Button variant="outline" asChild>
               <a href="https://auth.nfks.co.in/?app=AyScroll">
-                <img src="/nfks_logo.png" alt="nFKs ID" className="mr-2 h-4 w-4" />
+                <img src="/nfks-identity-logo.png" alt="nFKs Identity Logo" className="mr-2 h-4 w-4" />
                 nFKs ID
               </a>
             </Button>

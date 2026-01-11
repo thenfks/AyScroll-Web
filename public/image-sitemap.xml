@@ -1,0 +1,97 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9"
+        xmlns:image="http://www.google.com/schemas/sitemap-image/1.1">
+  <url>
+    <loc>https://ayscroll.com/</loc>
+    <image:image>
+      <image:loc>https://ayscroll.com/ayscroll-official-logo.png</image:loc>
+      <image:caption>AyScroll Micro Learning Platform Logo</image:caption>
+      <image:title>AyScroll Logo</image:title>
+    </image:image>
+    <image:image>
+      <image:loc>https://ayscroll.com/images/ayscroll-app-desktop-experience.png</image:loc>
+      <image:caption>AyScroll Desktop Experience - Micro Learning Platform on iMac</image:caption>
+      <image:title>AyScroll Desktop App</image:title>
+    </image:image>
+    <image:image>
+      <image:loc>https://ayscroll.com/images/ayscroll-app-tablet-view.png</image:loc>
+      <image:caption>AyScroll App on iPad - Tablet Learning Experience</image:caption>
+      <image:title>AyScroll iPad App</image:title>
+    </image:image>
+    <image:image>
+      <image:loc>https://ayscroll.com/images/ayscroll-app-mobile-view.png</image:loc>
+      <image:caption>AyScroll App on iPhone - Mobile Knowledge Platform</image:caption>
+      <image:title>AyScroll iPhone App</image:title>
+    </image:image>
+    <image:image>
+      <image:loc>https://ayscroll.com/images/ayscroll-personalized-feed-learning.png</image:loc>
+      <image:caption>AyScroll Personalized Feed - Micro Learning Content Stream</image:caption>
+      <image:title>AyScroll Feed Page</image:title>
+    </image:image>
+    <image:image>
+      <image:loc>https://ayscroll.com/images/ayscroll-explore-topics-mobile.png</image:loc>
+      <image:caption>AyScroll Explore Topics - Discover Curated Learning Content</image:caption>
+      <image:title>AyScroll Explore</image:title>
+    </image:image>
+    <image:image>
+      <image:loc>https://ayscroll.com/images/ayscroll-profile-progress-mobile.png</image:loc>
+      <image:caption>AyScroll Profile - Track Learning Progress and Knowledge Base</image:caption>
+      <image:title>AyScroll Profile</image:title>
+    </image:image>
+    <image:image>
+      <image:loc>https://ayscroll.com/images/ayscroll-learning-analytics-dashboard.png</image:loc>
+      <image:caption>AyScroll Learning Analytics - AI-Driven Insights Dashboard</image:caption>
+      <image:title>AyScroll Analytics</image:title>
+    </image:image>
+    <image:image>
+      <image:loc>https://ayscroll.com/images/dashboard.png</image:loc>
+      <image:caption>AyScroll Dashboard - Knowledge Management Interface</image:caption>
+      <image:title>AyScroll Dashboard</image:title>
+    </image:image>
+    <image:image>
+      <image:loc>https://ayscroll.com/images/AyScroll_App.png</image:loc>
+      <image:caption>AyScroll Mobile App - Learn by Scrolling</image:caption>
+      <image:title>AyScroll App</image:title>
+    </image:image>
+    <image:image>
+      <image:loc>https://ayscroll.com/images/AyScroll_App_ExplorePage.png</image:loc>
+      <image:caption>AyScroll Explore Page - Discover Topics</image:caption>
+      <image:title>AyScroll Explore Page</image:title>
+    </image:image>
+    <image:image>
+      <image:loc>https://ayscroll.com/images/Ayscroll_App_ContentStudio.png</image:loc>
+      <image:caption>AyScroll Content Studio - Create Learning Content</image:caption>
+      <image:title>AyScroll Content Studio</image:title>
+    </image:image>
+    <image:image>
+      <image:loc>https://ayscroll.com/images/Ayscroll_App_Deep_Analysis.png</image:loc>
+      <image:caption>AyScroll Deep Analysis - Learning Insights</image:caption>
+      <image:title>AyScroll Deep Analysis</image:title>
+    </image:image>
+    <image:image>
+      <image:loc>https://ayscroll.com/images/Ayscroll_App_FeedPage_Details.png</image:loc>
+      <image:caption>AyScroll Feed Details - Micro Learning Content</image:caption>
+      <image:title>AyScroll Feed Details</image:title>
+    </image:image>
+    <image:image>
+      <image:loc>https://ayscroll.com/images/Ayscroll_App_FeedPage_Resource.png</image:loc>
+      <image:caption>AyScroll Feed Resources - Educational Materials</image:caption>
+      <image:title>AyScroll Resources</image:title>
+    </image:image>
+    <image:image>
+      <image:loc>https://ayscroll.com/images/Ayscroll_App_Lear_Behaviour_Analysis.png</image:loc>
+      <image:caption>AyScroll Learning Behavior Analysis - Track Patterns</image:caption>
+      <image:title>AyScroll Behavior Analysis</image:title>
+    </image:image>
+    <image:image>
+      <image:loc>https://ayscroll.com/images/Ayscroll_App_Profile_page.png</image:loc>
+      <image:caption>AyScroll Profile Page - User Dashboard</image:caption>
+      <image:title>AyScroll Profile</image:title>
+    </image:image>
+    <image:image>
+      <image:loc>https://ayscroll.com/images/Ayscroll_App_WeakTopic_Analysis.png</image:loc>
+      <image:caption>AyScroll Weak Topic Analysis - Identify Learning Gaps</image:caption>
+      <image:title>AyScroll Topic Analysis</image:title>
+    </image:image>
+  </url>
+</urlset>

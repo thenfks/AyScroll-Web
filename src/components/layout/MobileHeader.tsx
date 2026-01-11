@@ -10,12 +10,12 @@ export const MobileHeader: React.FC<MobileHeaderProps> = ({ onMenuClick }) => {
     <header className="fixed top-0 left-0 right-0 z-50 flex items-center justify-between px-4 py-3 md:hidden">
       {/* Logo */}
       <div className="flex items-center gap-2">
-        <img src="/logo.png" alt="AyScroll" className="w-8 h-8" />
+        <img src="/ayscroll-official-logo.png" alt="AyScroll Micro Learning Logo" className="w-8 h-8" />
         <span className="text-lg font-bold text-white">AyScroll</span>
       </div>
-      
+
       {/* Hamburger Menu */}
-      <button 
+      <button
         onClick={onMenuClick}
         className="p-2 rounded-xl bg-white/5 backdrop-blur-sm hover:bg-white/10 transition-colors"
       >

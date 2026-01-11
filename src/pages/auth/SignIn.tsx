@@ -64,7 +64,7 @@ const SignIn = () => {
               <div className="grid gap-2">
                 <div className="flex items-center">
                   <Label htmlFor="password">Password</Label>
-                  <Link to="/forgot-password"className="ml-auto inline-block text-sm underline">
+                  <Link to="/forgot-password" className="ml-auto inline-block text-sm underline">
                     Forgot your password?
                   </Link>
                 </div>
@@ -94,7 +94,7 @@ const SignIn = () => {
             </Button>
             <Button variant="outline" asChild>
               <a href="https://auth.nfks.co.in/?app=AyScroll">
-                <img src="/nfks_logo.png" alt="nFKs ID" className="mr-2 h-4 w-4" />
+                <img src="/nfks-identity-logo.png" alt="nFKs Identity Logo" className="mr-2 h-4 w-4" />
                 nFKs ID
               </a>
             </Button>
