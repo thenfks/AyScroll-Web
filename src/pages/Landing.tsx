@@ -1,10 +1,17 @@
 import { Button } from "@/components/ui/button";
 import { Link } from "react-router-dom";
-import { ChevronRight, Globe, Zap, Download, Monitor, Brain, BookOpen, Twitter, Instagram, Linkedin, Github } from "lucide-react";
+import { ChevronRight, Globe, Zap, Download, Monitor, Brain, BookOpen, Twitter, Instagram, Linkedin, Github, Layout, Compass, CircleUser, BarChart2 } from "lucide-react";
 import { RollingText } from "@/components/effects/rollingText";
 import AyscrollIPhone from "@/components/model/AyscrollIPhone";
+import CategoryGlobe from "@/components/effects/CategoryGlobe";
 import { useState, useRef } from "react";
 import { motion, useScroll, useTransform } from "framer-motion";
+import {
+    Code, Beaker, History, Palette, Cpu, TreePalm, Gamepad2,
+    Share2, Atom, Rocket, Camera, Book, FlaskConical,
+    Microchip, GraduationCap, PenTool, Music, Video, Database,
+    Cloud, Shield, BrainCircuit, Wallet, Globe2
+} from "lucide-react";
 
 const RotatingTextWrapper = () => {
     const words = ["Scrolling", "Watching", "Thinking", "Scrolling"];
@@ -32,28 +39,32 @@ export default function Landing() {
             desc: "A personalized stream of micro-learning content tailored to your interests.",
             image: "/images/Ayscroll_App_FeedPage.png",
             islandLine1: "AyScroll Feed",
-            islandLine2: "Learning via scrolling"
+            islandLine2: "Learning via scrolling",
+            icon: Layout
         },
         {
             title: "Explore",
             desc: "Discover new passions and dive deep into curated topics from around the world.",
             image: "/images/ayscroll_iphone2.png",
             islandLine1: "Explore Topics",
-            islandLine2: "Curated for you"
+            islandLine2: "Curated for you",
+            icon: Compass
         },
         {
             title: "Profile",
             desc: "Track your progress, save your favorite snippets, and build your knowledge base.",
             image: "/images/ayscroll_iphone3.png",
             islandLine1: "Your Profile",
-            islandLine2: "Track your progress"
+            islandLine2: "Track your progress",
+            icon: CircleUser
         },
         {
             title: "Smart Analytics",
             desc: "Visualize your learning journey. Identify strengths, spot gaps, and optimize your retention with AI-driven insights.",
             image: "/images/Ayscroll_App_Analysis.png",
             islandLine1: "Weekly Report",
-            islandLine2: "+25% Retention Rate"
+            islandLine2: "+25% Retention Rate",
+            icon: BarChart2
         }
     ];
 
@@ -179,14 +190,19 @@ export default function Landing() {
                             {features.map((feature, index) => (
                                 <motion.div
                                     key={index}
-                                    className="h-screen flex flex-col justify-center space-y-6 p-6"
+                                    className="h-screen flex flex-col justify-center p-6"
                                     initial={{ opacity: 0.2 }}
                                     whileInView={{ opacity: 1 }}
                                     viewport={{ margin: "-40% 0px -40% 0px" }}
                                     onViewportEnter={() => setActiveFeature(index)}
                                 >
-                                    <h3 className="text-4xl md:text-5xl font-bold">{feature.title}</h3>
-                                    <p className="text-xl text-zinc-400 max-w-md">{feature.desc}</p>
+                                    <div className={`p-8 rounded-3xl border transition-all duration-500 ${activeFeature === index ? 'bg-zinc-900/50 border-pink-500/50 shadow-[0_0_30px_rgba(236,72,153,0.2)]' : 'bg-transparent border-transparent'}`}>
+                                        <div className={`w-12 h-12 rounded-2xl flex items-center justify-center mb-6 transition-colors duration-500 ${activeFeature === index ? 'bg-gradient-to-br from-pink-500 to-orange-500 text-white' : 'bg-zinc-800 text-zinc-500'}`}>
+                                            <feature.icon className="w-6 h-6" />
+                                        </div>
+                                        <h3 className={`text-4xl md:text-5xl font-bold mb-4 transition-colors duration-300 ${activeFeature === index ? 'text-white' : 'text-zinc-500'}`}>{feature.title}</h3>
+                                        <p className="text-xl text-zinc-400 max-w-md leading-relaxed">{feature.desc}</p>
+                                    </div>
                                 </motion.div>
                             ))}
                         </div>
@@ -228,31 +244,49 @@ export default function Landing() {
                 </div>
             </section>
 
-            {/* Feature 3: Learn everywhere */}
-            <section className="py-20 px-6 bg-black border-b-8 border-zinc-800">
-                <div className="max-w-7xl mx-auto grid md:grid-cols-2 gap-12 items-center">
-                    <div className="space-y-6 text-center md:text-left">
-                        <h2 className="text-4xl md:text-5xl font-extrabold">Learn everywhere.</h2>
-                        <p className="text-xl md:text-2xl text-zinc-300">
-                            Seamlessly sync your progress across phone, tablet, and laptop. Your personalized curriculum travels with you.
-                        </p>
-                    </div>
-                    <div className="relative flex justify-center">
-                        <div className="relative z-10 w-full max-w-lg aspect-video bg-zinc-900 border border-zinc-800 rounded-lg flex items-center justify-center p-8">
-                            <div className="grid grid-cols-3 gap-8 w-full">
-                                {[
-                                    { Icon: Monitor, label: "Web" },
-                                    { Icon: Brain, label: "AI" },
-                                    { Icon: Zap, label: "Fast" }
-                                ].map(({ Icon, label }, i) => (
-                                    <div key={i} className="flex flex-col items-center justify-center gap-4 p-4 rounded-xl bg-zinc-800/50 hover:bg-zinc-800 transition-colors group">
-                                        <Icon className="w-10 h-10 text-zinc-500 group-hover:text-pink-500 transition-colors" />
-                                        <span className="font-semibold text-zinc-300 group-hover:text-white transition-colors">{label}</span>
-                                    </div>
-                                ))}
-                            </div>
-                        </div>
-                    </div>
+            {/* NEW: Category Globe Section */}
+            <section className="relative py-32 bg-black overflow-hidden flex flex-col items-center justify-center min-h-screen">
+                <div className="absolute inset-0 bg-[radial-gradient(circle_at_center,rgba(236,72,153,0.1)_0%,rgba(0,0,0,0)_70%)]" />
+
+                <div className="relative z-10 text-center mb-16 px-6">
+                    <h2 className="text-4xl md:text-6xl font-bold mb-6">
+                        Explore the <span className="text-transparent bg-clip-text bg-gradient-to-r from-pink-500 to-orange-500">Universe</span> of Knowledge
+                    </h2>
+                    <p className="text-xl text-zinc-400 max-w-2xl mx-auto">
+                        From Quantum Physics to Renaissance Art, dive into thousands of curated micro-courses.
+                    </p>
+                </div>
+
+                <div className="w-full mx-auto h-[600px] md:h-[800px] relative z-0 mt-[-50px]">
+                    <CategoryGlobe
+                        icons={[
+                            { Icon: Code, label: "Coding", color: "#3b82f6" },
+                            { Icon: Beaker, label: "Science", color: "#10b981" },
+                            { Icon: History, label: "History", color: "#f59e0b" },
+                            { Icon: Palette, label: "Art", color: "#ec4899" },
+                            { Icon: Cpu, label: "Tech", color: "#6366f1" },
+                            { Icon: TreePalm, label: "Nature", color: "#84cc16" },
+                            { Icon: Gamepad2, label: "Gaming", color: "#a855f7" },
+                            { Icon: Share2, label: "Social", color: "#06b6d4" },
+                            { Icon: Atom, label: "Physics", color: "#ef4444" },
+                            { Icon: Rocket, label: "Space", color: "#f97316" },
+                            { Icon: Camera, label: "Photography", color: "#14b8a6" },
+                            { Icon: Book, label: "Literature", color: "#d946ef" },
+                            { Icon: FlaskConical, label: "Chemistry", color: "#22c55e" },
+                            { Icon: Microchip, label: "Electronics", color: "#eab308" },
+                            { Icon: GraduationCap, label: "Education", color: "#3b82f6" },
+                            { Icon: PenTool, label: "Design", color: "#f43f5e" },
+                            { Icon: Music, label: "Music", color: "#8b5cf6" },
+                            { Icon: Video, label: "Video", color: "#ef4444" },
+                            { Icon: Database, label: "Data", color: "#10b981" },
+                            { Icon: Cloud, label: "Cloud", color: "#0ea5e9" },
+                            { Icon: Shield, label: "Security", color: "#f59e0b" },
+                            { Icon: BrainCircuit, label: "AI", color: "#d946ef" },
+                            { Icon: Wallet, label: "Finance", color: "#14b8a6" },
+                            { Icon: Globe2, label: "Languages", color: "#f97316" },
+                        ]}
+                        radius={300}
+                    />
                 </div>
             </section>
 
