@@ -108,12 +108,12 @@ export default function Landing() {
             </nav>
 
             {/* Hero Section */}
-            <section className="relative min-h-screen flex items-center justify-center text-center px-4 overflow-hidden pb-18 sm:pb-0">
+            <section className="relative min-h-screen flex items-center justify-center text-center px-4 sm:px-6 overflow-hidden pb-20 sm:pb-0">
                 {/* Background - Minimalistic Netflix-style Content Collage */}
                 <div className="absolute inset-0 z-0 overflow-hidden bg-black select-none pointer-events-none">
                     {/* Skewed Grid Container - Increased opacity for better visibility */}
                     <div className="absolute inset-0 min-w-[150%] -left-[25%] -top-[25%] opacity-80 transform -rotate-6 scale-105">
-                        <div className="grid grid-cols-6 md:grid-cols-8 gap-2 animate-scroll-slow">
+                        <div className="grid grid-cols-4 sm:grid-cols-6 md:grid-cols-8 gap-2 animate-scroll-slow">
                             {[
                                 "https://images.unsplash.com/photo-1517976487492-5750f3195933?w=500&q=80", // Coding
                                 "https://images.unsplash.com/photo-1532094349884-543bc11b234d?w=500&q=80", // Science
@@ -151,24 +151,24 @@ export default function Landing() {
                     <div className="absolute inset-0 bg-gradient-to-t from-black via-black/20 to-black/60" />
                 </div>
 
-                <div className="relative z-10 max-w-4xl space-y-8 pt-32">
-                    <h1 className="text-4xl md:text-6xl font-bold tracking-tight leading-tight flex flex-wrap justify-center items-center gap-2">
+                <div className="relative z-10 max-w-4xl space-y-6 sm:space-y-8 pt-20 sm:pt-24 md:pt-32">
+                    <h1 className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-bold tracking-tight leading-tight flex flex-wrap justify-center items-center gap-2">
                         Learn by
                         <RotatingTextWrapper />
                     </h1>
-                    <p className="text-lg md:text-xl font-normal text-zinc-300 max-w-2xl mx-auto">
-                        Experience micro-learning that flows with your natural rhythm. <br className="hidden md:block" /> Bite-sized lessons for curious minds.
+                    <p className="text-base sm:text-lg md:text-xl font-normal text-zinc-300 max-w-2xl mx-auto px-4">
+                        Experience micro-learning that flows with your natural rhythm. <br className="hidden sm:block" /> Bite-sized lessons for curious minds.
                     </p>
-                    <div className="space-y-6 pt-6">
-                        <p className="text-base text-zinc-400">
+                    <div className="space-y-4 sm:space-y-6 pt-4 sm:pt-6">
+                        <p className="text-sm sm:text-base text-zinc-400">
                             Ready to learn? Enter your email to start your journey.
                         </p>
 
-                        <div className="flex flex-col sm:flex-row gap-3 justify-center items-center max-w-xl mx-auto">
+                        <div className="flex flex-col sm:flex-row gap-3 justify-center items-stretch max-w-xl mx-auto px-4">
                             <input
                                 type="email"
                                 placeholder="Email address"
-                                className="w-full sm:flex-1 h-12 bg-black/50 border border-white/20 rounded-md px-4 text-white text-base placeholder:text-zinc-500 focus:outline-none focus:border-pink-500 focus:ring-1 focus:ring-pink-500/50 transition-all backdrop-blur-sm"
+                                className="w-full sm:flex-1 h-11 sm:h-12 bg-black/50 border border-white/20 rounded-md px-4 text-white text-sm sm:text-base placeholder:text-zinc-500 focus:outline-none focus:border-pink-500 focus:ring-1 focus:ring-pink-500/50 transition-all backdrop-blur-sm"
                             />
                             <Link to="/feed" className="w-full sm:w-auto">
                                 <Button className="w-full h-12 px-8 text-lg font-semibold bg-gradient-to-r from-pink-500 to-orange-500 hover:from-pink-600 hover:to-orange-600 text-white rounded-2xl flex items-center justify-center gap-2 group shadow-lg shadow-pink-500/20 border-0">
@@ -184,15 +184,15 @@ export default function Landing() {
             </section>
 
             {/* NEW: Parallax Feature Section */}
-            <section ref={containerRef} className="relative py-32 px-6 bg-black overflow-hidden flex flex-col items-center justify-center min-h-[80vh]">
+            <section ref={containerRef} className="relative py-16 sm:py-24 md:py-32 px-4 sm:px-6 bg-black overflow-hidden flex flex-col items-center justify-center min-h-[60vh] sm:min-h-[80vh]">
                 <div className="absolute inset-0 bg-gradient-to-b from-black via-zinc-900/20 to-black z-0" />
 
                 <motion.div style={{ y }} className="relative z-10 w-full max-w-5xl">
                     <img src="/images/ayscroll-app-desktop-experience.png" alt="AyScroll Desktop Experience - Micro Learning Platform" className="w-full h-auto drop-shadow-2xl" />
                 </motion.div>
 
-                <div className="relative z-20 text-center mt-[-10%] sm:mt-[-5%]">
-                    <h2 className="text-5xl md:text-7xl font-bold tracking-tighter text-white drop-shadow-lg">
+                <div className="relative z-20 text-center mt-[-8%] sm:mt-[-5%]">
+                    <h2 className="text-3xl sm:text-4xl md:text-5xl lg:text-7xl font-bold tracking-tighter text-white drop-shadow-lg">
                         AyScroll <span className="text-transparent bg-clip-text bg-gradient-to-r from-pink-500 to-orange-500">Features</span>
                     </h2>
                 </div>
@@ -200,26 +200,26 @@ export default function Landing() {
 
             {/* NEW: Sticky Layout Section */}
             <section ref={stickyRef} className="relative bg-black">
-                <div className="max-w-7xl mx-auto px-6">
+                <div className="max-w-7xl mx-auto px-4 sm:px-6">
                     <div className="flex flex-col md:flex-row items-start">
 
                         {/* Left Column: Scrolling Text */}
-                        <div className="w-full md:w-1/2 py-20 min-h-screen">
+                        <div className="w-full md:w-1/2 py-12 sm:py-16 md:py-20 min-h-screen">
                             {features.map((feature, index) => (
                                 <motion.div
                                     key={index}
-                                    className="min-h-[60vh] flex flex-col justify-center p-6"
+                                    className="min-h-[50vh] sm:min-h-[60vh] flex flex-col justify-center p-4 sm:p-6"
                                     initial={{ opacity: 0.2 }}
                                     whileInView={{ opacity: 1 }}
                                     viewport={{ margin: "-40% 0px -40% 0px" }}
                                     onViewportEnter={() => setActiveFeature(index)}
                                 >
-                                    <div className={`p-8 rounded-3xl border transition-all duration-500 ${activeFeature === index ? 'bg-zinc-900/50 border-white/5 shadow-[0_0_30px_rgba(236,72,153,0.1)]' : 'bg-transparent border-transparent'}`}>
-                                        <div className={`w-12 h-12 rounded-2xl flex items-center justify-center mb-6 transition-colors duration-500 ${activeFeature === index ? 'bg-gradient-to-br from-pink-500 to-orange-500 text-white' : 'bg-zinc-800 text-zinc-500'}`}>
-                                            <feature.icon className="w-6 h-6" />
+                                    <div className={`p-6 sm:p-8 rounded-3xl border transition-all duration-500 ${activeFeature === index ? 'bg-zinc-900/50 border-white/5 shadow-[0_0_30px_rgba(236,72,153,0.1)]' : 'bg-transparent border-transparent'}`}>
+                                        <div className={`w-10 h-10 sm:w-12 sm:h-12 rounded-2xl flex items-center justify-center mb-4 sm:mb-6 transition-colors duration-500 ${activeFeature === index ? 'bg-gradient-to-br from-pink-500 to-orange-500 text-white' : 'bg-zinc-800 text-zinc-500'}`}>
+                                            <feature.icon className="w-5 h-5 sm:w-6 sm:h-6" />
                                         </div>
-                                        <h3 className={`text-4xl md:text-5xl font-bold mb-4 transition-colors duration-300 ${activeFeature === index ? 'text-white' : 'text-zinc-500'}`}>{feature.title}</h3>
-                                        <p className="text-xl text-zinc-400 max-w-md leading-relaxed">{feature.desc}</p>
+                                        <h3 className={`text-2xl sm:text-3xl md:text-4xl lg:text-5xl font-bold mb-3 sm:mb-4 transition-colors duration-300 ${activeFeature === index ? 'text-white' : 'text-zinc-500'}`}>{feature.title}</h3>
+                                        <p className="text-lg sm:text-xl text-zinc-400 max-w-md leading-relaxed">{feature.desc}</p>
                                     </div>
                                 </motion.div>
                             ))}
@@ -241,10 +241,10 @@ export default function Landing() {
             </section>
 
             {/* Feature 2 (Reversed) - Keep for now as "Save your knowledge base" but with static iphone? Or remove? User asked for Parallax then Sticky. I will leave this as "Save your knowledge base" but maybe revert it to the static display or keep the interactive one if it adds value. User said "then in next Section Add iphonemockup and as we scroll down make different feature appear". That's the Sticky section. I'll keep the "Feature 2" (Download) as another section below or remove if redundant. I'll keep it as a "Download/Offline" feature block. */}
-            <section className="py-20 px-6 bg-black">
-                <div className="max-w-7xl mx-auto grid md:grid-cols-2 gap-12 items-center">
+            <section className="py-12 sm:py-16 md:py-20 px-4 sm:px-6 bg-black">
+                <div className="max-w-7xl mx-auto grid md:grid-cols-2 gap-8 sm:gap-12 items-center">
                     <motion.div
-                        className="order-2 md:order-1 relative flex justify-center h-[600px] md:h-[800px] items-center"
+                        className="order-2 md:order-1 relative flex justify-center h-[400px] sm:h-[500px] md:h-[600px] lg:h-[800px] items-center"
                         ref={devicesRef}
                         initial={{ opacity: 0, scale: 0.9 }}
                         whileInView={{ opacity: 1, scale: 1 }}
@@ -269,11 +269,11 @@ export default function Landing() {
                             />
                         </div>
                     </motion.div>
-                    <div className="order-1 md:order-2 space-y-6 text-center md:text-left">
-                        <h2 className="text-4xl md:text-5xl font-extrabold">
+                    <div className="order-1 md:order-2 space-y-4 sm:space-y-6 text-center md:text-left px-4">
+                        <h2 className="text-3xl sm:text-4xl md:text-5xl font-extrabold">
                             <span className="text-transparent bg-clip-text bg-gradient-to-r from-pink-500 to-orange-500">Save</span> your <span className="text-transparent bg-clip-text bg-gradient-to-r from-pink-500 to-orange-500">knowledge</span> base.
                         </h2>
-                        <p className="text-xl md:text-2xl text-zinc-300">
+                        <p className="text-lg sm:text-xl md:text-2xl text-zinc-300">
                             Save interesting snippets, build your personal library, and access your wisdom offline anywhere.
                         </p>
                     </div>
@@ -281,19 +281,19 @@ export default function Landing() {
             </section>
 
             {/* NEW: Category Globe Section */}
-            <section className="relative py-32 bg-black overflow-hidden flex flex-col items-center justify-center min-h-screen">
+            <section className="relative py-16 sm:py-24 md:py-32 bg-black overflow-hidden flex flex-col items-center justify-center min-h-[80vh] sm:min-h-screen">
                 <div className="absolute inset-0 bg-[radial-gradient(circle_at_center,rgba(236,72,153,0.1)_0%,rgba(0,0,0,0)_70%)]" />
 
-                <div className="relative z-10 text-center mb-16 px-6">
-                    <h2 className="text-4xl md:text-6xl font-bold mb-6">
+                <div className="relative z-10 text-center mb-12 sm:mb-16 px-4 sm:px-6">
+                    <h2 className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-bold mb-4 sm:mb-6">
                         Explore the <span className="text-transparent bg-clip-text bg-gradient-to-r from-pink-500 to-orange-500">Universe</span> of Knowledge
                     </h2>
-                    <p className="text-xl text-zinc-400 max-w-2xl mx-auto">
+                    <p className="text-lg sm:text-xl text-zinc-400 max-w-2xl mx-auto">
                         From Quantum Physics to Renaissance Art, dive into thousands of curated micro-courses.
                     </p>
                 </div>
 
-                <div className="w-full mx-auto h-[600px] md:h-[800px] relative z-0 mt-[-50px]">
+                <div className="w-full mx-auto h-[400px] sm:h-[500px] md:h-[600px] lg:h-[800px] relative z-0 mt-[-30px] sm:mt-[-50px]">
                     <CategoryGlobe
                         icons={[
                             { Icon: Code, label: "Coding", color: "#3b82f6" },
@@ -327,17 +327,44 @@ export default function Landing() {
             </section>
 
             {/* Footer */}
-            <footer className="py-20 px-6 bg-black border-t border-white/10">
+            <footer className="bg-zinc-950 border-t border-white/10 py-12 sm:py-16 md:py-20 px-4 sm:px-6">
                 <div className="max-w-7xl mx-auto">
-                    <div className="grid md:grid-cols-4 gap-12 mb-16">
-                        <div className="space-y-6">
+                    {/* Logo Section - Centered on Mobile */}
+                    <div className="flex flex-col items-center text-center mb-8 sm:mb-12 md:hidden">
+                        <Link to="/" className="flex items-center gap-2 group mb-4">
+                            <img src="/ayscroll-official-logo.png" alt="AyScroll Micro Learning Logo" className="h-10 w-auto object-contain group-hover:scale-105 transition-transform" />
+                            <span className="text-xl font-bold tracking-tight text-white">
+                                <span className="bg-clip-text text-transparent bg-gradient-to-r from-pink-500 to-orange-500">AyScroll</span>
+                            </span>
+                        </Link>
+                        <p className="text-sm text-zinc-400 leading-relaxed max-w-xs mb-4">
+                            Learn by scrolling. Knowledge, one scroll at a time.
+                        </p>
+                        <div className="flex items-center gap-4">
+                            {[
+                                { icon: Twitter, href: "#" },
+                                { icon: Instagram, href: "#" },
+                                { icon: Linkedin, href: "#" },
+                                { icon: Github, href: "#" }
+                            ].map((social, i) => (
+                                <a key={i} href={social.href} className="w-10 h-10 rounded-xl bg-zinc-900 flex items-center justify-center text-zinc-400 hover:bg-zinc-800 hover:text-white transition-all hover:scale-110">
+                                    <social.icon className="w-5 h-5" />
+                                </a>
+                            ))}
+                        </div>
+                    </div>
+
+                    {/* Links Grid - 2 columns on mobile, 5 on desktop */}
+                    <div className="grid grid-cols-2 md:grid-cols-5 gap-8 md:gap-12 mb-12 sm:mb-16">
+                        {/* Logo Section - Desktop Only */}
+                        <div className="hidden md:block space-y-4">
                             <Link to="/" className="flex items-center gap-2 group">
                                 <img src="/ayscroll-official-logo.png" alt="AyScroll Micro Learning Logo" className="h-10 w-auto object-contain group-hover:scale-105 transition-transform" />
-                                <span className="text-2xl font-bold tracking-tight text-white hidden sm:block">
+                                <span className="text-2xl font-bold tracking-tight text-white">
                                     <span className="bg-clip-text text-transparent bg-gradient-to-r from-pink-500 to-orange-500">AyScroll</span>
                                 </span>
                             </Link>
-                            <p className="text-zinc-400 text-sm leading-relaxed max-w-xs">
+                            <p className="text-base text-zinc-400 leading-relaxed">
                                 Learn by scrolling. Knowledge, one scroll at a time. Join the future of micro-learning.
                             </p>
                             <div className="flex items-center gap-4">
@@ -355,8 +382,8 @@ export default function Landing() {
                         </div>
 
                         <div>
-                            <h3 className="font-bold text-white mb-6">Product</h3>
-                            <ul className="space-y-4 text-sm text-zinc-400">
+                            <h3 className="text-base sm:text-lg font-bold text-white mb-4 sm:mb-6">Product</h3>
+                            <ul className="space-y-3 sm:space-y-4 text-sm text-zinc-400">
                                 {["Features", "How It Works", "Pricing", "Download"].map(item => (
                                     <li key={item}><a href="#" className="hover:text-white transition-colors">{item}</a></li>
                                 ))}
@@ -364,8 +391,8 @@ export default function Landing() {
                         </div>
 
                         <div>
-                            <h3 className="font-bold text-white mb-6">Company</h3>
-                            <ul className="space-y-4 text-sm text-zinc-400">
+                            <h3 className="text-base sm:text-lg font-bold text-white mb-4 sm:mb-6">Company</h3>
+                            <ul className="space-y-3 sm:space-y-4 text-sm text-zinc-400">
                                 {["About", "Careers", "Blog", "Press"].map(item => (
                                     <li key={item}><a href="#" className="hover:text-white transition-colors">{item}</a></li>
                                 ))}
@@ -373,24 +400,35 @@ export default function Landing() {
                         </div>
 
                         <div>
-                            <h3 className="font-bold text-white mb-6">Resources</h3>
-                            <ul className="space-y-4 text-sm text-zinc-400">
+                            <h3 className="text-base sm:text-lg font-bold text-white mb-4 sm:mb-6">Resources</h3>
+                            <ul className="space-y-3 sm:space-y-4 text-sm text-zinc-400">
                                 {["Help Center", "Community", "Creator Guide", "API"].map(item => (
+                                    <li key={item}><a href="#" className="hover:text-white transition-colors">{item}</a></li>
+                                ))}
+                            </ul>
+                        </div>
+
+                        <div>
+                            <h3 className="text-base sm:text-lg font-bold text-white mb-4 sm:mb-6">Support</h3>
+                            <ul className="space-y-3 sm:space-y-4 text-sm text-zinc-400">
+                                {["Contact", "FAQ", "Status", "Feedback"].map(item => (
                                     <li key={item}><a href="#" className="hover:text-white transition-colors">{item}</a></li>
                                 ))}
                             </ul>
                         </div>
                     </div>
 
-                    <div className="pt-8 border-t border-white/5 flex flex-col md:flex-row items-center justify-between gap-4 text-sm text-zinc-500">
-                        <p>© 2024 AyScroll. All rights reserved.</p>
-                        <div className="flex items-center gap-8">
-                            <div className="flex gap-8">
-                                <a href="#" className="hover:text-white transition-colors">Privacy</a>
-                                <a href="#" className="hover:text-white transition-colors">Terms</a>
-                                <a href="#" className="hover:text-white transition-colors">Cookies</a>
+                    <div className="border-t border-white/10 pt-6 sm:pt-8 flex flex-col sm:flex-row justify-between items-center gap-4">
+                        <p className="text-xs sm:text-sm text-zinc-500 text-center sm:text-left">
+                            © 2024 AyScroll. All rights reserved.
+                        </p>
+                        <div className="flex flex-col sm:flex-row items-center gap-4 sm:gap-8">
+                            <div className="flex gap-6 sm:gap-8">
+                                <Link to="/" className="text-xs sm:text-sm text-zinc-400 hover:text-pink-500 transition-colors">Privacy</Link>
+                                <Link to="/" className="text-xs sm:text-sm text-zinc-400 hover:text-pink-500 transition-colors">Terms</Link>
+                                <Link to="/" className="text-xs sm:text-sm text-zinc-400 hover:text-pink-500 transition-colors">Cookies</Link>
                             </div>
-                            <span className="text-zinc-600">nFKs Affiliated</span>
+                            <span className="text-xs sm:text-sm text-zinc-600">nFKs Affiliated</span>
                         </div>
                     </div>
                 </div>
