@@ -2,36 +2,65 @@ import { Button } from "@/components/ui/button";
 import { Link } from "react-router-dom";
 import { ChevronRight, Globe, Zap, Download, Monitor, Brain, BookOpen, Twitter, Instagram, Linkedin, Github } from "lucide-react";
 import { RollingText } from "@/components/effects/rollingText";
-import { useState, useEffect } from "react";
-
+import AyscrollIPhone from "@/components/model/AyscrollIPhone";
+import { useState, useRef } from "react";
+import { motion, useScroll, useTransform } from "framer-motion";
 
 const RotatingTextWrapper = () => {
     const words = ["Scrolling", "Watching", "Thinking", "Scrolling"];
-    const [index, setIndex] = useState(0);
-
-    useEffect(() => {
-        const interval = setInterval(() => {
-            setIndex((prevIndex) => (prevIndex + 1) % words.length);
-        }, 3000); // Slower cycle for rolling effect
-        return () => clearInterval(interval);
-    }, []);
-
     return (
         <RollingText
-            key={words[index]} // Force re-render on word change to trigger animation
-            text={words[index]}
-            className="bg-clip-text text-transparent bg-gradient-to-r from-pink-500 to-orange-500 ml-3 font-bold px-1 pb-1"
+            text={words[0]}
+            className="text-pink-500 ml-3 font-bold bg-gradient-to-r from-pink-500 to-orange-500 bg-clip-text text-transparent"
         />
     );
 };
 
 export default function Landing() {
-    return (
-        <div className="min-h-screen bg-black text-white selection:bg-pink-500 selection:text-white font-sans overflow-x-hidden">
+    // Parallax & Sticky State
+    const [activeFeature, setActiveFeature] = useState(0);
+    const containerRef = useRef(null);
+    const { scrollYProgress } = useScroll({
+        target: containerRef,
+        offset: ["start end", "end start"],
+    });
+    const y = useTransform(scrollYProgress, [0, 1], [-100, 100]);
 
-            {/* Navigation */}
-            <nav className="fixed top-0 left-0 right-0 z-50 transition-all duration-300 bg-gradient-to-b from-black/90 via-black/60 to-transparent px-6 py-5">
-                <div className="max-w-7xl mx-auto flex items-center justify-between">
+    const features = [
+        {
+            title: "Your Feed",
+            desc: "A personalized stream of micro-learning content tailored to your interests.",
+            image: "/images/Ayscroll_App_FeedPage.png",
+            islandLine1: "AyScroll Feed",
+            islandLine2: "Learning via scrolling"
+        },
+        {
+            title: "Explore",
+            desc: "Discover new passions and dive deep into curated topics from around the world.",
+            image: "/images/ayscroll_iphone2.png",
+            islandLine1: "Explore Topics",
+            islandLine2: "Curated for you"
+        },
+        {
+            title: "Profile",
+            desc: "Track your progress, save your favorite snippets, and build your knowledge base.",
+            image: "/images/ayscroll_iphone3.png",
+            islandLine1: "Your Profile",
+            islandLine2: "Track your progress"
+        },
+        {
+            title: "Smart Analytics",
+            desc: "Visualize your learning journey. Identify strengths, spot gaps, and optimize your retention with AI-driven insights.",
+            image: "/images/Ayscroll_App_Analysis.png",
+            islandLine1: "Weekly Report",
+            islandLine2: "+25% Retention Rate"
+        }
+    ];
+
+    return (
+        <div className="min-h-screen bg-black text-white selection:bg-pink-500 selection:text-white font-sans">
+            <nav className="fixed top-0 w-full z-50 bg-black/50 backdrop-blur-lg border-b border-white/10">
+                <div className="max-w-7xl mx-auto px-6 h-16 flex items-center justify-between">
                     <Link to="/" className="flex items-center gap-2 group">
                         <img src="/logo.png" alt="AyScroll" className="h-10 w-auto object-contain group-hover:scale-105 transition-transform" />
                         <span className="text-2xl font-bold tracking-tight text-white hidden sm:block">
@@ -67,6 +96,7 @@ export default function Landing() {
                                 "https://images.unsplash.com/photo-1507413245164-6160d8298b31?w=500&q=80", // Physics
                                 "https://images.unsplash.com/photo-1451187580459-43490279c0fa?w=500&q=80", // Space
                                 "https://images.unsplash.com/photo-1516035069371-29a1b244cc32?w=500&q=80", // Camera
+                                "https://images.unsplash.com/photo-1478720568477-152d9b164e63?w=500&q=80", // Story
                                 "https://images.unsplash.com/photo-1581091226825-a6a2a5aee158?w=500&q=80", // Lab
                                 "https://images.unsplash.com/photo-1518770660439-4636190af475?w=500&q=80", // Chips
                                 "https://images.unsplash.com/photo-1503676260728-1c00da094a0b?w=500&q=80", // Education
@@ -124,63 +154,69 @@ export default function Landing() {
                 <div className="absolute bottom-0 left-0 right-0 h-32 bg-gradient-to-t from-black to-transparent z-20" />
             </section>
 
-            {/* Feature 1 */}
-            <section className="py-20 px-6 bg-black border-b-8 border-zinc-800">
-                <div className="max-w-7xl mx-auto grid md:grid-cols-2 gap-12 items-center">
-                    <div className="space-y-6 text-center md:text-left">
-                        <h2 className="text-4xl md:text-5xl font-extrabold">Bite-sized Education.</h2>
-                        <p className="text-xl md:text-2xl text-zinc-300">
-                            Ditch the hour-long lectures. Absorb complex topics through engaging, short-form videos tailored to your interests.
-                        </p>
-                    </div>
-                    <div className="relative flex justify-center">
-                        <div className="relative z-10 w-full max-w-lg aspect-video bg-zinc-900 border border-zinc-800 rounded-lg flex items-center justify-center overflow-hidden group">
-                            <div className="absolute inset-0 bg-[url('https://images.unsplash.com/photo-1501504905252-473c47e087f8?q=80&w=1000&auto=format&fit=crop')] bg-cover bg-center opacity-40 group-hover:scale-105 transition-transform duration-700" />
-                            <div className="relative z-10 p-6 bg-black/60 backdrop-blur-sm rounded-xl border border-white/10 w-3/4">
-                                <div className="flex items-center gap-4 mb-4">
-                                    <div className="w-12 h-12 rounded-full bg-gradient-to-br from-pink-500 to-orange-500 flex items-center justify-center shadow-lg">
-                                        <BookOpen className="w-6 h-6 text-white" />
-                                    </div>
-                                    <div>
-                                        <div className="text-lg font-bold">Quantum Physics</div>
-                                        <div className="text-sm text-zinc-400">@science_daily • 60s</div>
-                                    </div>
-                                </div>
-                                <div className="space-y-2">
-                                    <div className="h-2 w-full bg-zinc-700 rounded-full overflow-hidden">
-                                        <div className="h-full w-2/3 bg-gradient-to-r from-pink-500 to-orange-500" />
-                                    </div>
-                                    <p className="text-xs text-zinc-400 text-right">Lesson 4 of 12</p>
-                                </div>
+            {/* NEW: Parallax Feature Section */}
+            <section ref={containerRef} className="relative py-32 px-6 bg-black overflow-hidden flex flex-col items-center justify-center min-h-[80vh]">
+                <div className="absolute inset-0 bg-gradient-to-b from-black via-zinc-900/20 to-black z-0" />
+
+                <motion.div style={{ y }} className="relative z-10 w-full max-w-5xl">
+                    <img src="/images/ayscroll_imac.png" alt="AyScroll Desktop Experience" className="w-full h-auto drop-shadow-2xl" />
+                </motion.div>
+
+                <div className="relative z-20 text-center mt-[-10%] sm:mt-[-5%]">
+                    <h2 className="text-5xl md:text-7xl font-bold tracking-tighter text-white drop-shadow-lg">
+                        AyScroll <span className="text-transparent bg-clip-text bg-gradient-to-r from-pink-500 to-orange-500">Features</span>
+                    </h2>
+                </div>
+            </section>
+
+            {/* NEW: Sticky Layout Section */}
+            <section className="relative bg-black">
+                <div className="max-w-7xl mx-auto px-6">
+                    <div className="flex flex-col md:flex-row items-start">
+
+                        {/* Left Column: Scrolling Text */}
+                        <div className="w-full md:w-1/2 py-20 min-h-screen">
+                            {features.map((feature, index) => (
+                                <motion.div
+                                    key={index}
+                                    className="h-screen flex flex-col justify-center space-y-6 p-6"
+                                    initial={{ opacity: 0.2 }}
+                                    whileInView={{ opacity: 1 }}
+                                    viewport={{ margin: "-40% 0px -40% 0px" }}
+                                    onViewportEnter={() => setActiveFeature(index)}
+                                >
+                                    <h3 className="text-4xl md:text-5xl font-bold">{feature.title}</h3>
+                                    <p className="text-xl text-zinc-400 max-w-md">{feature.desc}</p>
+                                </motion.div>
+                            ))}
+                        </div>
+
+                        {/* Right Column: Sticky iPhone */}
+                        <div className="hidden md:flex w-1/2 h-screen sticky top-0 items-center justify-center">
+                            <div className="scale-90 xl:scale-100 transition-all duration-500">
+                                <AyscrollIPhone
+                                    image={features[activeFeature].image}
+                                    dynamicIslandContentLine1={features[activeFeature].islandLine1}
+                                    dynamicIslandContentLine2={features[activeFeature].islandLine2}
+                                    forceExpandedIsland={true}
+                                />
                             </div>
                         </div>
                     </div>
                 </div>
             </section>
 
-            {/* Feature 2 (Reversed) */}
+            {/* Feature 2 (Reversed) - Keep for now as "Save your knowledge base" but with static iphone? Or remove? User asked for Parallax then Sticky. I will leave this as "Save your knowledge base" but maybe revert it to the static display or keep the interactive one if it adds value. User said "then in next Section Add iphonemockup and as we scroll down make different feature appear". That's the Sticky section. I'll keep the "Feature 2" (Download) as another section below or remove if redundant. I'll keep it as a "Download/Offline" feature block. */}
             <section className="py-20 px-6 bg-black border-b-8 border-zinc-800">
                 <div className="max-w-7xl mx-auto grid md:grid-cols-2 gap-12 items-center">
-                    <div className="order-2 md:order-1 relative flex justify-center">
-                        <div className="relative z-10 w-full max-w-lg aspect-square bg-zinc-900 border border-zinc-800 rounded-lg flex flex-col items-center justify-center p-8 overflow-hidden">
-                            <div className="relative w-3/4 aspect-[9/16] bg-zinc-800 border-4 border-zinc-700 rounded-2xl shadow-2xl flex items-center justify-center overflow-hidden">
-                                <div className="w-full h-full bg-cover bg-center rounded-xl opacity-60" style={{ backgroundImage: "url('https://images.unsplash.com/photo-1550745165-9bc0b252726f?q=80&w=1000&auto=format&fit=crop')" }} />
-                                <div className="absolute inset-0 flex items-center justify-center">
-                                    <div className="w-16 h-16 rounded-full bg-white/20 backdrop-blur flex items-center justify-center border border-white/30">
-                                        <div className="w-0 h-0 border-t-[10px] border-t-transparent border-l-[20px] border-l-white border-b-[10px] border-b-transparent ml-1" />
-                                    </div>
-                                </div>
-                            </div>
-                            <div className="absolute bottom-12 left-1/2 -translate-x-1/2 w-3/4 bg-black border border-zinc-700 rounded-xl p-3 flex items-center gap-3 shadow-lg">
-                                <div className="w-10 h-10 rounded-full bg-green-500/20 flex items-center justify-center border border-green-500/30">
-                                    <Download className="w-5 h-5 text-green-500" />
-                                </div>
-                                <div className="flex-1 min-w-0">
-                                    <div className="text-sm font-medium text-white">Saving for offline...</div>
-                                    <div className="text-xs text-blue-400">History of Rome • 45MB</div>
-                                </div>
-                                <div className="h-5 w-5 rounded-full border-2 border-blue-500 border-t-transparent animate-spin" />
-                            </div>
+                    <div className="order-2 md:order-1 relative flex justify-center scale-90 md:scale-100">
+                        <div className="relative z-10 w-full flex items-center justify-center p-8">
+                            {/* Reusing the IPhone here as a static showcase of offline mode maybe? Or just the feed image. */}
+                            <AyscrollIPhone
+                                image="/images/Ayscroll_App_FeedPage.png"
+                                dynamicIslandContentLine1="Offline Mode"
+                                dynamicIslandContentLine2="45MB Downloaded"
+                            />
                         </div>
                     </div>
                     <div className="order-1 md:order-2 space-y-6 text-center md:text-left">
@@ -192,7 +228,7 @@ export default function Landing() {
                 </div>
             </section>
 
-            {/* Feature 3 */}
+            {/* Feature 3: Learn everywhere */}
             <section className="py-20 px-6 bg-black border-b-8 border-zinc-800">
                 <div className="max-w-7xl mx-auto grid md:grid-cols-2 gap-12 items-center">
                     <div className="space-y-6 text-center md:text-left">
@@ -216,35 +252,6 @@ export default function Landing() {
                                 ))}
                             </div>
                         </div>
-                    </div>
-                </div>
-            </section>
-
-            {/* Feature 4 */}
-            <section className="py-20 px-6 bg-black border-b-8 border-zinc-800">
-                <div className="max-w-7xl mx-auto grid md:grid-cols-2 gap-12 items-center">
-                    <div className="order-2 md:order-1 relative flex justify-center">
-                        <div className="relative z-10 w-full max-w-lg aspect-square bg-zinc-900 border border-zinc-800 rounded-lg flex items-center justify-center p-6">
-                            <div className="grid grid-cols-2 gap-4 w-full h-full">
-                                {[
-                                    { color: "from-blue-500 to-cyan-500", title: "Coding" },
-                                    { color: "from-purple-500 to-pink-500", title: "Design" },
-                                    { color: "from-orange-500 to-red-500", title: "History" },
-                                    { color: "from-green-500 to-emerald-500", title: "Business" }
-                                ].map((item, i) => (
-                                    <div key={i} className="bg-zinc-800 rounded-lg flex items-center justify-center relative overflow-hidden group cursor-pointer border border-white/5 hover:border-pink-500/50 transition-all">
-                                        <div className={`absolute inset-0 bg-gradient-to-br ${item.color} opacity-20 group-hover:opacity-40 transition-opacity`} />
-                                        <span className="relative z-10 font-bold text-xl group-hover:scale-110 transition-transform">{item.title}</span>
-                                    </div>
-                                ))}
-                            </div>
-                        </div>
-                    </div>
-                    <div className="order-1 md:order-2 space-y-6 text-center md:text-left">
-                        <h2 className="text-4xl md:text-5xl font-extrabold">Curated for you.</h2>
-                        <p className="text-xl md:text-2xl text-zinc-300">
-                            Our AI tailors a unique learning path based on your curiosity. From Coding to Cooking, dive deep into what matters.
-                        </p>
                     </div>
                 </div>
             </section>
