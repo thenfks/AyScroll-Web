@@ -43,17 +43,17 @@ export const FAQSection: React.FC = () => {
     return (
         <section className="relative py-20 sm:py-24 md:py-32 bg-black px-4 sm:px-6">
             <div className="max-w-7xl mx-auto">
-                <div className="grid md:grid-cols-[300px,1fr] lg:grid-cols-[400px,1fr] gap-12 lg:gap-16">
+                <div className="grid grid-cols-1 md:grid-cols-[300px,1fr] lg:grid-cols-[400px,1fr] gap-8 md:gap-12 lg:gap-16">
                     {/* Left Sidebar */}
                     <motion.div
                         initial={{ opacity: 0, x: -20 }}
                         whileInView={{ opacity: 1, x: 0 }}
                         viewport={{ once: true }}
                         transition={{ duration: 0.6 }}
-                        className="space-y-6"
+                        className="space-y-6 md:space-y-8"
                     >
                         <div>
-                            <h2 className="text-3xl sm:text-4xl md:text-5xl font-bold text-white mb-4">
+                            <h2 className="text-3xl sm:text-4xl lg:text-5xl font-bold text-white mb-4">
                                 Questions &{' '}
                                 <span className="text-transparent bg-clip-text bg-gradient-to-r from-pink-500 to-orange-500">
                                     Answers
@@ -61,11 +61,13 @@ export const FAQSection: React.FC = () => {
                             </h2>
                         </div>
 
-                        {/* Animated Support Illustration */}
-                        <SupportIllustration />
+                        {/* Animated Support Illustration - Hidden on mobile */}
+                        <div className="hidden md:block">
+                            <SupportIllustration />
+                        </div>
 
-                        <div>
-                            <p className="text-base text-zinc-400">
+                        <div className="hidden md:block">
+                            <p className="text-sm sm:text-base text-zinc-400">
                                 Have more questions? Don't hesitate to reach out:
                             </p>
                         </div>
@@ -95,15 +97,15 @@ export const FAQSection: React.FC = () => {
                                 <AccordionItem
                                     key={index}
                                     value={`item-${index}`}
-                                    className="border border-white/10 rounded-2xl px-6 bg-zinc-900/30 backdrop-blur-sm hover:bg-zinc-900/50 transition-all"
+                                    className="border border-white/10 rounded-xl sm:rounded-2xl px-4 sm:px-6 bg-zinc-900/30 backdrop-blur-sm hover:bg-zinc-900/50 transition-all"
                                 >
-                                    <AccordionTrigger className="text-left text-base sm:text-lg font-semibold text-white hover:no-underline transition-colors py-6">
-                                        <span className="text-white mr-3">
+                                    <AccordionTrigger className="text-left text-sm sm:text-base lg:text-lg font-semibold text-white hover:no-underline transition-colors py-4 sm:py-6">
+                                        <span className="text-white mr-2 sm:mr-3 text-sm sm:text-base">
                                             {String(index + 1).padStart(2, '0')}
                                         </span>
                                         {faq.question}
                                     </AccordionTrigger>
-                                    <AccordionContent className="text-sm sm:text-base text-zinc-400 leading-relaxed pb-6">
+                                    <AccordionContent className="text-xs sm:text-sm lg:text-base text-zinc-400 leading-relaxed pb-4 sm:pb-6 pl-6 sm:pl-0">
                                         {faq.answer}
                                     </AccordionContent>
                                 </AccordionItem>
