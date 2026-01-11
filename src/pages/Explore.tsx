@@ -1,6 +1,6 @@
 import React, { useState, useMemo } from 'react';
 import { MainLayout } from '@/components/layout/MainLayout';
-import { Search, Play } from 'lucide-react';
+import { Search, Play, Bell } from 'lucide-react';
 import { MOCK_REELS } from '@/data/data';
 import { useIsMobile } from '@/hooks/use-mobile';
 
@@ -13,7 +13,7 @@ const Explore: React.FC = () => {
     { name: 'All', icon: null },
     { name: 'Technology', icon: '🌐' },
     { name: 'Design', icon: '🎨' },
-    { name: 'Science', icon: '🧠' },
+    { name: 'Psychology', icon: '🧠' },
     { name: 'Business', icon: '💼' },
     { name: 'Engineering', icon: '⚙️' },
     { name: 'Music', icon: '🎸' },
@@ -37,16 +37,21 @@ const Explore: React.FC = () => {
         <div className="flex flex-col md:flex-row items-start md:items-center justify-between gap-4 mb-6">
           <h1 className="text-2xl md:text-4xl font-black text-white tracking-tighter">Explore</h1>
           
-          {/* Search */}
-          <div className="relative w-full md:w-[400px]">
-            <Search className="w-4 h-4 absolute left-4 top-1/2 -translate-y-1/2 text-white/30" />
-            <input 
-              type="text" 
-              value={searchQuery}
-              onChange={(e) => setSearchQuery(e.target.value)}
-              placeholder="Topics, creators, or keywords..." 
-              className="w-full h-12 bg-white/[0.03] border border-white/10 rounded-2xl pl-11 pr-4 outline-none text-sm text-white focus:bg-white/[0.07] focus:border-pink-500/30 transition-all placeholder:text-white/20"
-            />
+          {/* Search and Bell */}
+          <div className="flex items-center gap-3 w-full md:w-auto">
+            <div className="relative flex-1 md:w-[400px]">
+              <Search className="w-4 h-4 absolute left-4 top-1/2 -translate-y-1/2 text-white/30" />
+              <input 
+                type="text" 
+                value={searchQuery}
+                onChange={(e) => setSearchQuery(e.target.value)}
+                placeholder="Topics, creators, or keywords..." 
+                className="w-full h-12 bg-white/[0.03] border border-white/10 rounded-2xl pl-11 pr-4 outline-none text-sm text-white focus:bg-white/[0.07] focus:border-pink-500/30 transition-all placeholder:text-white/20"
+              />
+            </div>
+            <button className="w-12 h-12 rounded-2xl border border-white/10 bg-white/[0.03] flex items-center justify-center hover:bg-white/[0.07] transition-colors shrink-0">
+              <Bell className="w-5 h-5 text-white/60" />
+            </button>
           </div>
         </div>
 
@@ -56,7 +61,7 @@ const Explore: React.FC = () => {
             <button
               key={cat.name}
               onClick={() => setSelectedCategory(cat.name)}
-              className={`px-4 md:px-6 py-2.5 md:py-3 rounded-xl md:rounded-2xl text-[11px] md:text-[12px] font-black uppercase tracking-widest whitespace-nowrap transition-all border shrink-0 ${
+              className={`px-5 md:px-8 py-2.5 md:py-3.5 rounded-xl md:rounded-2xl text-[10px] md:text-[12px] font-black uppercase tracking-widest whitespace-nowrap transition-all border shrink-0 ${
                 selectedCategory === cat.name 
                   ? 'bg-gradient-to-r from-pink-500 to-orange-500 text-white border-transparent shadow-lg shadow-pink-500/20' 
                   : 'bg-white/[0.05] text-white/40 border-white/5 hover:border-white/20 hover:text-white hover:bg-white/[0.08]'

@@ -317,8 +317,8 @@ export const VideoCard: React.FC<VideoCardProps> = (props) => {
           {/* Gradient Overlay */}
           <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-transparent to-transparent" />
 
-          {/* Category & Duration */}
-          <div className="absolute top-4 left-4 flex items-center gap-2">
+          {/* Category & Duration - Desktop only (top position) */}
+          <div className="absolute top-4 left-4 hidden md:flex items-center gap-2">
             <span className="px-3 py-1 bg-black/50 backdrop-blur-sm rounded-full text-xs font-medium text-foreground">
               {category}
             </span>
@@ -337,6 +337,17 @@ export const VideoCard: React.FC<VideoCardProps> = (props) => {
 
           {/* Author & Content Info */}
           <div className="absolute bottom-20 max-md:bottom-24 left-4 right-16">
+            {/* Category & Duration - Mobile only (before avatar) */}
+            <div className="flex md:hidden items-center gap-2 mb-3">
+              <span className="px-3 py-1 bg-black/50 backdrop-blur-sm rounded-full text-xs font-medium text-foreground">
+                {category}
+              </span>
+              <span className="flex items-center gap-1.5 text-xs text-foreground">
+                <span className="w-1.5 h-1.5 bg-topic-green rounded-full animate-pulse" />
+                {duration}
+              </span>
+            </div>
+            
             <div className="flex items-center gap-2 mb-2">
               <Avatar className="w-10 h-10 border-2 border-foreground">
                 <AvatarImage src={creator_avatar} />
