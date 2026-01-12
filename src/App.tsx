@@ -10,7 +10,7 @@ import { SplashScreen } from "@/components/ui/SplashScreen";
 import { ProtectedRoute } from "@/components/auth/ProtectedRoute";
 import Feed from "./pages/Feed";
 import Landing from "./pages/Landing";
-import Discover from "./pages/Discover";
+
 import Explore from "./pages/Explore";
 import Library from "./pages/Library";
 import Saved from "./pages/Saved";
@@ -39,7 +39,7 @@ const App = () => {
               <Routes>
                 <Route path="/" element={<Landing />} />
                 <Route path="/feed" element={<Feed />} />
-                <Route path="/discover" element={<Discover />} />
+                <Route path="/explore" element={<Explore />} />
                 <Route path="/library" element={<ProtectedRoute><Library /></ProtectedRoute>} />
                 <Route path="/saved" element={<ProtectedRoute><Saved /></ProtectedRoute>} />
                 <Route path="/analysis" element={<ProtectedRoute><Analysis /></ProtectedRoute>} />
