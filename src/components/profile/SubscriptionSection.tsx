@@ -85,14 +85,14 @@ const SubscriptionSection: React.FC = () => {
     <div className="space-y-6 md:space-y-8 animate-in fade-in slide-in-from-right-4 duration-500">
       <div className="flex flex-col items-center text-center space-y-4">
         <h3 className="text-2xl md:text-3xl font-black text-white tracking-tighter">Choose Your Orbit</h3>
-        
+
         {/* Billing Toggle */}
-        <div className="flex bg-white/[0.03] p-1.5 rounded-xl md:rounded-2xl border border-white/10 shadow-inner">
+        <div className="flex bg-[#101010] p-1.5 rounded-xl border border-white/5 shadow-inner">
           {(['Annual', 'Monthly'] as const).map((cycle) => (
             <button
               key={cycle}
               onClick={() => setBillingCycle(cycle)}
-              className={`px-6 md:px-8 py-2 md:py-2.5 rounded-lg md:rounded-xl text-[10px] md:text-[11px] font-black uppercase tracking-widest transition-all ${billingCycle === cycle ? 'bg-gradient-to-r from-pink-500 to-orange-500 text-white shadow-lg' : 'text-white/20 hover:text-white/40'}`}
+              className={`px-6 md:px-8 py-2.5 rounded-lg text-[10px] font-black uppercase tracking-widest transition-all ${billingCycle === cycle ? 'bg-violet-600 text-white shadow-lg shadow-violet-600/20' : 'text-white/30 hover:text-white/60'}`}
             >
               {cycle}
             </button>
@@ -100,49 +100,65 @@ const SubscriptionSection: React.FC = () => {
         </div>
       </div>
 
-      <div className="grid grid-cols-1 lg:grid-cols-3 gap-4 md:gap-6">
+      <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 md:gap-8 max-w-7xl mx-auto">
         {plans.map((plan) => (
-          <div 
+          <div
             key={plan.name}
-            className={`relative p-5 md:p-6 rounded-2xl md:rounded-[40px] flex flex-col transition-all duration-500 border overflow-hidden ${plan.highlight ? 'bg-gradient-to-b from-pink-500/10 to-transparent border-pink-500/30 shadow-2xl scale-[1.02]' : 'bg-white/[0.02] border-white/5 shadow-xl'}`}
+            className={`relative p-6 md:p-8 rounded-[32px] flex flex-col transition-all duration-300 border hover:scale-[1.03] ${plan.highlight
+                ? 'bg-[#151515] border-white/10 shadow-2xl shadow-violet-500/5'
+                : 'bg-[#101010] border-white/5 hover:border-white/10'
+              }`}
           >
-            {plan.badge && (
-              <div className="absolute top-4 md:top-6 right-4 md:right-6">
-                <span className={`px-3 md:px-4 py-1 md:py-1.5 rounded-full text-[8px] md:text-[9px] font-black uppercase tracking-widest flex items-center gap-1.5 ${plan.badge === 'Active' ? 'bg-emerald-500/10 text-emerald-400 border border-emerald-500/20' : plan.highlight ? 'bg-pink-500/20 text-pink-400 border border-pink-500/30' : 'bg-orange-500/10 text-orange-400 border border-orange-500/20'}`}>
-                  <div className={`w-1.5 h-1.5 rounded-full ${plan.badge === 'Active' ? 'bg-emerald-400' : plan.highlight ? 'bg-pink-400' : 'bg-orange-400'}`}></div> {plan.badge}
+            {plan.popular && (
+              <div className="absolute -top-4 left-1/2 -translate-x-1/2">
+                <span className="px-4 py-1.5 rounded-full bg-violet-600 text-white text-[10px] font-black uppercase tracking-widest shadow-lg shadow-violet-600/20 border border-violet-400">
+                  Most Popular
                 </span>
               </div>
             )}
 
-            <div className="text-center mb-6 md:mb-8 pt-4">
-              <h4 className={`text-xl md:text-2xl font-black mb-4 md:mb-6 ${plan.highlight ? 'text-pink-500' : 'text-white'}`}>{plan.name}</h4>
-              <p className="text-white/30 text-[10px] md:text-[11px] font-black uppercase tracking-widest mb-6 md:mb-8">{plan.description}</p>
-              
+            {plan.badge && plan.badge !== 'Most Popular' && plan.name !== 'Go' && (
+              <div className="absolute top-6 right-6">
+                <span className={`px-3 py-1 rounded-full text-[9px] font-black uppercase tracking-widest flex items-center gap-1.5 ${plan.active ? 'bg-emerald-500/10 text-emerald-400 border border-emerald-500/20' : 'bg-orange-500/10 text-orange-400 border border-orange-500/20'}`}>
+                  <div className={`w-1.5 h-1.5 rounded-full ${plan.active ? 'bg-emerald-400' : 'bg-orange-400'}`}></div> {plan.badge}
+                </span>
+              </div>
+            )}
+
+            <div className={`text-center mb-8 pt-4 ${plan.popular ? 'mt-2' : ''}`}>
+              <h4 className={`text-2xl font-black mb-2 text-white`}>{plan.name}</h4>
+              <p className="text-white/40 text-[11px] font-bold uppercase tracking-widest mb-6 min-h-[16px]">{plan.description}</p>
+
               <div className="flex items-center justify-center gap-1">
-                <span className="text-xl md:text-2xl font-black text-white self-start mt-1">₹</span>
-                <span className="text-5xl md:text-6xl font-black text-white tracking-tighter">{plan.price}</span>
-                <div className="flex flex-col items-start ml-2">
-                  {plan.originalPrice && <span className="text-base md:text-lg text-white/20 line-through font-bold">₹{plan.originalPrice}</span>}
-                  <span className="text-[11px] md:text-[12px] text-white/30 font-bold uppercase tracking-widest">{plan.period}</span>
+                <span className="text-2xl font-black text-white self-start mt-2">₹</span>
+                <span className="text-6xl font-black text-white tracking-tighter">{plan.price}</span>
+                <div className="flex flex-col items-start ml-2 text-left">
+                  {plan.originalPrice && <span className="text-sm text-white/30 line-through font-bold">₹{plan.originalPrice}</span>}
+                  <span className="text-[10px] text-white/40 font-bold uppercase tracking-widest">{plan.period}</span>
                 </div>
               </div>
             </div>
 
-            <div className="space-y-3 md:space-y-4 flex-1 mb-6 md:mb-8 px-1 md:px-2">
+            <div className="space-y-4 flex-1 mb-8 px-2">
               {plan.features.map((feature, i) => (
-                <div key={i} className="flex items-center gap-3 md:gap-4 group">
-                  <div className={`w-4 h-4 md:w-5 md:h-5 rounded-full flex items-center justify-center shrink-0 ${plan.highlight ? 'bg-pink-500/20 text-pink-500' : 'bg-emerald-500/10 text-emerald-400'}`}>
-                    <Check className="w-3 h-3 md:w-3.5 md:h-3.5 stroke-[4]" />
+                <div key={i} className="flex items-start gap-4 group">
+                  <div className={`w-5 h-5 rounded-full flex items-center justify-center shrink-0 mt-0.5 ${plan.highlight ? 'bg-violet-500/20 text-violet-400' : 'bg-white/5 text-white/40'}`}>
+                    <Check className="w-3 h-3 stroke-[3]" />
                   </div>
-                  <span className="text-[12px] md:text-[13px] font-medium text-white/60 group-hover:text-white transition-colors">{feature}</span>
+                  <span className={`text-[13px] font-medium leading-tight ${plan.highlight ? 'text-white/80' : 'text-white/60'}`}>{feature}</span>
                 </div>
               ))}
             </div>
 
-            <button 
+            <button
               onClick={plan.onClick}
               disabled={plan.disabled && plan.name !== 'Go'}
-              className={`w-full py-4 md:py-5 rounded-xl md:rounded-2xl font-black text-white uppercase tracking-widest text-[10px] md:text-[11px] shadow-xl transition-all hover:scale-[1.03] active:scale-[0.98] ${plan.disabled && plan.name !== 'Go' ? 'bg-white/5 text-white/20 cursor-default shadow-none border border-white/5 scale-100' : plan.highlight || plan.name === 'Free' ? 'bg-gradient-to-r from-pink-500 to-purple-600 shadow-pink-500/20' : 'bg-white/[0.05] border border-white/10 hover:bg-white/[0.08]'}`}
+              className={`w-full py-4 rounded-xl font-bold text-white uppercase tracking-widest text-[11px] transition-all hover:scale-[1.02] active:scale-[0.98] ${plan.disabled && plan.name !== 'Go'
+                  ? 'bg-white/5 text-white/20 cursor-default border border-white/5'
+                  : plan.highlight
+                    ? 'bg-violet-600 hover:bg-violet-500 shadow-lg shadow-violet-600/20'
+                    : 'bg-white/10 hover:bg-white/20 border border-white/5'
+                }`}
             >
               {plan.cta}
             </button>
