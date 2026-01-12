@@ -50,9 +50,10 @@ export const MobileNavDrawer: React.FC<MobileNavDrawerProps> = ({ open, onOpenCh
     }
 
     if (data) {
-      setUsername(data.username);
-      setDisplayName(data.display_name);
-      setAvatarUrl(data.avatar_url);
+      const profile = data as any;
+      setUsername(profile.username);
+      setDisplayName(profile.display_name);
+      setAvatarUrl(profile.avatar_url);
     }
   };
 
@@ -62,9 +63,14 @@ export const MobileNavDrawer: React.FC<MobileNavDrawerProps> = ({ open, onOpenCh
   };
 
   const handleSignOut = async () => {
-    await signOut();
-    onOpenChange(false);
-    navigate('/');
+    try {
+      onOpenChange(false); // Close immediately for better UX
+      await signOut();
+    } catch (error) {
+      console.error('Error signing out:', error);
+    } finally {
+      navigate('/');
+    }
   };
 
   return (
