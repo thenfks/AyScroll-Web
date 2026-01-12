@@ -41,10 +41,10 @@ const ProfileHeader: React.FC<ProfileHeaderProps> = ({ user }) => {
     <>
       <header className="relative p-6 md:p-10 rounded-2xl md:rounded-[40px] bg-white/[0.03] border border-white/10 overflow-hidden flex flex-col lg:flex-row items-center justify-between gap-6 md:gap-8 shadow-2xl">
         <div className="flex flex-col md:flex-row items-center gap-6 md:gap-8 relative z-10">
-          <div className="w-24 h-24 md:w-32 md:h-32 lg:w-40 lg:h-40 rounded-full p-1 md:p-1.5 bg-gradient-to-tr from-pink-500 via-purple-500 to-orange-500 shadow-2xl">
+          <div className={`w-24 h-24 md:w-32 md:h-32 lg:w-40 lg:h-40 rounded-full ${isPro ? 'p-1 md:p-1.5 bg-gradient-to-tr from-pink-500 via-purple-500 to-orange-500 shadow-2xl' : ''}`}>
             <img
               src={profile?.avatar_url || user.user_metadata?.avatar_url || user.user_metadata?.picture || `https://ui-avatars.com/api/?name=${encodeURIComponent(profile?.display_name || user.user_metadata?.name || 'User')}&background=random`}
-              className="w-full h-full rounded-full object-cover border-4 md:border-[6px] border-[#020203]"
+              className={`w-full h-full rounded-full object-cover ${isPro ? 'border-4 md:border-[6px] border-[#020203]' : ''}`}
               alt={profile?.display_name || user.user_metadata?.name}
             />
           </div>

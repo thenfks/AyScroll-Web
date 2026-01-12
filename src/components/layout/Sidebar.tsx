@@ -3,6 +3,8 @@ import { Link, useLocation } from 'react-router-dom';
 import { useAuth } from '@/contexts/AuthContext';
 import { cn } from '@/lib/utils';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
+import { useState, useEffect } from 'react';
+import { supabase } from '@/integrations/supabase/client';
 
 const mainNavItems = [
   { icon: Home, label: 'Home', path: '/feed', public: true },
@@ -22,6 +24,32 @@ const topics = [
 export const Sidebar = () => {
   const location = useLocation();
   const { user } = useAuth();
+  const [username, setUsername] = useState<string | null>(null);
+
+  useEffect(() => {
+    if (user) {
+      loadUsername();
+    }
+  }, [user]);
+
+  const loadUsername = async () => {
+    if (!user) return;
+
+    const { data, error } = await supabase
+      .from('user_profiles')
+      .select('username')
+      .eq('id', user.id)
+      .single();
+
+    if (error) {
+      console.error('Error loading username:', error);
+      return;
+    }
+
+    if (data) {
+      setUsername(data.username);
+    }
+  };
 
   return (
     <aside className="fixed left-0 top-0 h-screen w-[240px] bg-sidebar flex-col border-r border-sidebar-border hidden md:flex">
@@ -91,7 +119,7 @@ export const Sidebar = () => {
         {/* User Profile / Guest */}
         <Link to="/profile" className="flex items-center gap-3 px-4 py-3 rounded-xl bg-sidebar-accent">
           <Avatar className="w-10 h-10">
-            <AvatarImage src={user?.user_metadata?.avatar_url} />
+            <AvatarImage src={user?.user_metadata?.avatar_url || user?.user_metadata?.picture} />
             <AvatarFallback className="bg-primary/20 text-primary">
               {user ? user.user_metadata?.name?.charAt(0).toUpperCase() : 'G'}
             </AvatarFallback>
@@ -101,7 +129,7 @@ export const Sidebar = () => {
               {user ? user.user_metadata?.name : 'Guest'}
             </p>
             <p className="text-xs text-muted-foreground">
-              {user ? `@${user.user_metadata?.username}` : '@guest'}
+              {user ? `@${username || 'loading...'}` : '@guest'}
             </p>
           </div>
         </Link>
