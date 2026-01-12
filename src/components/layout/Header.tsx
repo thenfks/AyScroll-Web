@@ -78,14 +78,16 @@ export const Header = () => {
 
   return (
     <header className="fixed top-0 left-[240px] right-0 h-16 bg-background/80 backdrop-blur-xl border-b border-border z-50 flex items-center justify-between px-6">
-      {/* Left Section: Title + Search */}
-      <div className="flex items-center gap-6 flex-1">
+      {/* Left Section: Title */}
+      <div className="flex items-center w-1/4 min-w-fit">
         {pageTitle && (
-          <h1 className="text-xl font-black text-white tracking-tight shrink-0">{pageTitle}</h1>
+          <h1 className="text-2xl font-black text-white tracking-tight shrink-0">{pageTitle}</h1>
         )}
+      </div>
 
-        {/* Search Bar */}
-        <div className="relative max-w-md w-full">
+      {/* Center Section: Search Bar */}
+      <div className="flex justify-center flex-1 max-w-xl mx-auto px-4">
+        <div className="relative w-full">
           <Search className="absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground" />
           <Input
             type="search"
@@ -99,7 +101,7 @@ export const Header = () => {
       </div>
 
       {/* Right Actions */}
-      <div className="flex items-center gap-4 ml-6 shrink-0">
+      <div className="flex items-center justify-end w-1/4 gap-4 min-w-fit">
         {/* Bell Icon */}
         <Button variant="ghost" className="w-10 h-10 rounded-full border border-border bg-background/50 hover:bg-accent shrink-0 flex items-center justify-center p-0">
           <Bell className="w-5 h-5 text-muted-foreground" />
