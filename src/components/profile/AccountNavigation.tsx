@@ -11,7 +11,6 @@ const AccountNavigation: React.FC<AccountNavigationProps> = ({ activeTab, setAct
   const accountItems = [
     { name: 'Personal Info', icon: User },
     { name: 'Login & Security', icon: ShieldCheck },
-    { name: 'Subscription', icon: CreditCard },
     { name: 'Notifications', icon: Bell },
   ];
 
@@ -20,7 +19,7 @@ const AccountNavigation: React.FC<AccountNavigationProps> = ({ activeTab, setAct
       <h3 className="text-sm font-black uppercase tracking-[0.2em] text-white/20 mb-6 px-2">Account</h3>
       <div className="space-y-2">
         {accountItems.map((item) => (
-          <button 
+          <button
             key={item.name}
             onClick={() => setActiveTab(item.name)}
             className={`w-full flex items-center justify-between px-6 py-3 rounded-2xl transition-all group ${activeTab === item.name ? 'bg-pink-500/10 text-pink-500' : 'text-white/40 hover:bg-white/5 hover:text-white/80'}`}
