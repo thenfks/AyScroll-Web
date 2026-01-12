@@ -8,13 +8,13 @@ export function Toaster() {
     <ToastProvider>
       {toasts.map(function ({ id, title, description, action, ...props }) {
         return (
-          <Toast key={id} {...props} className="flex-col items-center text-center min-w-[280px] max-w-[320px]">
-            {/* Logo Icon - Top */}
-            <div className="mb-3">
-              <div className="w-12 h-12 rounded-xl bg-gradient-to-br from-pink-500 to-orange-500 flex items-center justify-center shadow-lg">
+          <Toast key={id} {...props} className="flex-row items-center gap-3 py-3 px-4 min-w-fit max-w-sm">
+            {/* Small Logo Icon - Left */}
+            <div className="flex-shrink-0">
+              <div className="w-8 h-8 rounded-lg bg-gradient-to-br from-pink-500 to-orange-500 flex items-center justify-center shadow-md">
                 <svg
-                  width="28"
-                  height="28"
+                  width="18"
+                  height="18"
                   viewBox="0 0 24 24"
                   fill="none"
                   xmlns="http://www.w3.org/2000/svg"
@@ -43,14 +43,14 @@ export function Toaster() {
               </div>
             </div>
 
-            {/* Content - Bottom */}
-            <div className="w-full space-y-1">
-              {title && <ToastTitle className="text-white font-bold text-base">{title}</ToastTitle>}
-              {description && <ToastDescription className="text-white/60 text-sm">{description}</ToastDescription>}
+            {/* Compact Content - Right */}
+            <div className="flex-1 min-w-0">
+              {title && <ToastTitle className="text-white font-semibold text-sm leading-tight">{title}</ToastTitle>}
+              {description && <ToastDescription className="text-white/50 text-xs leading-tight mt-0.5">{description}</ToastDescription>}
             </div>
 
             {action}
-            <ToastClose className="absolute top-2 right-2" />
+            <ToastClose className="flex-shrink-0 opacity-60 hover:opacity-100" />
           </Toast>
         );
       })}
