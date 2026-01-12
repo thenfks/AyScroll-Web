@@ -1,10 +1,11 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import { Sheet, SheetContent, SheetHeader, SheetTitle } from '@/components/ui/sheet';
 import { Home, Search, Library, Bookmark, BarChart2, Settings, X, LogOut } from 'lucide-react';
 import { Link, useLocation, useNavigate } from 'react-router-dom';
 import { useAuth } from '@/contexts/AuthContext';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { cn } from '@/lib/utils';
+import { supabase } from '@/integrations/supabase/client';
 
 interface MobileNavDrawerProps {
   open: boolean;
@@ -24,6 +25,36 @@ export const MobileNavDrawer: React.FC<MobileNavDrawerProps> = ({ open, onOpenCh
   const location = useLocation();
   const navigate = useNavigate();
   const { user, signOut } = useAuth();
+  const [username, setUsername] = useState<string | null>(null);
+  const [displayName, setDisplayName] = useState<string | null>(null);
+  const [avatarUrl, setAvatarUrl] = useState<string | null>(null);
+
+  useEffect(() => {
+    if (user) {
+      loadUserProfile();
+    }
+  }, [user]);
+
+  const loadUserProfile = async () => {
+    if (!user) return;
+
+    const { data, error } = await supabase
+      .from('user_profiles')
+      .select('username, display_name, avatar_url')
+      .eq('id', user.id)
+      .single();
+
+    if (error) {
+      console.error('Error loading user profile:', error);
+      return;
+    }
+
+    if (data) {
+      setUsername(data.username);
+      setDisplayName(data.display_name);
+      setAvatarUrl(data.avatar_url);
+    }
+  };
 
   const handleNavClick = (path: string) => {
     navigate(path);
@@ -81,17 +112,17 @@ export const MobileNavDrawer: React.FC<MobileNavDrawerProps> = ({ open, onOpenCh
             className="w-full flex items-center gap-4 p-4 rounded-2xl bg-white/[0.03] border border-white/5 mb-3"
           >
             <Avatar className="w-12 h-12">
-              <AvatarImage src={user?.user_metadata?.avatar_url} />
+              <AvatarImage src={avatarUrl || user?.user_metadata?.avatar_url || user?.user_metadata?.picture} />
               <AvatarFallback className="bg-gradient-to-br from-pink-500 to-purple-500 text-white font-bold">
-                {user ? user.user_metadata?.name?.charAt(0).toUpperCase() : 'G'}
+                {user ? (displayName || user.user_metadata?.name)?.charAt(0).toUpperCase() : 'G'}
               </AvatarFallback>
             </Avatar>
             <div className="flex-1 text-left">
               <p className="text-white font-semibold truncate">
-                {user ? user.user_metadata?.name : 'Guest'}
+                {user ? (displayName || user.user_metadata?.name || 'User') : 'Guest'}
               </p>
               <p className="text-white/40 text-sm">
-                {user ? `@${user.user_metadata?.username}` : 'Sign in to continue'}
+                {user ? `@${username || 'loading...'}` : 'Sign in to continue'}
               </p>
             </div>
           </button>
