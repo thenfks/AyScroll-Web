@@ -44,8 +44,8 @@ const SecuritySection: React.FC = () => {
         <section className="p-6 rounded-[40px] bg-white/[0.02] border border-white/5 shadow-xl">
           <div className="flex items-center gap-4 mb-8">
             <div className={`w-12 h-12 rounded-2xl flex items-center justify-center p-2.5 ${provider === 'google' ? 'bg-white' :
-                provider === 'nfks' ? 'bg-black border border-white/10' :
-                  'bg-indigo-500/10 text-indigo-400'
+              provider === 'nfks' ? 'bg-black border border-white/10' :
+                'bg-indigo-500/10 text-indigo-400'
               }`}>
               {provider === 'google' ? (
                 <img src="/google_logo.svg" alt="Google" className="w-full h-full object-contain" />
@@ -133,40 +133,94 @@ const SecuritySection: React.FC = () => {
       <section className="p-6 rounded-[40px] bg-white/[0.02] border border-white/5 shadow-xl">
         <div className="flex items-center justify-between mb-8">
           <h3 className="text-lg font-bold text-white tracking-tight">Active Devices</h3>
-          <button className="text-[10px] font-black uppercase tracking-widest text-white/30 hover:text-pink-500 transition-colors">Revoke All Other Sessions</button>
+          {/* <button className="text-[10px] font-black uppercase tracking-widest text-white/30 hover:text-pink-500 transition-colors">Revoke All Other Sessions</button> */}
         </div>
 
         <div className="space-y-6">
-          {[
-            { device: 'MacBook Pro 16"', location: 'San Francisco, US', time: 'Active Now', icon: Cpu, current: true },
-            { device: 'iPhone 15 Pro', location: 'London, UK', time: '2h ago', icon: Smartphone },
-            { device: 'iPad Air', location: 'Tokyo, JP', time: 'Jan 24, 2024', icon: Smartphone },
-          ].map((session, i) => (
-            <div key={i} className="flex items-center justify-between group">
-              <div className="flex items-center gap-6">
-                <div className={`w-14 h-14 rounded-2xl bg-white/[0.03] border border-white/10 flex items-center justify-center ${session.current ? 'text-pink-500 border-pink-500/20' : 'text-white/20'}`}>
-                  {(() => {
-                    const Icon = session.icon;
-                    return <Icon className="w-6 h-6" />;
-                  })()}
-                </div>
-                <div>
-                  <h5 className="text-[15px] font-bold text-white/90">{session.device}</h5>
-                  <div className="flex items-center gap-2 text-[11px] text-white/20 font-medium">
-                    <Globe className="w-3.5 h-3.5" />
-                    <span>{session.location}</span>
-                    <span>•</span>
-                    <span className={session.current ? 'text-emerald-400 font-black' : ''}>{session.time}</span>
-                  </div>
-                </div>
-              </div>
-              {!session.current && (
-                <button className="px-5 py-2 rounded-xl bg-white/5 text-[10px] font-black text-white/20 uppercase tracking-widest hover:bg-white/10 hover:text-white transition-all opacity-0 group-hover:opacity-100">Revoke</button>
-              )}
-            </div>
-          ))}
+          <ActiveSessions />
         </div>
       </section>
+    </div>
+  );
+};
+
+// Helper component for Active Sessions
+const ActiveSessions: React.FC = () => {
+  const [currentSession, setCurrentSession] = React.useState<{
+    device: string;
+    location: string;
+    ip: string;
+    os: string;
+  } | null>(null);
+
+  React.useEffect(() => {
+    const fetchSessionInfo = async () => {
+      // 1. Parse User Agent
+      const ua = navigator.userAgent;
+      let deviceType = 'Desktop';
+      if (/mobile/i.test(ua)) deviceType = 'Mobile';
+      if (/pad/i.test(ua)) deviceType = 'Tablet';
+
+      let os = 'Unknown OS';
+      if (ua.indexOf("Win") !== -1) os = "Windows";
+      if (ua.indexOf("Mac") !== -1) os = "macOS";
+      if (ua.indexOf("Linux") !== -1) os = "Linux";
+      if (ua.indexOf("Android") !== -1) os = "Android";
+      if (ua.indexOf("iOS") !== -1) os = "iOS";
+
+      let browser = 'Unknown Browser';
+      if (ua.indexOf("Chrome") !== -1) browser = "Chrome";
+      if (ua.indexOf("Firefox") !== -1) browser = "Firefox";
+      if (ua.indexOf("Safari") !== -1) browser = "Safari";
+      if (ua.indexOf("Edg") !== -1) browser = "Edge";
+
+      // 2. Fetch IP & Location
+      let location = 'Unknown Location';
+      let ip = '';
+      try {
+        const res = await fetch('https://ipapi.co/json/');
+        if (res.ok) {
+          const data = await res.json();
+          location = `${data.city}, ${data.country_code}`;
+          ip = data.ip;
+        }
+      } catch (error) {
+        console.error("Failed to fetch location", error);
+      }
+
+      setCurrentSession({
+        device: `${browser} on ${os}`,
+        os: os,
+        location,
+        ip
+      });
+    };
+
+    fetchSessionInfo();
+  }, []);
+
+  if (!currentSession) {
+    return <div className="text-white/40 text-sm">Loading session info...</div>;
+  }
+
+  const isMobile = /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent);
+
+  return (
+    <div className="flex items-center justify-between group">
+      <div className="flex items-center gap-6">
+        <div className="w-14 h-14 rounded-2xl bg-white/[0.03] border border-pink-500/20 text-pink-500 flex items-center justify-center shadow-[0_0_15px_rgba(236,72,153,0.1)]">
+          {isMobile ? <Smartphone className="w-6 h-6" /> : <Cpu className="w-6 h-6" />}
+        </div>
+        <div>
+          <h5 className="text-[15px] font-bold text-white/90">{currentSession.device}</h5>
+          <div className="flex items-center gap-2 text-[11px] text-white/20 font-medium">
+            <Globe className="w-3.5 h-3.5" />
+            <span>{currentSession.location}</span>
+            <span>•</span>
+            <span className="text-emerald-400 font-black">Active Now</span>
+          </div>
+        </div>
+      </div>
     </div>
   );
 };
