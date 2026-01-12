@@ -208,7 +208,7 @@ const ActiveSessions: React.FC = () => {
   return (
     <div className="flex items-center justify-between group">
       <div className="flex items-center gap-6">
-        <div className="w-14 h-14 rounded-2xl bg-white/[0.03] border border-pink-500/20 text-pink-500 flex items-center justify-center shadow-[0_0_15px_rgba(236,72,153,0.1)]">
+        <div className="w-14 h-14 rounded-2xl bg-white/[0.03] text-pink-500 flex items-center justify-center shadow-[0_0_15px_rgba(236,72,153,0.1)]">
           {isMobile ? <Smartphone className="w-6 h-6" /> : <Cpu className="w-6 h-6" />}
         </div>
         <div>
