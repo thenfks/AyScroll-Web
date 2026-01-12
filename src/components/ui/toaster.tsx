@@ -8,13 +8,13 @@ export function Toaster() {
     <ToastProvider>
       {toasts.map(function ({ id, title, description, action, ...props }) {
         return (
-          <Toast key={id} {...props}>
-            {/* Logo Icon */}
-            <div className="flex-shrink-0">
-              <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-pink-500 to-orange-500 flex items-center justify-center shadow-lg">
+          <Toast key={id} {...props} className="flex-col items-center text-center min-w-[280px] max-w-[320px]">
+            {/* Logo Icon - Top */}
+            <div className="mb-3">
+              <div className="w-12 h-12 rounded-xl bg-gradient-to-br from-pink-500 to-orange-500 flex items-center justify-center shadow-lg">
                 <svg
-                  width="24"
-                  height="24"
+                  width="28"
+                  height="28"
                   viewBox="0 0 24 24"
                   fill="none"
                   xmlns="http://www.w3.org/2000/svg"
@@ -43,14 +43,14 @@ export function Toaster() {
               </div>
             </div>
 
-            {/* Content */}
-            <div className="flex-1 grid gap-1">
-              {title && <ToastTitle className="text-white font-bold">{title}</ToastTitle>}
-              {description && <ToastDescription className="text-white/70">{description}</ToastDescription>}
+            {/* Content - Bottom */}
+            <div className="w-full space-y-1">
+              {title && <ToastTitle className="text-white font-bold text-base">{title}</ToastTitle>}
+              {description && <ToastDescription className="text-white/60 text-sm">{description}</ToastDescription>}
             </div>
 
             {action}
-            <ToastClose />
+            <ToastClose className="absolute top-2 right-2" />
           </Toast>
         );
       })}
