@@ -2,9 +2,10 @@ import React, { useState, useEffect } from 'react';
 import { useAuth } from '@/contexts/AuthContext';
 import { supabase } from '@/integrations/supabase/client';
 import { UserProfile } from '@/types/database';
-import { Camera, Save, X } from 'lucide-react';
+import { Camera, Save } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { useToast } from '@/hooks/use-toast';
+import { Sheet, SheetContent, SheetHeader, SheetTitle } from '@/components/ui/sheet';
 
 interface ProfileEditModalProps {
     isOpen: boolean;
@@ -128,24 +129,24 @@ const ProfileEditModal: React.FC<ProfileEditModalProps> = ({ isOpen, onClose, on
         }
     };
 
-    if (!isOpen) return null;
-
     return (
-        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/80 backdrop-blur-sm p-4">
-            <div className="bg-[#0A0A0F] border border-white/10 rounded-3xl max-w-2xl w-full max-h-[90vh] overflow-y-auto">
-                {/* Header */}
-                <div className="sticky top-0 bg-[#0A0A0F] border-b border-white/10 p-6 flex items-center justify-between">
-                    <h2 className="text-2xl font-black text-white">Edit Profile</h2>
-                    <button
-                        onClick={onClose}
-                        className="w-10 h-10 rounded-full bg-white/5 hover:bg-white/10 flex items-center justify-center transition-colors"
-                    >
-                        <X className="w-5 h-5 text-white/60" />
-                    </button>
+        <Sheet open={isOpen} onOpenChange={onClose}>
+            <SheetContent
+                side="bottom"
+                className="h-[90vh] bg-[#0A0A0F] border-t border-white/10 rounded-t-3xl p-0 overflow-hidden"
+            >
+                {/* Drag Handle */}
+                <div className="w-full flex justify-center pt-3 pb-2">
+                    <div className="w-12 h-1.5 rounded-full bg-white/20" />
                 </div>
 
-                {/* Content */}
-                <div className="p-6 space-y-6">
+                {/* Header */}
+                <SheetHeader className="px-6 pb-4 border-b border-white/10">
+                    <SheetTitle className="text-2xl font-black text-white">Edit Profile</SheetTitle>
+                </SheetHeader>
+
+                {/* Content - Scrollable */}
+                <div className="h-[calc(90vh-140px)] overflow-y-auto px-6 py-6 space-y-6">
                     {/* Avatar Upload */}
                     <div className="flex flex-col items-center gap-4">
                         <div className="relative">
@@ -230,8 +231,8 @@ const ProfileEditModal: React.FC<ProfileEditModalProps> = ({ isOpen, onClose, on
                     </div>
                 </div>
 
-                {/* Footer */}
-                <div className="sticky bottom-0 bg-[#0A0A0F] border-t border-white/10 p-6 flex gap-3">
+                {/* Footer - Fixed at bottom */}
+                <div className="absolute bottom-0 left-0 right-0 bg-[#0A0A0F] border-t border-white/10 p-6 flex gap-3">
                     <Button
                         onClick={onClose}
                         variant="outline"
@@ -254,8 +255,8 @@ const ProfileEditModal: React.FC<ProfileEditModalProps> = ({ isOpen, onClose, on
                         )}
                     </Button>
                 </div>
-            </div>
-        </div>
+            </SheetContent>
+        </Sheet>
     );
 };
 
