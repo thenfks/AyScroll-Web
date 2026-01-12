@@ -38,7 +38,7 @@ const SignIn = () => {
           setError(result.error.message);
         }
       } else {
-        navigate('/');
+        navigate('/feed');
       }
     } catch (error: any) {
       setError(error.message);
