@@ -71,15 +71,7 @@ export const MobileNavDrawer: React.FC<MobileNavDrawerProps> = ({ open, onOpenCh
     <Sheet open={open} onOpenChange={onOpenChange}>
       <SheetContent side="right" className="w-[280px] bg-[#0A0A0F]/95 backdrop-blur-xl border-l border-white/10 p-0">
         <SheetHeader className="p-6 border-b border-white/5">
-          <div className="flex items-center justify-between">
-            <SheetTitle className="text-white font-bold">Menu</SheetTitle>
-            <button
-              onClick={() => onOpenChange(false)}
-              className="p-2 rounded-xl bg-white/5 hover:bg-white/10 transition-colors"
-            >
-              <X className="w-4 h-4 text-white/60" />
-            </button>
-          </div>
+          <SheetTitle className="text-white font-bold">Menu</SheetTitle>
         </SheetHeader>
 
         <nav className="p-4 space-y-1">
