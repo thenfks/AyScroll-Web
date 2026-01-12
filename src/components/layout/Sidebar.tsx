@@ -1,4 +1,4 @@
-import { Home, Search, Library, Bookmark, Settings, BarChart2 } from 'lucide-react';
+import { Home, Compass, Library, Bookmark, Settings, BarChart2 } from 'lucide-react';
 import { Link, useLocation } from 'react-router-dom';
 import { useAuth } from '@/contexts/AuthContext';
 import { cn } from '@/lib/utils';
@@ -8,7 +8,8 @@ import { supabase } from '@/integrations/supabase/client';
 
 const mainNavItems = [
   { icon: Home, label: 'Home', path: '/feed', public: true },
-  { icon: Search, label: 'Explore', path: '/explore', public: true },
+  { icon: Compass, label: 'Explore', path: '/explore', public: true },
+
   { icon: Library, label: 'Library', path: '/library', public: false },
   { icon: Bookmark, label: 'Saved', path: '/saved', public: false },
   { icon: BarChart2, label: 'Analysis', path: '/analysis', public: false },

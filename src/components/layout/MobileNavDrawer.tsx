@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { Sheet, SheetContent, SheetHeader, SheetTitle } from '@/components/ui/sheet';
-import { Home, Search, Library, Bookmark, BarChart2, Settings, X, LogOut } from 'lucide-react';
+import { Home, Compass, Library, Bookmark, BarChart2, Settings, X, LogOut } from 'lucide-react';
 import { Link, useLocation, useNavigate } from 'react-router-dom';
 import { useAuth } from '@/contexts/AuthContext';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
@@ -13,8 +13,8 @@ interface MobileNavDrawerProps {
 }
 
 const navItems = [
-  { icon: Home, label: 'Home', path: '/' },
-  { icon: Search, label: 'Explore', path: '/explore' },
+  { icon: Home, label: 'Home', path: '/feed' },
+  { icon: Compass, label: 'Explore', path: '/explore' },
   { icon: Library, label: 'Library', path: '/library' },
   { icon: Bookmark, label: 'Saved', path: '/saved' },
   { icon: BarChart2, label: 'Analysis', path: '/analysis' },
