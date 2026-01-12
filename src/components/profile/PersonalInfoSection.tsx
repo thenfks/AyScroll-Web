@@ -1,10 +1,62 @@
 import React from 'react';
 import { Area, AreaChart, ResponsiveContainer, Tooltip, XAxis } from 'recharts';
 import { ChevronRight, Play, Trophy, Beaker, Lock, GraduationCap, BadgeCheck, Rocket, Paintbrush, Heart, Plus } from 'lucide-react';
+import { supabase } from '@/integrations/supabase/client';
+import { useAuth } from '@/contexts/AuthContext';
 import { MOCK_REELS } from '@/data/data';
 
 const PersonalInfoSection: React.FC = () => {
+  const { user } = useAuth();
   const recentLearning = MOCK_REELS.slice(0, 2);
+  const [activityData, setActivityData] = React.useState([
+    { day: 'MON', minutes: 0 },
+    { day: 'TUE', minutes: 0 },
+    { day: 'WED', minutes: 0 },
+    { day: 'THU', minutes: 0 },
+    { day: 'FRI', minutes: 0 },
+    { day: 'SAT', minutes: 0 },
+    { day: 'SUN', minutes: 0 },
+  ]);
+
+  React.useEffect(() => {
+    if (!user) return;
+
+    const fetchActivity = async () => {
+      // Calculate the last 7 days dynamically
+      const days = ['SUN', 'MON', 'TUE', 'WED', 'THU', 'FRI', 'SAT'];
+      const today = new Date();
+      const last7Days: { dateStr: string; dayLabel: string }[] = [];
+
+      for (let i = 6; i >= 0; i--) {
+        const d = new Date(today);
+        d.setDate(today.getDate() - i);
+        last7Days.push({
+          dateStr: d.toISOString().split('T')[0],
+          dayLabel: days[d.getDay()],
+        });
+      }
+
+      // Fetch real data
+      const { data } = await supabase
+        .from('daily_learning_activity')
+        .select('activity_date, minutes_spent')
+        .eq('user_id', user.id)
+        .gte('activity_date', last7Days[0].dateStr);
+
+      // Map to chart format
+      const chartData = last7Days.map(d => {
+        const record = data?.find(r => r.activity_date === d.dateStr);
+        return {
+          day: d.dayLabel,
+          minutes: record ? record.minutes_spent : 0
+        };
+      });
+
+      setActivityData(chartData);
+    };
+
+    fetchActivity();
+  }, [user]);
 
   return (
     <div className="space-y-6 animate-in fade-in slide-in-from-left-4 duration-500">
@@ -24,15 +76,7 @@ const PersonalInfoSection: React.FC = () => {
 
         <div className="h-[200px] w-full -ml-4">
           <ResponsiveContainer width="100%" height="100%">
-            <AreaChart data={[
-              { day: 'MON', minutes: 25 },
-              { day: 'TUE', minutes: 45 },
-              { day: 'WED', minutes: 30 },
-              { day: 'THU', minutes: 85 },
-              { day: 'FRI', minutes: 55 },
-              { day: 'SAT', minutes: 65 },
-              { day: 'SUN', minutes: 40 },
-            ]}>
+            <AreaChart data={activityData}>
               <defs>
                 <linearGradient id="colorActivity" x1="0" y1="0" x2="1" y2="0">
                   <stop offset="0%" stopColor="#ec4899" />

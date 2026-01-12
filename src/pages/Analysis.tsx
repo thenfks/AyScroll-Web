@@ -4,6 +4,9 @@ import { ProtectedRoute } from '@/components/auth/ProtectedRoute';
 import { Flame, Zap, Target, Trophy, Brain, TrendingUp, AlertTriangle, Sparkles, ChevronRight } from 'lucide-react';
 import { useIsMobile } from '@/hooks/use-mobile';
 import { Area, AreaChart, ResponsiveContainer, Tooltip, XAxis } from 'recharts';
+import { supabase } from '@/integrations/supabase/client';
+import { useAuth } from '@/contexts/AuthContext';
+import { useState, useEffect } from 'react';
 
 const stats = [
   { label: 'Streak', value: '12', unit: 'Days', icon: Flame, color: 'from-orange-500 to-red-500', bgColor: 'bg-orange-500/10' },
@@ -32,6 +35,56 @@ const milestones = [
 
 const Analysis = () => {
   const isMobile = useIsMobile();
+  const { user } = useAuth();
+  const [activityData, setActivityData] = useState([
+    { day: 'MON', minutes: 0 },
+    { day: 'TUE', minutes: 0 },
+    { day: 'WED', minutes: 0 },
+    { day: 'THU', minutes: 0 },
+    { day: 'FRI', minutes: 0 },
+    { day: 'SAT', minutes: 0 },
+    { day: 'SUN', minutes: 0 },
+  ]);
+
+  useEffect(() => {
+    if (!user) return;
+
+    const fetchActivity = async () => {
+      // Calculate the last 7 days dynamically
+      const days = ['SUN', 'MON', 'TUE', 'WED', 'THU', 'FRI', 'SAT'];
+      const today = new Date();
+      const last7Days: { dateStr: string; dayLabel: string }[] = [];
+
+      for (let i = 6; i >= 0; i--) {
+        const d = new Date(today);
+        d.setDate(today.getDate() - i);
+        last7Days.push({
+          dateStr: d.toISOString().split('T')[0],
+          dayLabel: days[d.getDay()],
+        });
+      }
+
+      // Fetch real data
+      const { data } = await supabase
+        .from('daily_learning_activity')
+        .select('activity_date, minutes_spent')
+        .eq('user_id', user.id)
+        .gte('activity_date', last7Days[0].dateStr);
+
+      // Map to chart format
+      const chartData = last7Days.map(d => {
+        const record = data?.find(r => r.activity_date === d.dateStr);
+        return {
+          day: d.dayLabel,
+          minutes: record ? record.minutes_spent : 0
+        };
+      });
+
+      setActivityData(chartData);
+    };
+
+    fetchActivity();
+  }, [user]);
 
   return (
     <ProtectedRoute>
@@ -108,15 +161,7 @@ const Analysis = () => {
 
               <div className="flex-1 w-full -ml-2">
                 <ResponsiveContainer width="100%" height="100%">
-                  <AreaChart data={[
-                    { day: 'MON', minutes: 40 },
-                    { day: 'TUE', minutes: 65 },
-                    { day: 'WED', minutes: 45 },
-                    { day: 'THU', minutes: 80 },
-                    { day: 'FRI', minutes: 55 },
-                    { day: 'SAT', minutes: 90 },
-                    { day: 'SUN', minutes: 70 },
-                  ]}>
+                  <AreaChart data={activityData}>
                     <defs>
                       <linearGradient id="colorActivityAnalysis" x1="0" y1="0" x2="1" y2="0">
                         <stop offset="0%" stopColor="#ec4899" />

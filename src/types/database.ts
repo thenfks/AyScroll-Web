@@ -164,6 +164,14 @@ export interface UserSession {
     created_at: string;
 }
 
+export interface DailyLearningActivity {
+    id: string;
+    user_id: string;
+    activity_date: string;
+    minutes_spent: number;
+    created_at: string;
+}
+
 // Database type for Supabase client
 export interface Database {
     public: {
@@ -177,6 +185,11 @@ export interface Database {
                 Row: UserSession;
                 Insert: Omit<UserSession, 'id' | 'created_at' | 'last_active' | 'is_current_session'>;
                 Update: Partial<Omit<UserSession, 'id' | 'created_at'>>;
+            };
+            daily_learning_activity: {
+                Row: DailyLearningActivity;
+                Insert: Omit<DailyLearningActivity, 'id' | 'created_at'>;
+                Update: Partial<Omit<DailyLearningActivity, 'id' | 'created_at'>>;
             };
             user_activity: {
                 Row: UserActivity;
