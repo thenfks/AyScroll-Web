@@ -145,48 +145,37 @@ const SecuritySection: React.FC = () => {
 };
 
 // Helper component for Active Sessions
+import { supabase } from '@/integrations/supabase/client';
+
 const ActiveSessions: React.FC = () => {
-  const [currentSession, setCurrentSession] = React.useState<{
-    device: string;
-    location: string;
-    ip: string;
-    os: string;
-  } | null>(null);
+  const { user } = useAuth();
+  const [sessions, setSessions] = React.useState<any[]>([]);
+  const [currentSessionId, setCurrentSessionId] = React.useState<string | null>(null);
 
   React.useEffect(() => {
-    const fetchSessionInfo = async () => {
+    if (!user) return;
+
+    const manageSession = async () => {
+      // 1. Detect Device Info
       const ua = navigator.userAgent;
 
-      // 1. Better Browser Detection
       let browser = 'Unknown Browser';
-      if (ua.indexOf("Edg") !== -1) {
-        browser = "Edge";
-      } else if (ua.indexOf("Chrome") !== -1) {
-        browser = "Chrome";
-      } else if (ua.indexOf("Firefox") !== -1) {
-        browser = "Firefox";
-      } else if (ua.indexOf("Safari") !== -1) {
-        browser = "Safari";
-      }
+      if (ua.indexOf("Edg") !== -1) browser = "Edge";
+      else if (ua.indexOf("Chrome") !== -1) browser = "Chrome";
+      else if (ua.indexOf("Firefox") !== -1) browser = "Firefox";
+      else if (ua.indexOf("Safari") !== -1) browser = "Safari";
 
-      // 2. Better OS Detection (fixing iPad vs Mac)
       let os = 'Unknown OS';
       const platform = navigator.platform;
       const maxTouchPoints = navigator.maxTouchPoints || 0;
-
       if (/iPad|iPhone|iPod/.test(ua) || (platform === 'MacIntel' && maxTouchPoints > 1)) {
         os = /iPad/.test(ua) || (platform === 'MacIntel' && maxTouchPoints > 1) ? 'iPadOS' : 'iOS';
-      } else if (/Mac/.test(ua)) {
-        os = "macOS";
-      } else if (/Win/.test(ua)) {
-        os = "Windows";
-      } else if (/Android/.test(ua)) {
-        os = "Android";
-      } else if (/Linux/.test(ua)) {
-        os = "Linux";
-      }
+      } else if (/Mac/.test(ua)) os = "macOS";
+      else if (/Win/.test(ua)) os = "Windows";
+      else if (/Android/.test(ua)) os = "Android";
+      else if (/Linux/.test(ua)) os = "Linux";
 
-      // 3. Fetch IP & Location
+      // 2. Fetch IP & Location
       let location = 'Unknown Location';
       let ip = '';
       try {
@@ -200,40 +189,108 @@ const ActiveSessions: React.FC = () => {
         console.error("Failed to fetch location", error);
       }
 
-      setCurrentSession({
-        device: `${browser} on ${os}`,
+      // 3. Register or Update Session
+      const localSessionId = sessionStorage.getItem('ayscroll_session_id');
+      const deviceInfo = {
+        user_id: user.id,
+        user_agent: ua,
+        ip_address: ip,
+        location: location,
+        device_type: /mobile/i.test(ua) ? 'Mobile' : /pad/i.test(ua) ? 'Tablet' : 'Desktop',
         os: os,
-        location,
-        ip
-      });
+        browser: browser,
+        last_active: new Date().toISOString()
+      };
+
+      let activeId = localSessionId;
+
+      if (localSessionId) {
+        // Try to update
+        const { error } = await supabase
+          .from('user_sessions')
+          .update(deviceInfo)
+          .eq('id', localSessionId);
+
+        // If error (e.g. deleted), treat as new
+        if (error) activeId = null;
+      }
+
+      if (!activeId) {
+        // Create new
+        const { data, error } = await supabase
+          .from('user_sessions')
+          .insert(deviceInfo)
+          .select()
+          .single();
+
+        if (data) {
+          sessionStorage.setItem('ayscroll_session_id', data.id);
+          activeId = data.id;
+        }
+      }
+
+      setCurrentSessionId(activeId);
+
+      // 4. Fetch All Sessions
+      const { data: allSessions } = await supabase
+        .from('user_sessions')
+        .select('*')
+        .eq('user_id', user.id)
+        .order('last_active', { ascending: false });
+
+      if (allSessions) {
+        setSessions(allSessions);
+      }
     };
 
-    fetchSessionInfo();
-  }, []);
+    manageSession();
+  }, [user]);
 
-  if (!currentSession) {
-    return <div className="text-white/40 text-sm">Loading session info...</div>;
+  if (sessions.length === 0) {
+    return <div className="text-white/40 text-sm">Loading sessions...</div>;
   }
 
-  const isMobile = /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent);
-
   return (
-    <div className="flex items-center justify-between group">
-      <div className="flex items-center gap-6">
-        <div className="w-14 h-14 rounded-2xl bg-white/[0.03] text-pink-500 flex items-center justify-center">
-          {isMobile ? <Smartphone className="w-6 h-6" /> : <Cpu className="w-6 h-6" />}
-        </div>
-        <div>
-          <h5 className="text-[15px] font-bold text-white/90">{currentSession.device}</h5>
-          <div className="flex items-center gap-2 text-[11px] text-white/20 font-medium">
-            <Globe className="w-3.5 h-3.5" />
-            <span>{currentSession.location}</span>
-            <span>•</span>
-            <span className="text-emerald-400 font-black">Active Now</span>
+    <>
+      {sessions.map((session) => {
+        const isCurrent = session.id === currentSessionId;
+        const isMobile = /Mobile|Tablet|Android|iOS|iPhone/i.test(session.device_type) || session.os === 'iOS' || session.os === 'Android';
+
+        return (
+          <div key={session.id} className="flex items-center justify-between group">
+            <div className="flex items-center gap-6">
+              <div className={`w-14 h-14 rounded-2xl bg-white/[0.03] flex items-center justify-center ${isCurrent ? 'text-pink-500' : 'text-white/20'}`}>
+                {isMobile ? <Smartphone className="w-6 h-6" /> : <Cpu className="w-6 h-6" />}
+              </div>
+              <div>
+                <h5 className="text-[15px] font-bold text-white/90">{session.browser} on {session.os}</h5>
+                <div className="flex items-center gap-2 text-[11px] text-white/20 font-medium">
+                  <Globe className="w-3.5 h-3.5" />
+                  <span>{session.location}</span>
+                  <span>•</span>
+                  {isCurrent ? (
+                    <span className="text-emerald-400 font-black">Active Now</span>
+                  ) : (
+                    <span>Last active: {new Date(session.last_active).toLocaleDateString()}</span>
+                  )}
+                </div>
+              </div>
+            </div>
+            {!isCurrent && (
+              <button
+                onClick={async () => {
+                  await supabase.from('user_sessions').delete().eq('id', session.id);
+                  setSessions(sessions.filter(s => s.id !== session.id));
+                }}
+                className="px-5 py-2 rounded-xl bg-white/5 text-[10px] font-black text-white/20 uppercase tracking-widest hover:bg-red-500/20 hover:text-red-400 transition-all opacity-0 group-hover:opacity-100"
+              >
+                Revoke
+              </button>
+            )}
           </div>
-        </div>
-      </div>
-    </div>
+        );
+      })}
+    </>
   );
 };
 

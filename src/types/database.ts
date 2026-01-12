@@ -149,6 +149,21 @@ export interface UserUpload {
     updated_at: string;
 }
 
+export interface UserSession {
+    id: string;
+    user_id: string;
+    session_token: string | null;
+    user_agent: string | null;
+    ip_address: string | null;
+    location: string | null;
+    device_type: string | null;
+    os: string | null;
+    browser: string | null;
+    is_current_session: boolean;
+    last_active: string;
+    created_at: string;
+}
+
 // Database type for Supabase client
 export interface Database {
     public: {
@@ -157,6 +172,11 @@ export interface Database {
                 Row: UserProfile;
                 Insert: Omit<UserProfile, 'id' | 'created_at' | 'updated_at' | 'followers_count' | 'following_count' | 'total_watch_hours' | 'current_streak_days' | 'longest_streak_days'>;
                 Update: Partial<Omit<UserProfile, 'id' | 'created_at'>>;
+            };
+            user_sessions: {
+                Row: UserSession;
+                Insert: Omit<UserSession, 'id' | 'created_at' | 'last_active' | 'is_current_session'>;
+                Update: Partial<Omit<UserSession, 'id' | 'created_at'>>;
             };
             user_activity: {
                 Row: UserActivity;

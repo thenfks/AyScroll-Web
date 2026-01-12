@@ -154,6 +154,12 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
   };
 
   const signOut = async () => {
+    // Cleanup active session trace in DB
+    const localSessionId = sessionStorage.getItem('ayscroll_session_id');
+    if (localSessionId) {
+      await supabase.from('user_sessions').delete().eq('id', localSessionId);
+      sessionStorage.removeItem('ayscroll_session_id');
+    }
     await supabase.auth.signOut();
   };
 
@@ -199,6 +205,113 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
     signInWithUsername,
     isGuest: !user,
   };
+
+  // Session Tracking & Revocation Logic
+  useEffect(() => {
+    if (!user) return;
+
+    // 1. Initial Session Registration
+    const registerSession = async () => {
+      try {
+        const ua = navigator.userAgent;
+        let location = 'Unknown Location';
+        let ip = '';
+
+        try {
+          // Simple timeout to prevent blocking auth flow excessively
+          const controller = new AbortController();
+          const timeoutId = setTimeout(() => controller.abort(), 2000);
+
+          const res = await fetch('https://ipapi.co/json/', { signal: controller.signal });
+          if (res.ok) {
+            const data = await res.json();
+            location = `${data.city}, ${data.country_code}`;
+            ip = data.ip;
+          }
+          clearTimeout(timeoutId);
+        } catch (e) {
+          console.warn('Location fetch skipped/failed', e);
+        }
+
+        // Detect details
+        let browser = 'Unknown Browser';
+        if (ua.indexOf("Edg") !== -1) browser = "Edge";
+        else if (ua.indexOf("Chrome") !== -1) browser = "Chrome";
+        else if (ua.indexOf("Firefox") !== -1) browser = "Firefox";
+        else if (ua.indexOf("Safari") !== -1) browser = "Safari";
+
+        let os = 'Unknown OS';
+        const platform = navigator.platform;
+        const maxTouchPoints = navigator.maxTouchPoints || 0;
+        if (/iPad|iPhone|iPod/.test(ua) || (platform === 'MacIntel' && maxTouchPoints > 1)) {
+          os = /iPad/.test(ua) || (platform === 'MacIntel' && maxTouchPoints > 1) ? 'iPadOS' : 'iOS';
+        } else if (/Mac/.test(ua)) os = "macOS";
+        else if (/Win/.test(ua)) os = "Windows";
+        else if (/Android/.test(ua)) os = "Android";
+        else if (/Linux/.test(ua)) os = "Linux";
+
+        const localSessionId = sessionStorage.getItem('ayscroll_session_id');
+        const deviceInfo = {
+          user_id: user.id,
+          user_agent: ua,
+          ip_address: ip,
+          location: location,
+          device_type: /mobile/i.test(ua) ? 'Mobile' : /pad/i.test(ua) ? 'Tablet' : 'Desktop',
+          os: os,
+          browser: browser,
+          last_active: new Date().toISOString()
+        };
+
+        if (localSessionId) {
+          // Update existing
+          const { error } = await supabase
+            .from('user_sessions')
+            .update(deviceInfo)
+            .eq('id', localSessionId);
+
+          // If error (e.g. record deleted), we treat as invalid and let the loop handle it or creating new?
+          // For now, if update fails (row missing), we assume it's revoked or new session needed.
+          // But effectively, if localSessionId exists but row missing => revoked.
+        } else {
+          // Create new
+          const { data, error } = await supabase
+            .from('user_sessions')
+            .insert(deviceInfo)
+            .select()
+            .single();
+
+          if (data) {
+            sessionStorage.setItem('ayscroll_session_id', data.id);
+          }
+        }
+      } catch (err) {
+        console.error('Session registration failed', err);
+      }
+    };
+
+    registerSession();
+
+    // 2. Periodic Revocation Check (Poll every 10s)
+    const intervalId = setInterval(async () => {
+      const localSessionId = sessionStorage.getItem('ayscroll_session_id');
+      if (!localSessionId) return; // Should we create one? Maybe. 
+
+      const { data, error } = await supabase
+        .from('user_sessions')
+        .select('id')
+        .eq('id', localSessionId)
+        .maybeSingle();
+
+      // If no data found, it means the session was deleted/revoked
+      if (!data && !error) {
+        console.log('Session revoked remotely. Signing out...');
+        sessionStorage.removeItem('ayscroll_session_id');
+        await supabase.auth.signOut();
+      }
+    }, 10000); // Check every 10 seconds
+
+    return () => clearInterval(intervalId);
+  }, [user]);
 
   return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>;
 };
