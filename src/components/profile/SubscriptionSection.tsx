@@ -92,7 +92,7 @@ const SubscriptionSection: React.FC = () => {
             <button
               key={cycle}
               onClick={() => setBillingCycle(cycle)}
-              className={`px-6 md:px-8 py-2.5 rounded-lg text-[10px] font-black uppercase tracking-widest transition-all ${billingCycle === cycle ? 'bg-violet-600 text-white shadow-lg shadow-violet-600/20' : 'text-white/30 hover:text-white/60'}`}
+              className={`px-6 md:px-8 py-2.5 rounded-lg text-[10px] font-black uppercase tracking-widest transition-all ${billingCycle === cycle ? 'bg-gradient-to-r from-pink-500 to-orange-500 text-white shadow-lg shadow-orange-500/20' : 'text-white/30 hover:text-white/60'}`}
             >
               {cycle}
             </button>
@@ -105,13 +105,13 @@ const SubscriptionSection: React.FC = () => {
           <div
             key={plan.name}
             className={`relative p-6 md:p-8 rounded-[32px] flex flex-col transition-all duration-300 border hover:scale-[1.03] ${plan.highlight
-                ? 'bg-[#151515] border-white/10 shadow-2xl shadow-violet-500/5'
-                : 'bg-[#101010] border-white/5 hover:border-white/10'
+              ? 'bg-[#151515] border-white/10 shadow-2xl shadow-orange-500/5'
+              : 'bg-[#101010] border-white/5 hover:border-white/10'
               }`}
           >
             {plan.popular && (
               <div className="absolute -top-4 left-1/2 -translate-x-1/2">
-                <span className="px-4 py-1.5 rounded-full bg-violet-600 text-white text-[10px] font-black uppercase tracking-widest shadow-lg shadow-violet-600/20 border border-violet-400">
+                <span className="px-4 py-1.5 rounded-full bg-gradient-to-r from-pink-500 to-orange-500 text-white text-[10px] font-black uppercase tracking-widest shadow-lg shadow-orange-500/20 border border-white/10">
                   Most Popular
                 </span>
               </div>
@@ -142,7 +142,7 @@ const SubscriptionSection: React.FC = () => {
             <div className="space-y-4 flex-1 mb-8 px-2">
               {plan.features.map((feature, i) => (
                 <div key={i} className="flex items-start gap-4 group">
-                  <div className={`w-5 h-5 rounded-full flex items-center justify-center shrink-0 mt-0.5 ${plan.highlight ? 'bg-violet-500/20 text-violet-400' : 'bg-white/5 text-white/40'}`}>
+                  <div className={`w-5 h-5 rounded-full flex items-center justify-center shrink-0 mt-0.5 ${plan.highlight ? 'bg-gradient-to-br from-pink-500/20 to-orange-500/20 text-orange-400' : 'bg-white/5 text-white/40'}`}>
                     <Check className="w-3 h-3 stroke-[3]" />
                   </div>
                   <span className={`text-[13px] font-medium leading-tight ${plan.highlight ? 'text-white/80' : 'text-white/60'}`}>{feature}</span>
@@ -154,10 +154,10 @@ const SubscriptionSection: React.FC = () => {
               onClick={plan.onClick}
               disabled={plan.disabled && plan.name !== 'Go'}
               className={`w-full py-4 rounded-xl font-bold text-white uppercase tracking-widest text-[11px] transition-all hover:scale-[1.02] active:scale-[0.98] ${plan.disabled && plan.name !== 'Go'
-                  ? 'bg-white/5 text-white/20 cursor-default border border-white/5'
-                  : plan.highlight
-                    ? 'bg-violet-600 hover:bg-violet-500 shadow-lg shadow-violet-600/20'
-                    : 'bg-white/10 hover:bg-white/20 border border-white/5'
+                ? 'bg-white/5 text-white/20 cursor-default border border-white/5'
+                : plan.highlight
+                  ? 'bg-gradient-to-r from-pink-500 to-orange-500 shadow-lg shadow-orange-500/20'
+                  : 'bg-white/10 hover:bg-white/20 border border-white/5'
                 }`}
             >
               {plan.cta}

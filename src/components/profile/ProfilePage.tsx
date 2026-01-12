@@ -16,6 +16,8 @@ import AccountNavigation from './AccountNavigation';
 import SubscriptionCard from './SubscriptionCard';
 import PreferencesSection from './PreferencesSection';
 import PersonalInfoSection from './PersonalInfoSection';
+import ProfileEditModal from './ProfileEditModal';
+import ProfileEditForm from './ProfileEditForm';
 
 interface LocationState {
   targetTab?: string;
@@ -30,6 +32,8 @@ const ProfilePage: React.FC = () => {
   const [activeTab, setActiveTab] = useState('Personal Info');
   const [darkMode, setDarkMode] = useState(true);
   const [autoDownload, setAutoDownload] = useState(false);
+  const [isEditModalOpen, setIsEditModalOpen] = useState(false);
+  const [refreshKey, setRefreshKey] = useState(0);
 
   // Sync activeTab with navigation state (e.g., from Analysis page)
   useEffect(() => {
@@ -39,6 +43,23 @@ const ProfilePage: React.FC = () => {
       window.history.replaceState({}, document.title);
     }
   }, [location.state]);
+
+  const handleEditClick = () => {
+    if (isMobile) {
+      setIsEditModalOpen(true);
+    } else {
+      setActiveTab('Edit Profile');
+    }
+  };
+
+  const handleEditComplete = () => {
+    setRefreshKey(prev => prev + 1);
+    setActiveTab('Personal Info');
+  };
+
+  const handleEditCancel = () => {
+    setActiveTab('Personal Info');
+  };
 
   if (!user || user.user_metadata?.username === 'Guest') {
     return (
@@ -72,13 +93,13 @@ const ProfilePage: React.FC = () => {
       <div className={`flex-1 flex flex-col min-w-0 overflow-y-auto no-scrollbar pb-32 ${isMobile ? 'pt-16' : 'pl-[240px]'}`}>
         <div className="px-4 md:px-8 py-6 max-w-[1400px] mx-auto w-full space-y-6">
 
-          <ProfileHeader user={user} />
+          <ProfileHeader key={refreshKey} user={user} onEditClick={handleEditClick} />
 
           <div className="grid grid-cols-12 gap-4 md:gap-6">
             {/* Left Column: Account & Preferences */}
             <div className="col-span-12 lg:col-span-4 space-y-4 md:space-y-6">
               <SubscriptionCard onManageClick={() => setActiveTab('Subscription')} />
-              <AccountNavigation activeTab={activeTab} setActiveTab={setActiveTab} logout={signOut} />
+              <AccountNavigation activeTab={activeTab === 'Edit Profile' ? 'Personal Info' : activeTab} setActiveTab={setActiveTab} logout={signOut} />
               <PreferencesSection
                 darkMode={darkMode}
                 setDarkMode={setDarkMode}
@@ -91,6 +112,14 @@ const ProfilePage: React.FC = () => {
             <div className="col-span-12 lg:col-span-8">
               {activeTab === 'Personal Info' ? (
                 <PersonalInfoSection />
+              ) : activeTab === 'Edit Profile' ? (
+                <div className="p-6 md:p-10 rounded-[32px] md:rounded-[48px] bg-white/[0.03] border border-white/10 shadow-2xl h-full animate-in fade-in slide-in-from-right-4 duration-300">
+                  <ProfileEditForm
+                    onSave={handleEditComplete}
+                    onCancel={handleEditCancel}
+                    isMobile={false}
+                  />
+                </div>
               ) : activeTab === 'Login & Security' ? (
                 <SecuritySection />
               ) : activeTab === 'Subscription' ? (
@@ -113,6 +142,14 @@ const ProfilePage: React.FC = () => {
           </div>
         </div>
       </div>
+
+      <ProfileEditModal
+        isOpen={isEditModalOpen}
+        onClose={() => setIsEditModalOpen(false)}
+        onSave={() => {
+          setRefreshKey(prev => prev + 1);
+        }}
+      />
     </div>
   );
 };
