@@ -50,9 +50,8 @@ export const Header = () => {
           </>
         ) : (
           <>
-            <Button variant="primary" className="rounded-full">
-              <Plus className="w-4 h-4 mr-2" />
-              Post
+            <Button className="w-12 h-12 rounded-full bg-gradient-to-r from-pink-500 to-orange-500 hover:from-pink-600 hover:to-orange-600 border-0 p-0 flex items-center justify-center shadow-lg shadow-pink-500/20">
+              <Plus className="w-5 h-5" />
             </Button>
             <DropdownMenu>
               <DropdownMenuTrigger asChild>
