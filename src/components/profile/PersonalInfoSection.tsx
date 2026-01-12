@@ -1,4 +1,5 @@
 import React from 'react';
+import { Area, AreaChart, ResponsiveContainer, Tooltip, XAxis } from 'recharts';
 import { ChevronRight, Play, Trophy, Beaker, Lock, GraduationCap, BadgeCheck, Rocket, Paintbrush, Heart, Plus } from 'lucide-react';
 import { MOCK_REELS } from '@/data/data';
 
@@ -8,23 +9,62 @@ const PersonalInfoSection: React.FC = () => {
   return (
     <div className="space-y-6 animate-in fade-in slide-in-from-left-4 duration-500">
       {/* Activity Section */}
-      <section className="p-4 md:p-6 rounded-2xl md:rounded-[40px] bg-white/[0.02] border border-white/5 shadow-xl relative overflow-hidden">
-        <div className="flex items-center justify-between mb-6 md:mb-8">
-          <h3 className="text-base md:text-lg font-bold text-white tracking-tight">Weekly Activity</h3>
-          <button className="text-[10px] md:text-[11px] font-black uppercase tracking-widest text-white/30 flex items-center gap-2">This Week <ChevronRight className="w-3 h-3" /></button>
+      <section className="p-6 md:p-8 rounded-[32px] md:rounded-[48px] bg-white/[0.02] border border-white/5 shadow-2xl relative overflow-hidden group">
+        <div className="absolute inset-0 bg-gradient-to-br from-pink-500/[0.02] to-transparent pointer-events-none" />
+
+        <div className="relative flex items-start justify-between mb-8">
+          <div>
+            <h3 className="text-2xl md:text-3xl font-black text-white tracking-tighter mb-2">Weekly Activity</h3>
+            <p className="text-sm font-medium text-white/40">Minutes spent learning</p>
+          </div>
+          <div className="px-4 py-2 rounded-full bg-emerald-500/10 border border-emerald-500/20 flex items-center gap-2">
+            <span className="text-emerald-400 font-black text-sm">↑ 12%</span>
+          </div>
         </div>
-        <div className="flex items-end justify-between h-[140px] md:h-[180px] gap-2 md:gap-4 px-1 md:px-2">
-          {[40, 60, 100, 30, 70, 20, 15].map((h, i) => (
-            <div key={i} className="flex-1 flex flex-col items-center gap-2 md:gap-4">
-                <div className="w-full relative bg-white/[0.03] rounded-lg md:rounded-xl overflow-hidden h-full border border-white/5">
-                  <div 
-                    className={`absolute bottom-0 left-0 right-0 rounded-t-lg md:rounded-t-xl transition-all duration-1000 ${i === 2 ? 'bg-gradient-to-t from-pink-500 to-orange-400' : 'bg-indigo-500/20'}`} 
-                    style={{ height: `${h}%` }}
-                  ></div>
-                </div>
-                <span className="text-[8px] md:text-[10px] font-black text-white/20 uppercase tracking-widest">{['M','T','W','T','F','S','S'][i]}</span>
-            </div>
-          ))}
+
+        <div className="h-[200px] w-full -ml-4">
+          <ResponsiveContainer width="100%" height="100%">
+            <AreaChart data={[
+              { day: 'MON', minutes: 25 },
+              { day: 'TUE', minutes: 45 },
+              { day: 'WED', minutes: 30 },
+              { day: 'THU', minutes: 85 },
+              { day: 'FRI', minutes: 55 },
+              { day: 'SAT', minutes: 65 },
+              { day: 'SUN', minutes: 40 },
+            ]}>
+              <defs>
+                <linearGradient id="colorActivity" x1="0" y1="0" x2="1" y2="0">
+                  <stop offset="0%" stopColor="#ec4899" />
+                  <stop offset="100%" stopColor="#f97316" />
+                </linearGradient>
+                <linearGradient id="fillActivity" x1="0" y1="0" x2="0" y2="1">
+                  <stop offset="5%" stopColor="#ec4899" stopOpacity={0.3} />
+                  <stop offset="95%" stopColor="#ec4899" stopOpacity={0} />
+                </linearGradient>
+              </defs>
+              <XAxis
+                dataKey="day"
+                axisLine={false}
+                tickLine={false}
+                tick={{ fill: 'rgba(255,255,255,0.3)', fontSize: 10, fontWeight: 900, letterSpacing: '1px' }}
+                dy={10}
+              />
+              <Tooltip
+                contentStyle={{ backgroundColor: '#101010', border: '1px solid rgba(255,255,255,0.1)', borderRadius: '12px' }}
+                itemStyle={{ color: '#fff', fontWeight: 'bold' }}
+                cursor={{ stroke: 'rgba(255,255,255,0.1)', strokeWidth: 2, strokeDasharray: '4 4' }}
+              />
+              <Area
+                type="monotone"
+                dataKey="minutes"
+                stroke="url(#colorActivity)"
+                strokeWidth={5}
+                fill="url(#fillActivity)"
+                activeDot={{ r: 8, strokeWidth: 0, fill: '#fff' }}
+              />
+            </AreaChart>
+          </ResponsiveContainer>
         </div>
       </section>
 
@@ -47,11 +87,11 @@ const PersonalInfoSection: React.FC = () => {
                   </div>
                   <div className="flex-1 min-w-0">
                     <h4 className="text-[13px] md:text-[14px] font-bold text-white/80 group-hover:text-pink-400 transition-colors line-clamp-1">{reel.title}</h4>
-                    <p className="text-[9px] md:text-[10px] text-white/30 uppercase tracking-widest font-black mt-1">Lesson {Math.floor(Math.random()*5)+1} • {reel.category}</p>
+                    <p className="text-[9px] md:text-[10px] text-white/30 uppercase tracking-widest font-black mt-1">Lesson {Math.floor(Math.random() * 5) + 1} • {reel.category}</p>
                   </div>
                 </div>
                 <div className="w-full h-1 bg-white/5 rounded-full overflow-hidden">
-                  <div className="h-full bg-gradient-to-r from-pink-500 to-orange-400 rounded-full" style={{ width: `${Math.random()*60+20}%` }}></div>
+                  <div className="h-full bg-gradient-to-r from-pink-500 to-orange-400 rounded-full" style={{ width: `${Math.random() * 60 + 20}%` }}></div>
                 </div>
               </div>
             ))}
