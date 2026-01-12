@@ -3,6 +3,7 @@ import { MainLayout } from '@/components/layout/MainLayout';
 import { ProtectedRoute } from '@/components/auth/ProtectedRoute';
 import { Flame, Zap, Target, Trophy, Brain, TrendingUp, AlertTriangle, Sparkles, ChevronRight } from 'lucide-react';
 import { useIsMobile } from '@/hooks/use-mobile';
+import { Area, AreaChart, ResponsiveContainer, Tooltip, XAxis } from 'recharts';
 
 const stats = [
   { label: 'Streak', value: '12', unit: 'Days', icon: Flame, color: 'from-orange-500 to-red-500', bgColor: 'bg-orange-500/10' },
@@ -47,7 +48,7 @@ const Analysis = () => {
               </div>
               <h1 className="text-2xl md:text-3xl font-black text-white tracking-tighter">Analysis</h1>
             </div>
-            
+
             <div className="flex items-center gap-1 p-1 bg-white/[0.03] rounded-xl border border-white/5">
               <button className="px-4 py-2 rounded-lg text-[10px] font-black uppercase tracking-widest bg-gradient-to-r from-pink-500 to-orange-500 text-white">
                 Week
@@ -67,7 +68,7 @@ const Analysis = () => {
               <div>
                 <p className="text-[10px] font-black uppercase tracking-widest text-purple-400 mb-1">AI Mastery Insight</p>
                 <p className="text-white font-medium leading-relaxed">
-                  Based on your learning patterns, focusing on <span className="text-pink-400">System Design</span> concepts 
+                  Based on your learning patterns, focusing on <span className="text-pink-400">System Design</span> concepts
                   in the morning could boost your retention by 23%. Your peak focus hours are between 9-11 AM.
                 </p>
               </div>
@@ -99,25 +100,55 @@ const Analysis = () => {
           {/* Charts Row */}
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-4 md:gap-6 mb-6 md:mb-8">
             {/* Daily Activity */}
-            <div className="p-5 rounded-2xl bg-white/[0.03] border border-white/5">
+            <div className="p-5 rounded-2xl bg-white/[0.03] border border-white/5 h-[300px] flex flex-col">
               <div className="flex items-center justify-between mb-4">
                 <h3 className="text-lg font-bold text-white">Daily Activity</h3>
                 <TrendingUp className="w-4 h-4 text-emerald-400" />
               </div>
-              <div className="flex items-end justify-between h-32 gap-2">
-                {[40, 65, 45, 80, 55, 90, 70].map((h, i) => (
-                  <div key={i} className="flex-1 flex flex-col items-center gap-2">
-                    <div className="w-full relative bg-white/[0.03] rounded-lg overflow-hidden h-full">
-                      <div 
-                        className={`absolute bottom-0 left-0 right-0 rounded-t-lg transition-all duration-1000 ${
-                          i === 5 ? 'bg-gradient-to-t from-pink-500 to-orange-400' : 'bg-white/10'
-                        }`}
-                        style={{ height: `${h}%` }}
-                      />
-                    </div>
-                    <span className="text-[9px] font-bold text-white/30">{['M','T','W','T','F','S','S'][i]}</span>
-                  </div>
-                ))}
+
+              <div className="flex-1 w-full -ml-2">
+                <ResponsiveContainer width="100%" height="100%">
+                  <AreaChart data={[
+                    { day: 'MON', minutes: 40 },
+                    { day: 'TUE', minutes: 65 },
+                    { day: 'WED', minutes: 45 },
+                    { day: 'THU', minutes: 80 },
+                    { day: 'FRI', minutes: 55 },
+                    { day: 'SAT', minutes: 90 },
+                    { day: 'SUN', minutes: 70 },
+                  ]}>
+                    <defs>
+                      <linearGradient id="colorActivityAnalysis" x1="0" y1="0" x2="1" y2="0">
+                        <stop offset="0%" stopColor="#ec4899" />
+                        <stop offset="100%" stopColor="#f97316" />
+                      </linearGradient>
+                      <linearGradient id="fillActivityAnalysis" x1="0" y1="0" x2="0" y2="1">
+                        <stop offset="5%" stopColor="#ec4899" stopOpacity={0.3} />
+                        <stop offset="95%" stopColor="#ec4899" stopOpacity={0} />
+                      </linearGradient>
+                    </defs>
+                    <XAxis
+                      dataKey="day"
+                      axisLine={false}
+                      tickLine={false}
+                      tick={{ fill: 'rgba(255,255,255,0.3)', fontSize: 10, fontWeight: 900, letterSpacing: '1px' }}
+                      dy={10}
+                    />
+                    <Tooltip
+                      contentStyle={{ backgroundColor: '#101010', border: '1px solid rgba(255,255,255,0.1)', borderRadius: '12px' }}
+                      itemStyle={{ color: '#fff', fontWeight: 'bold' }}
+                      cursor={{ stroke: 'rgba(255,255,255,0.1)', strokeWidth: 2, strokeDasharray: '4 4' }}
+                    />
+                    <Area
+                      type="monotone"
+                      dataKey="minutes"
+                      stroke="url(#colorActivityAnalysis)"
+                      strokeWidth={4}
+                      fill="url(#fillActivityAnalysis)"
+                      activeDot={{ r: 6, strokeWidth: 0, fill: '#fff' }}
+                    />
+                  </AreaChart>
+                </ResponsiveContainer>
               </div>
             </div>
 
@@ -131,9 +162,9 @@ const Analysis = () => {
                 <div className="relative w-32 h-32">
                   <svg className="w-full h-full transform -rotate-90" viewBox="0 0 100 100">
                     <circle cx="50" cy="50" r="40" fill="none" stroke="rgba(255,255,255,0.05)" strokeWidth="12" />
-                    <circle 
-                      cx="50" cy="50" r="40" fill="none" 
-                      stroke="url(#focusGradient)" strokeWidth="12" 
+                    <circle
+                      cx="50" cy="50" r="40" fill="none"
+                      stroke="url(#focusGradient)" strokeWidth="12"
                       strokeLinecap="round"
                       strokeDasharray={`${87 * 2.51} ${100 * 2.51}`}
                     />
@@ -165,7 +196,7 @@ const Analysis = () => {
                       <span className="text-sm font-bold text-white">{item.progress}%</span>
                     </div>
                     <div className="h-2 bg-white/5 rounded-full overflow-hidden">
-                      <div 
+                      <div
                         className={`h-full bg-gradient-to-r ${item.color} rounded-full transition-all duration-1000`}
                         style={{ width: `${item.progress}%` }}
                       />
@@ -207,7 +238,7 @@ const Analysis = () => {
                   </div>
                   <p className="text-white font-semibold mb-2">{m.name}</p>
                   <div className="h-1.5 bg-white/5 rounded-full overflow-hidden">
-                    <div 
+                    <div
                       className="h-full bg-gradient-to-r from-pink-500 to-purple-500 rounded-full"
                       style={{ width: `${m.progress}%` }}
                     />
