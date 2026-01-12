@@ -28,6 +28,7 @@ export const Sidebar = () => {
   const [username, setUsername] = useState<string | null>(null);
   const [avatarUrl, setAvatarUrl] = useState<string | null>(null);
   const [displayName, setDisplayName] = useState<string | null>(null);
+  const [isPro, setIsPro] = useState(false);
 
   useEffect(() => {
     if (user) {
@@ -40,7 +41,7 @@ export const Sidebar = () => {
 
     const { data, error } = await supabase
       .from('user_profiles')
-      .select('username, avatar_url, display_name')
+      .select('username, avatar_url, display_name, subscription_tier')
       .eq('id', user.id)
       .single();
 
@@ -53,6 +54,7 @@ export const Sidebar = () => {
       setUsername(data.username);
       setAvatarUrl(data.avatar_url);
       setDisplayName(data.display_name);
+      setIsPro(data.subscription_tier === 'pro' || data.subscription_tier === 'premium');
     }
   };
 
@@ -67,7 +69,10 @@ export const Sidebar = () => {
       {/* Main Navigation */}
       <nav className="flex-1 px-3">
         <ul className="space-y-1">
-          {mainNavItems.map((item) => {
+          {mainNavItems.filter(item => {
+            if (item.label === 'Analysis') return isPro;
+            return true;
+          }).map((item) => {
             const isActive = location.pathname === item.path;
             const Icon = item.icon;
 

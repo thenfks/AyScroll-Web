@@ -1,12 +1,13 @@
 import React from 'react';
 import { MainLayout } from '@/components/layout/MainLayout';
 import { ProtectedRoute } from '@/components/auth/ProtectedRoute';
-import { Flame, Zap, Target, Trophy, Brain, TrendingUp, AlertTriangle, Sparkles, ChevronRight } from 'lucide-react';
+import { Flame, Zap, Target, Trophy, Brain, TrendingUp, AlertTriangle, Sparkles, ChevronRight, BarChart2 } from 'lucide-react';
 import { useIsMobile } from '@/hooks/use-mobile';
 import { Area, AreaChart, ResponsiveContainer, Tooltip, XAxis } from 'recharts';
 import { supabase } from '@/integrations/supabase/client';
 import { useAuth } from '@/contexts/AuthContext';
 import { useState, useEffect } from 'react';
+import { useNavigate } from 'react-router-dom';
 
 const stats = [
   { label: 'Streak', value: '12', unit: 'Days', icon: Flame, color: 'from-orange-500 to-red-500', bgColor: 'bg-orange-500/10' },
@@ -36,6 +37,9 @@ const milestones = [
 const Analysis = () => {
   const isMobile = useIsMobile();
   const { user } = useAuth();
+  const navigate = useNavigate();
+  const [loading, setLoading] = useState(true);
+  const [isPro, setIsPro] = useState(false);
   const [activityData, setActivityData] = useState([
     { day: 'MON', minutes: 0 },
     { day: 'TUE', minutes: 0 },
@@ -49,47 +53,128 @@ const Analysis = () => {
   useEffect(() => {
     if (!user) return;
 
-    const fetchActivity = async () => {
-      // Calculate the last 7 days dynamically
-      const days = ['SUN', 'MON', 'TUE', 'WED', 'THU', 'FRI', 'SAT'];
-      const today = new Date();
-      const last7Days: { dateStr: string; dayLabel: string }[] = [];
+    const checkSubscriptionAndFetch = async () => {
+      try {
+        // 1. Check Subscription
+        const { data: profileError } = await supabase
+          .from('user_profiles')
+          .select('subscription_tier')
+          .eq('id', user.id)
+          .single()
+          .then(({ data, error }) => {
+            if (data) {
+              setIsPro(data.subscription_tier === 'pro' || data.subscription_tier === 'premium');
+            }
+            return { data, error };
+          });
 
-      for (let i = 6; i >= 0; i--) {
-        const d = new Date(today);
-        d.setDate(today.getDate() - i);
-        last7Days.push({
-          dateStr: d.toISOString().split('T')[0],
-          dayLabel: days[d.getDay()],
+        // 2. Fetch Activity (only if needed, but we can fetch it usually or skip if locked logic is strictly enforced above. 
+        // However, to keep it simple, we fetch logic here but UI handles display)
+
+        // Calculate the last 7 days dynamically
+        const days = ['SUN', 'MON', 'TUE', 'WED', 'THU', 'FRI', 'SAT'];
+        const today = new Date();
+        const last7Days: { dateStr: string; dayLabel: string }[] = [];
+
+        for (let i = 6; i >= 0; i--) {
+          const d = new Date(today);
+          d.setDate(today.getDate() - i);
+          last7Days.push({
+            dateStr: d.toISOString().split('T')[0],
+            dayLabel: days[d.getDay()],
+          });
+        }
+
+        // Fetch real data
+        const { data } = await supabase
+          .from('daily_learning_activity')
+          .select('activity_date, minutes_spent')
+          .eq('user_id', user.id)
+          .gte('activity_date', last7Days[0].dateStr);
+
+        // Map to chart format
+        const chartData = last7Days.map(d => {
+          const record = data?.find(r => r.activity_date === d.dateStr);
+          return {
+            day: d.dayLabel,
+            minutes: record ? record.minutes_spent : 0
+          };
         });
+
+        setActivityData(chartData);
+
+      } catch (error) {
+        console.error(error);
+      } finally {
+        setLoading(false);
       }
-
-      // Fetch real data
-      const { data } = await supabase
-        .from('daily_learning_activity')
-        .select('activity_date, minutes_spent')
-        .eq('user_id', user.id)
-        .gte('activity_date', last7Days[0].dateStr);
-
-      // Map to chart format
-      const chartData = last7Days.map(d => {
-        const record = data?.find(r => r.activity_date === d.dateStr);
-        return {
-          day: d.dayLabel,
-          minutes: record ? record.minutes_spent : 0
-        };
-      });
-
-      setActivityData(chartData);
     };
 
-    fetchActivity();
+    checkSubscriptionAndFetch();
   }, [user]);
+
+  if (loading) {
+    return (
+      <ProtectedRoute>
+        <MainLayout showRightSidebar={false}>
+          <div className="flex items-center justify-center h-[80vh]">
+            <div className="w-8 h-8 rounded-full border-4 border-emerald-500 border-t-transparent animate-spin"></div>
+          </div>
+        </MainLayout>
+      </ProtectedRoute>
+    )
+  }
+
+  if (!isPro) {
+    return (
+      <ProtectedRoute>
+        <MainLayout showRightSidebar={false}>
+          <div className="max-w-5xl mx-auto flex flex-col items-center justify-center min-h-[70vh] text-center p-6">
+            <div className="w-24 h-24 rounded-[32px] bg-gradient-to-br from-pink-500/10 to-purple-500/10 border border-pink-500/20 flex items-center justify-center mb-8 relative">
+              <BarChart2 className="w-10 h-10 text-pink-500" />
+              <div className="absolute -top-2 -right-2 w-8 h-8 bg-white text-black rounded-full flex items-center justify-center font-bold text-lg shadow-lg">🔒</div>
+            </div>
+            <h1 className="text-3xl md:text-5xl font-black text-white mb-4 tracking-tighter">Advanced Analytics</h1>
+            <p className="text-white/40 max-w-md text-lg font-medium leading-relaxed mb-10">
+              Unlock deep insights into your learning patterns, focus quality, and global ranking with AyScroll Pro.
+            </p>
+
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-4 w-full max-w-2xl mb-12">
+              <div className="p-4 rounded-2xl bg-white/[0.03] border border-white/5 flex flex-col items-center">
+                <Target className="w-6 h-6 text-emerald-400 mb-3" />
+                <h3 className="text-white font-bold mb-1">Focus Metrics</h3>
+                <p className="text-white/30 text-xs">Track attention span</p>
+              </div>
+              <div className="p-4 rounded-2xl bg-white/[0.03] border border-white/5 flex flex-col items-center">
+                <TrendingUp className="w-6 h-6 text-orange-400 mb-3" />
+                <h3 className="text-white font-bold mb-1">Learning Velocity</h3>
+                <p className="text-white/30 text-xs">Measure speed of mastery</p>
+              </div>
+              <div className="p-4 rounded-2xl bg-white/[0.03] border border-white/5 flex flex-col items-center">
+                <Brain className="w-6 h-6 text-purple-400 mb-3" />
+                <h3 className="text-white font-bold mb-1">AI Diagnostics</h3>
+                <p className="text-white/30 text-xs">Identify weak topics</p>
+              </div>
+            </div>
+
+            <button
+              onClick={() => navigate('/profile', { state: { targetTab: 'Subscription' } })}
+              className="px-12 py-5 bg-gradient-to-r from-pink-500 to-purple-600 rounded-2xl font-black text-white shadow-xl shadow-pink-500/20 hover:scale-[1.05] active:scale-[0.98] transition-all uppercase tracking-widest text-sm flex items-center gap-2"
+            >
+              Upgrade to Unlock
+              <Zap className="w-4 h-4 fill-white" />
+            </button>
+          </div>
+        </MainLayout>
+      </ProtectedRoute>
+    );
+  }
 
   return (
     <ProtectedRoute>
       <MainLayout showRightSidebar={false}>
         <div className="max-w-5xl mx-auto">
+          {/* ... Content ... */}
           {/* Header */}
           <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 mb-6">
             <div>

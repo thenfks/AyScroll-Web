@@ -28,6 +28,7 @@ export const MobileNavDrawer: React.FC<MobileNavDrawerProps> = ({ open, onOpenCh
   const [username, setUsername] = useState<string | null>(null);
   const [displayName, setDisplayName] = useState<string | null>(null);
   const [avatarUrl, setAvatarUrl] = useState<string | null>(null);
+  const [isPro, setIsPro] = useState(false);
 
   useEffect(() => {
     if (user) {
@@ -40,7 +41,7 @@ export const MobileNavDrawer: React.FC<MobileNavDrawerProps> = ({ open, onOpenCh
 
     const { data, error } = await supabase
       .from('user_profiles')
-      .select('username, display_name, avatar_url')
+      .select('username, avatar_url, display_name, subscription_tier')
       .eq('id', user.id)
       .single();
 
@@ -50,10 +51,10 @@ export const MobileNavDrawer: React.FC<MobileNavDrawerProps> = ({ open, onOpenCh
     }
 
     if (data) {
-      const profile = data as any;
-      setUsername(profile.username);
-      setDisplayName(profile.display_name);
-      setAvatarUrl(profile.avatar_url);
+      setUsername(data.username);
+      setDisplayName(data.display_name);
+      setAvatarUrl(data.avatar_url);
+      setIsPro(data.subscription_tier === 'pro' || data.subscription_tier === 'premium');
     }
   };
 
@@ -73,15 +74,23 @@ export const MobileNavDrawer: React.FC<MobileNavDrawerProps> = ({ open, onOpenCh
     }
   };
 
+  const filteredNavItems = navItems.filter(item => {
+    if (item.label === 'Analysis') return isPro;
+    return true;
+  });
+
   return (
     <Sheet open={open} onOpenChange={onOpenChange}>
-      <SheetContent side="right" className="w-[280px] bg-[#0A0A0F]/95 backdrop-blur-xl border-l border-white/10 p-0">
-        <SheetHeader className="p-6 border-b border-white/5">
-          <SheetTitle className="text-white font-bold">Menu</SheetTitle>
+      <SheetContent side="left" className="w-[300px] bg-sidebar border-r border-border p-0">
+        <SheetHeader className="p-6 border-b border-border">
+          <SheetTitle className="flex items-center gap-3">
+            <img src="/ayscroll-official-logo.png" alt="AyScroll Logo" className="w-8 h-8" />
+            <span className="text-xl font-bold text-foreground">AyScroll</span>
+          </SheetTitle>
         </SheetHeader>
 
         <nav className="p-4 space-y-1">
-          {navItems.map((item) => {
+          {filteredNavItems.map((item) => {
             const Icon = item.icon;
             const isActive = location.pathname === item.path;
 
