@@ -155,83 +155,12 @@ const ActiveSessions: React.FC = () => {
   React.useEffect(() => {
     if (!user) return;
 
-    const manageSession = async () => {
-      // 1. Detect Device Info
-      const ua = navigator.userAgent;
-
-      let browser = 'Unknown Browser';
-      if (ua.indexOf("Edg") !== -1) browser = "Edge";
-      else if (ua.indexOf("Chrome") !== -1) browser = "Chrome";
-      else if (ua.indexOf("Firefox") !== -1) browser = "Firefox";
-      else if (ua.indexOf("Safari") !== -1) browser = "Safari";
-
-      let os = 'Unknown OS';
-      const platform = navigator.platform;
-      const maxTouchPoints = navigator.maxTouchPoints || 0;
-      if (/iPad|iPhone|iPod/.test(ua) || (platform === 'MacIntel' && maxTouchPoints > 1)) {
-        os = /iPad/.test(ua) || (platform === 'MacIntel' && maxTouchPoints > 1) ? 'iPadOS' : 'iOS';
-      } else if (/Mac/.test(ua)) os = "macOS";
-      else if (/Win/.test(ua)) os = "Windows";
-      else if (/Android/.test(ua)) os = "Android";
-      else if (/Linux/.test(ua)) os = "Linux";
-
-      // 2. Fetch IP & Location
-      let location = 'Unknown Location';
-      let ip = '';
-      try {
-        const res = await fetch('https://ipapi.co/json/');
-        if (res.ok) {
-          const data = await res.json();
-          location = `${data.city}, ${data.country_code}`;
-          ip = data.ip;
-        }
-      } catch (error) {
-        console.error("Failed to fetch location", error);
-      }
-
-      // 3. Register or Update Session
+    const fetchSessions = async () => {
+      // 1. Identify "Current" Session locally (this ID is managed/created by AuthContext)
       const localSessionId = sessionStorage.getItem('ayscroll_session_id');
-      const deviceInfo = {
-        user_id: user.id,
-        user_agent: ua,
-        ip_address: ip,
-        location: location,
-        device_type: /mobile/i.test(ua) ? 'Mobile' : /pad/i.test(ua) ? 'Tablet' : 'Desktop',
-        os: os,
-        browser: browser,
-        last_active: new Date().toISOString()
-      };
+      setCurrentSessionId(localSessionId);
 
-      let activeId = localSessionId;
-
-      if (localSessionId) {
-        // Try to update
-        const { error } = await supabase
-          .from('user_sessions')
-          .update(deviceInfo)
-          .eq('id', localSessionId);
-
-        // If error (e.g. deleted), treat as new
-        if (error) activeId = null;
-      }
-
-      if (!activeId) {
-        // Create new
-        const { data, error } = await supabase
-          .from('user_sessions')
-          .insert(deviceInfo)
-          .select()
-          .single();
-
-        if (data) {
-          sessionStorage.setItem('ayscroll_session_id', data.id);
-          activeId = data.id;
-        }
-      }
-
-      setCurrentSessionId(activeId);
-
-      // 4. Fetch All Sessions
+      // 2. Fetch All Sessions from DB
       const { data: allSessions } = await supabase
         .from('user_sessions')
         .select('*')
@@ -243,7 +172,21 @@ const ActiveSessions: React.FC = () => {
       }
     };
 
-    manageSession();
+    fetchSessions(); // Fetch initially
+
+    // 3. Real-time updates (optional, keeps list fresh)
+    const channel = supabase
+      .channel('public:user_sessions')
+      .on('postgres_changes', { event: '*', schema: 'public', table: 'user_sessions', filter: `user_id=eq.${user.id}` },
+        (payload) => {
+          fetchSessions(); // Re-fetch on any change
+        }
+      )
+      .subscribe();
+
+    return () => {
+      supabase.removeChannel(channel);
+    };
   }, [user]);
 
   if (sessions.length === 0) {
