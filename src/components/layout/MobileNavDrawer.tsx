@@ -42,7 +42,7 @@ export const MobileNavDrawer: React.FC<MobileNavDrawerProps> = ({ open, onOpenCh
         <SheetHeader className="p-6 border-b border-white/5">
           <div className="flex items-center justify-between">
             <SheetTitle className="text-white font-bold">Menu</SheetTitle>
-            <button 
+            <button
               onClick={() => onOpenChange(false)}
               className="p-2 rounded-xl bg-white/5 hover:bg-white/10 transition-colors"
             >
@@ -50,20 +50,20 @@ export const MobileNavDrawer: React.FC<MobileNavDrawerProps> = ({ open, onOpenCh
             </button>
           </div>
         </SheetHeader>
-        
+
         <nav className="p-4 space-y-1">
           {navItems.map((item) => {
             const Icon = item.icon;
             const isActive = location.pathname === item.path;
-            
+
             return (
               <button
                 key={item.path}
                 onClick={() => handleNavClick(item.path)}
                 className={cn(
                   "w-full flex items-center gap-4 px-4 py-3.5 rounded-2xl transition-all",
-                  isActive 
-                    ? "bg-gradient-to-r from-pink-500/20 to-orange-500/20 text-pink-500 border border-pink-500/20" 
+                  isActive
+                    ? "bg-gradient-to-r from-pink-500/20 to-orange-500/20 text-pink-500 border border-pink-500/20"
                     : "text-white/60 hover:bg-white/5 hover:text-white"
                 )}
               >
@@ -73,10 +73,10 @@ export const MobileNavDrawer: React.FC<MobileNavDrawerProps> = ({ open, onOpenCh
             );
           })}
         </nav>
-        
+
         {/* User Section */}
         <div className="absolute bottom-0 left-0 right-0 p-4 border-t border-white/5 bg-[#0A0A0F]">
-          <button 
+          <button
             onClick={() => handleNavClick('/profile')}
             className="w-full flex items-center gap-4 p-4 rounded-2xl bg-white/[0.03] border border-white/5 mb-3"
           >
@@ -95,9 +95,9 @@ export const MobileNavDrawer: React.FC<MobileNavDrawerProps> = ({ open, onOpenCh
               </p>
             </div>
           </button>
-          
+
           {user && (
-            <button 
+            <button
               onClick={handleSignOut}
               className="w-full flex items-center justify-center gap-2 py-3 rounded-xl bg-white/5 text-white/60 hover:bg-red-500/10 hover:text-red-400 transition-colors"
             >

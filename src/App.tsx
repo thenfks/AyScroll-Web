@@ -11,6 +11,7 @@ import { ProtectedRoute } from "@/components/auth/ProtectedRoute";
 import Feed from "./pages/Feed";
 import Landing from "./pages/Landing";
 import Discover from "./pages/Discover";
+import Explore from "./pages/Explore";
 import Library from "./pages/Library";
 import Saved from "./pages/Saved";
 import Analysis from "./pages/Analysis";

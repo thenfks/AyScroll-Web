@@ -24,7 +24,7 @@ export const Footer = () => {
           <Link to="/" className="flex items-center gap-2 group mb-4">
             <img src="/ayscroll-official-logo.png" alt="AyScroll Micro Learning Logo" className="h-10 w-auto object-contain group-hover:scale-105 transition-transform" />
             <span className="text-xl font-bold tracking-tight text-white">
-              <span className="bg-clip-text text-transparent bg-gradient-to-r from-pink-500 to-orange-500">AyScroll</span>
+              AyScroll
             </span>
           </Link>
           <p className="text-sm text-zinc-400 leading-relaxed max-w-xs mb-4">
@@ -46,7 +46,7 @@ export const Footer = () => {
             <Link to="/" className="flex items-center gap-2 group">
               <img src="/ayscroll-official-logo.png" alt="AyScroll Micro Learning Logo" className="h-10 w-auto object-contain group-hover:scale-105 transition-transform" />
               <span className="text-2xl font-bold tracking-tight text-white">
-                <span className="bg-clip-text text-transparent bg-gradient-to-r from-pink-500 to-orange-500">AyScroll</span>
+                AyScroll
               </span>
             </Link>
             <p className="text-base text-zinc-400 leading-relaxed">
