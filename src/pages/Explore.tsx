@@ -1,11 +1,13 @@
 import React, { useState, useMemo } from 'react';
 import { MainLayout } from '@/components/layout/MainLayout';
-import { Search, Play, Bell } from 'lucide-react';
+import { Play } from 'lucide-react';
 import { MOCK_REELS } from '@/data/data';
+import { useSearchParams } from 'react-router-dom';
 import { useIsMobile } from '@/hooks/use-mobile';
 
 const Explore: React.FC = () => {
-  const [searchQuery, setSearchQuery] = useState('');
+  const [searchParams] = useSearchParams();
+  const searchQuery = searchParams.get('q') || '';
   const [selectedCategory, setSelectedCategory] = useState('All');
   const isMobile = useIsMobile();
 
@@ -21,7 +23,7 @@ const Explore: React.FC = () => {
 
   const displayReels = useMemo(() => {
     return MOCK_REELS.filter((reel) => {
-      const matchesSearch = 
+      const matchesSearch =
         reel.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
         reel.creator.toLowerCase().includes(searchQuery.toLowerCase()) ||
         reel.category.toLowerCase().includes(searchQuery.toLowerCase());
@@ -32,28 +34,7 @@ const Explore: React.FC = () => {
 
   return (
     <MainLayout showRightSidebar={false}>
-      <div className="max-w-7xl mx-auto">
-        {/* Header */}
-        <div className="flex flex-col md:flex-row items-start md:items-center justify-between gap-4 mb-6">
-          <h1 className="text-2xl md:text-4xl font-black text-white tracking-tighter">Explore</h1>
-          
-          {/* Search and Bell */}
-          <div className="flex items-center gap-3 w-full md:w-auto">
-            <div className="relative flex-1 md:w-[400px]">
-              <Search className="w-4 h-4 absolute left-4 top-1/2 -translate-y-1/2 text-white/30" />
-              <input 
-                type="text" 
-                value={searchQuery}
-                onChange={(e) => setSearchQuery(e.target.value)}
-                placeholder="Topics, creators, or keywords..." 
-                className="w-full h-12 bg-white/[0.03] border border-white/10 rounded-2xl pl-11 pr-4 outline-none text-sm text-white focus:bg-white/[0.07] focus:border-pink-500/30 transition-all placeholder:text-white/20"
-              />
-            </div>
-            <button className="w-12 h-12 rounded-2xl border border-white/10 bg-white/[0.03] flex items-center justify-center hover:bg-white/[0.07] transition-colors shrink-0">
-              <Bell className="w-5 h-5 text-white/60" />
-            </button>
-          </div>
-        </div>
+      <div className="max-w-7xl mx-auto pt-6">
 
         {/* Categories */}
         <div className="flex items-center gap-2 md:gap-3 overflow-x-auto no-scrollbar pb-4 mb-6 -mx-4 px-4 md:mx-0 md:px-0">
@@ -61,11 +42,10 @@ const Explore: React.FC = () => {
             <button
               key={cat.name}
               onClick={() => setSelectedCategory(cat.name)}
-              className={`px-5 md:px-8 py-2.5 md:py-3.5 rounded-xl md:rounded-2xl text-[10px] md:text-[12px] font-black uppercase tracking-widest whitespace-nowrap transition-all border shrink-0 ${
-                selectedCategory === cat.name 
-                  ? 'bg-gradient-to-r from-pink-500 to-orange-500 text-white border-transparent shadow-lg shadow-pink-500/20' 
-                  : 'bg-white/[0.05] text-white/40 border-white/5 hover:border-white/20 hover:text-white hover:bg-white/[0.08]'
-              }`}
+              className={`px-5 md:px-8 py-2.5 md:py-3.5 rounded-xl md:rounded-2xl text-[10px] md:text-[12px] font-black uppercase tracking-widest whitespace-nowrap transition-all border shrink-0 ${selectedCategory === cat.name
+                ? 'bg-gradient-to-r from-pink-500 to-orange-500 text-white border-transparent shadow-lg shadow-pink-500/20'
+                : 'bg-white/[0.05] text-white/40 border-white/5 hover:border-white/20 hover:text-white hover:bg-white/[0.08]'
+                }`}
             >
               {cat.name}
             </button>
@@ -78,10 +58,10 @@ const Explore: React.FC = () => {
             <div key={reel.id} className="group cursor-pointer">
               {/* Thumbnail Card */}
               <div className="relative aspect-[4/5] rounded-2xl md:rounded-3xl overflow-hidden border border-white/10 mb-3 md:mb-4 bg-gradient-to-br from-[#12121A] via-[#1A1A2E] to-[#0A0A0F] shadow-xl transition-transform duration-500 group-hover:scale-[1.02]">
-                <img 
-                  src={reel.thumbnail_url} 
-                  className="w-full h-full object-cover opacity-40 group-hover:opacity-60 transition-opacity duration-700" 
-                  alt={reel.title} 
+                <img
+                  src={reel.thumbnail_url}
+                  className="w-full h-full object-cover opacity-40 group-hover:opacity-60 transition-opacity duration-700"
+                  alt={reel.title}
                   loading="lazy"
                   onError={(e) => {
                     e.currentTarget.style.display = 'none';
@@ -89,7 +69,7 @@ const Explore: React.FC = () => {
                 />
                 {/* Gradient Overlay */}
                 <div className="absolute inset-0 bg-gradient-to-t from-black via-black/10 to-transparent" />
-                
+
                 {/* Title */}
                 <div className="absolute inset-0 p-4 md:p-6 flex flex-col justify-end">
                   <h4 className="text-sm md:text-lg font-black text-white leading-tight tracking-tight group-hover:text-pink-400 transition-colors line-clamp-2">
