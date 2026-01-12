@@ -5,7 +5,7 @@ import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
-import { toast } from 'sonner';
+import { useToast } from '@/hooks/use-toast';
 import { supabase } from '@/integrations/supabase/client';
 import { Loader2 } from 'lucide-react';
 
@@ -21,6 +21,7 @@ const SignUp = () => {
   const [usernameError, setUsernameError] = useState('');
 
   const { signUp, signInWithGoogle } = useAuth();
+  const { toast } = useToast();
   const navigate = useNavigate();
 
   // Check username availability
@@ -81,7 +82,10 @@ const SignUp = () => {
       if (error) {
         setError(error.message);
       } else {
-        toast.success('Please check your email to confirm your account.');
+        toast({
+          title: "Account Created",
+          description: "Please check your email to confirm your account."
+        });
         await new Promise(resolve => setTimeout(resolve, 1000)); // Small delay for UX
         navigate('/check-email');
       }

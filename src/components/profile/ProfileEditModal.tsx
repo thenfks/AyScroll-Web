@@ -13,7 +13,7 @@ const ProfileEditModal: React.FC<ProfileEditModalProps> = ({ isOpen, onClose, on
         <Sheet open={isOpen} onOpenChange={onClose}>
             <SheetContent
                 side="bottom"
-                className="h-[90vh] bg-[#0A0A0F] border-t border-white/10 rounded-t-3xl p-0 overflow-hidden"
+                className="h-[90vh] bg-[#0A0A0F] border-t border-white/10 rounded-t-[40px] p-0 overflow-hidden"
             >
                 {/* Drag Handle */}
                 <div className="w-full flex justify-center pt-3 pb-2">
