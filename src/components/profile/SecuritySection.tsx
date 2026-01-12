@@ -1,9 +1,34 @@
 import React, { useState } from 'react';
-import { ShieldCheck, Key, Cpu, Smartphone, Globe } from 'lucide-react';
-import Toggle from './Toggle'; // Adjusted path
+import { ShieldCheck, Key, Cpu, Smartphone, Globe, ExternalLink } from 'lucide-react';
+import Toggle from './Toggle';
+import { useAuth } from '@/contexts/AuthContext';
 
 const SecuritySection: React.FC = () => {
+  const { user } = useAuth();
   const [tfaEnabled, setTfaEnabled] = useState(true);
+
+  // Determine auth provider
+  const getAuthProvider = () => {
+    if (!user) return 'email';
+
+    // Check for Google
+    if (user.app_metadata?.provider === 'google' || user.identities?.some(id => id.provider === 'google')) {
+      return 'google';
+    }
+
+    // Check for nFKs (Custom logic based on metadata or provider)
+    if (user.app_metadata?.provider === 'nfks' || user.user_metadata?.source === 'nfks') {
+      return 'nfks';
+    }
+
+    // Default to email
+    return 'email';
+  };
+
+  const provider = getAuthProvider();
+
+  // Mask email for privacy
+  const maskedEmail = user?.email?.replace(/(.{2})(.*)(@.*)/, '$1****$3') || 'e****n@ayscroll.com';
 
   return (
     <div className="space-y-6 animate-in fade-in slide-in-from-right-4 duration-500">
@@ -18,31 +43,66 @@ const SecuritySection: React.FC = () => {
         {/* Authentication Info */}
         <section className="p-6 rounded-[40px] bg-white/[0.02] border border-white/5 shadow-xl">
           <div className="flex items-center gap-4 mb-8">
-            <div className="w-12 h-12 rounded-2xl bg-indigo-500/10 flex items-center justify-center text-indigo-400">
-              <Key className="w-6 h-6" />
+            <div className={`w-12 h-12 rounded-2xl flex items-center justify-center p-2.5 ${provider === 'google' ? 'bg-white' :
+                provider === 'nfks' ? 'bg-black border border-white/10' :
+                  'bg-indigo-500/10 text-indigo-400'
+              }`}>
+              {provider === 'google' ? (
+                <img src="/google_logo.svg" alt="Google" className="w-full h-full object-contain" />
+              ) : provider === 'nfks' ? (
+                <img src="/nfks-identity-logo.png" alt="nFKs" className="w-full h-full object-contain" />
+              ) : (
+                <Key className="w-6 h-6" />
+              )}
             </div>
             <div>
               <h4 className="text-lg font-bold text-white leading-tight">Authentication</h4>
-              <p className="text-[10px] text-white/20 uppercase tracking-widest font-black">Email & Password</p>
+              <p className="text-[10px] text-white/20 uppercase tracking-widest font-black">
+                {provider === 'google' ? 'Google Account' :
+                  provider === 'nfks' ? 'nFKs ID' :
+                    'Email & Password'}
+              </p>
             </div>
           </div>
-          
+
           <div className="space-y-6">
             <div className="flex flex-col gap-1 px-2">
               <span className="text-[10px] font-black text-white/20 uppercase tracking-widest">Email Address</span>
               <div className="flex items-center justify-between">
-                <span className="text-sm font-medium text-white/70">e****n@ayscroll.com</span>
-                <button className="text-[10px] font-black text-pink-500 uppercase tracking-widest hover:text-pink-400 transition-colors">Change</button>
+                <span className="text-sm font-medium text-white/70">{maskedEmail}</span>
+                {provider === 'email' && (
+                  <button className="text-[10px] font-black text-pink-500 uppercase tracking-widest hover:text-pink-400 transition-colors">Change</button>
+                )}
               </div>
             </div>
+
             <div className="h-px bg-white/5"></div>
-            <div className="flex flex-col gap-1 px-2">
-              <span className="text-[10px] font-black text-white/20 uppercase tracking-widest">Password</span>
-              <div className="flex items-center justify-between">
-                <span className="text-sm font-medium text-white/70">••••••••••••••</span>
-                <button className="text-[10px] font-black text-pink-500 uppercase tracking-widest hover:text-pink-400 transition-colors">Update</button>
+
+            {provider === 'email' ? (
+              <div className="flex flex-col gap-1 px-2">
+                <span className="text-[10px] font-black text-white/20 uppercase tracking-widest">Password</span>
+                <div className="flex items-center justify-between">
+                  <span className="text-sm font-medium text-white/70">••••••••••••••</span>
+                  <button className="text-[10px] font-black text-pink-500 uppercase tracking-widest hover:text-pink-400 transition-colors">Update</button>
+                </div>
               </div>
-            </div>
+            ) : (
+              <div className="flex flex-col gap-1 px-2">
+                <span className="text-[10px] font-black text-white/20 uppercase tracking-widest">Password Manager</span>
+                <div className="flex items-center justify-between">
+                  <span className="text-sm font-medium text-white/50">Managed by {provider === 'google' ? 'Google' : 'nFKs'}</span>
+                  <a
+                    href={provider === 'google' ? 'https://myaccount.google.com/' : '#'}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="flex items-center gap-1.5 text-[10px] font-black text-white/40 uppercase tracking-widest hover:text-white transition-colors"
+                  >
+                    <span>Manage</span>
+                    <ExternalLink className="w-3 h-3" />
+                  </a>
+                </div>
+              </div>
+            )}
           </div>
         </section>
 
@@ -57,14 +117,14 @@ const SecuritySection: React.FC = () => {
               <p className="text-[10px] text-white/20 uppercase tracking-widest font-black">Enhanced Security</p>
             </div>
           </div>
-          
+
           <p className="text-[12px] text-white/30 font-medium leading-relaxed mb-6 px-2">
             Add an extra layer of security to your account by requiring more than just a password to log in.
           </p>
 
           <div className="flex items-center justify-between bg-white/[0.03] p-6 rounded-[28px] border border-white/5">
-             <span className="text-sm font-bold text-white/80">Protection Active</span>
-             <Toggle enabled={tfaEnabled} onChange={() => setTfaEnabled(!tfaEnabled)} />
+            <span className="text-sm font-bold text-white/80">Protection Active</span>
+            <Toggle enabled={tfaEnabled} onChange={() => setTfaEnabled(!tfaEnabled)} />
           </div>
         </section>
       </div>
@@ -75,7 +135,7 @@ const SecuritySection: React.FC = () => {
           <h3 className="text-lg font-bold text-white tracking-tight">Active Devices</h3>
           <button className="text-[10px] font-black uppercase tracking-widest text-white/30 hover:text-pink-500 transition-colors">Revoke All Other Sessions</button>
         </div>
-        
+
         <div className="space-y-6">
           {[
             { device: 'MacBook Pro 16"', location: 'San Francisco, US', time: 'Active Now', icon: Cpu, current: true },
