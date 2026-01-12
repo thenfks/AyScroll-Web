@@ -1,73 +1,76 @@
-# Welcome to your Lovable project
+# 🚀 AyScroll - Web Platform
 
-## Project info
+A modern, immersive learning platform built with React, Vite, and Supabase. AyScroll combines a sleek, glassmorphic UI with robust session management and data visualization to provide a premium user experience.
 
-**URL**: https://lovable.dev/projects/REPLACE_WITH_PROJECT_ID
+![AyScroll Banner](public/logo.png)
 
-## How can I edit this code?
+## ✨ Key Features
 
-There are several ways of editing your application.
+### 🔐 authentication & Security
+- **Global Session Tracking**: Real-time tracking of active devices across the application.
+- **Active Devices Manager**: View device type, browser, OS, and location for all active sessions.
+- **Remote Revocation**: Securely sign out or revoke access from other devices directly from the settings.
+- **Auto-Logout**: Devices automatically log out when their session is revoked remotely.
+- **Supabase Auth**: Integration with Email/Password and Google OAuth.
 
-**Use Lovable**
+### 📊 Analytics & Visualization
+- **Dynamic Charts**: Interactive `Recharts` visualizations for:
+  - **Weekly Activity**: Smooth gradient area charts showing learning minutes.
+  - **Daily Activity**: Detailed breakdown of daily engagement.
+  - **Focus Quality**: Circular progress indicators.
+- **Proficiency Tracking**: Visual progress bars for different learning topics.
+- **Milestones**: Gamified progress tracking with rewards.
 
-Simply visit the [Lovable Project](https://lovable.dev/projects/REPLACE_WITH_PROJECT_ID) and start prompting.
+### 👤 User Profile
+- **Personal Dashboard**: comprehensive view of user stats, streaks, and achievements.
+- **Customizable**: Dark mode preferences, account settings, and profile management.
+- **Responsive Design**: Fully optimized for Desktop, Tablet (iPadOS detection), and Mobile.
 
-Changes made via Lovable will be committed automatically to this repo.
+## 🛠️ Tech Stack
 
-**Use your preferred IDE**
+- **Frontend**: React 18, Vite, TypeScript
+- **Styling**: Tailwind CSS, Lucide React (Icons)
+- **State Management**: React Context (AuthContext)
+- **Backend / DB**: Supabase (PostgreSQL, Auth, Realtime)
+- **Visualization**: Recharts
+- **Utilities**: `ua-parser-js` (implicit), custom device detection logic.
 
-If you want to work locally using your own IDE, you can clone this repo and push changes. Pushed changes will also be reflected in Lovable.
+## 🗄️ Database Schema
 
-The only requirement is having Node.js & npm installed - [install with nvm](https://github.com/nvm-sh/nvm#installing-and-updating)
+### `public.user_sessions`
+Tracks active user sessions for security management.
+- `id`: UUID (Primary Key)
+- `user_id`: UUID (Foreign Key)
+- `ip_address`, `location`: Geo-data
+- `browser`, `os`, `device_type`: Device fingerprinting
+- `last_active`: Timestamp of last activity
 
-Follow these steps:
+> **Note**: See `supabase/SETUP_SESSIONS.md` for migration instructions.
 
-```sh
-# Step 1: Clone the repository using the project's Git URL.
-git clone <YOUR_GIT_URL>
+## 🚀 Getting Started
 
-# Step 2: Navigate to the project directory.
-cd <YOUR_PROJECT_NAME>
+1. **Clone the repository**
+   ```bash
+   git clone https://github.com/thenfks/AyScroll-Web.git
+   cd AyScroll-Web
+   ```
 
-# Step 3: Install the necessary dependencies.
-npm i
+2. **Install dependencies**
+   ```bash
+   npm install
+   ```
 
-# Step 4: Start the development server with auto-reloading and an instant preview.
-npm run dev
-```
+3. **Environment Setup**
+   Create a `.env` file with your Supabase credentials:
+   ```env
+   VITE_SUPABASE_URL=your_supabase_url
+   VITE_SUPABASE_ANON_KEY=your_supabase_anon_key
+   ```
 
-**Edit a file directly in GitHub**
+4. **Run Development Server**
+   ```bash
+   npm run dev
+   ```
 
-- Navigate to the desired file(s).
-- Click the "Edit" button (pencil icon) at the top right of the file view.
-- Make your changes and commit the changes.
-
-**Use GitHub Codespaces**
-
-- Navigate to the main page of your repository.
-- Click on the "Code" button (green button) near the top right.
-- Select the "Codespaces" tab.
-- Click on "New codespace" to launch a new Codespace environment.
-- Edit files directly within the Codespace and commit and push your changes once you're done.
-
-## What technologies are used for this project?
-
-This project is built with:
-
-- Vite
-- TypeScript
-- React
-- shadcn-ui
-- Tailwind CSS
-
-## How can I deploy this project?
-
-Simply open [Lovable](https://lovable.dev/projects/REPLACE_WITH_PROJECT_ID) and click on Share -> Publish.
-
-## Can I connect a custom domain to my Lovable project?
-
-Yes, you can!
-
-To connect a domain, navigate to Project > Settings > Domains and click Connect Domain.
-
-Read more here: [Setting up a custom domain](https://docs.lovable.dev/features/custom-domain#custom-domain)
+## 📜 License
+© 2025-2026 AyScroll. All rights reserved.
