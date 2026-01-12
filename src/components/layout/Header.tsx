@@ -18,33 +18,35 @@ import { supabase } from '@/integrations/supabase/client';
 export const Header = () => {
   const { user, signOut, isGuest } = useAuth();
   const [avatarUrl, setAvatarUrl] = useState<string | null>(null);
+  const [displayName, setDisplayName] = useState<string | null>(null);
 
   useEffect(() => {
     if (user && !isGuest) {
-      loadAvatar();
+      loadUserProfile();
     }
   }, [user, isGuest]);
 
-  const loadAvatar = async () => {
+  const loadUserProfile = async () => {
     if (!user) return;
 
     const { data, error } = await supabase
       .from('user_profiles')
-      .select('avatar_url')
+      .select('avatar_url, display_name')
       .eq('id', user.id)
       .single();
 
     if (error) {
-      console.error('Error loading avatar:', error);
+      console.error('Error loading user profile:', error);
       return;
     }
 
     if (data) {
       setAvatarUrl(data.avatar_url);
+      setDisplayName(data.display_name);
     }
   };
 
-  const userName = user?.user_metadata?.name || user?.email;
+  const userName = displayName || user?.user_metadata?.name || user?.email;
   const userAvatar = avatarUrl || user?.user_metadata?.avatar_url || user?.user_metadata?.picture;
   const userHandle = user?.user_metadata?.username ? `@${user.user_metadata.username}` : '';
 

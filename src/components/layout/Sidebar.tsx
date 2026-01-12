@@ -26,6 +26,7 @@ export const Sidebar = () => {
   const { user } = useAuth();
   const [username, setUsername] = useState<string | null>(null);
   const [avatarUrl, setAvatarUrl] = useState<string | null>(null);
+  const [displayName, setDisplayName] = useState<string | null>(null);
 
   useEffect(() => {
     if (user) {
@@ -38,7 +39,7 @@ export const Sidebar = () => {
 
     const { data, error } = await supabase
       .from('user_profiles')
-      .select('username, avatar_url')
+      .select('username, avatar_url, display_name')
       .eq('id', user.id)
       .single();
 
@@ -50,6 +51,7 @@ export const Sidebar = () => {
     if (data) {
       setUsername(data.username);
       setAvatarUrl(data.avatar_url);
+      setDisplayName(data.display_name);
     }
   };
 
@@ -123,12 +125,12 @@ export const Sidebar = () => {
           <Avatar className="w-10 h-10">
             <AvatarImage src={avatarUrl || user?.user_metadata?.avatar_url || user?.user_metadata?.picture} />
             <AvatarFallback className="bg-primary/20 text-primary">
-              {user ? user.user_metadata?.name?.charAt(0).toUpperCase() : 'G'}
+              {user ? (displayName || user.user_metadata?.name)?.charAt(0).toUpperCase() : 'G'}
             </AvatarFallback>
           </Avatar>
           <div className="flex-1 min-w-0">
             <p className="text-sm font-medium text-foreground truncate">
-              {user ? user.user_metadata?.name : 'Guest'}
+              {user ? (displayName || user.user_metadata?.name || 'User') : 'Guest'}
             </p>
             <p className="text-xs text-muted-foreground">
               {user ? `@${username || 'loading...'}` : '@guest'}
