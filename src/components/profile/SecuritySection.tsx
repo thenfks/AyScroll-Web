@@ -155,26 +155,38 @@ const ActiveSessions: React.FC = () => {
 
   React.useEffect(() => {
     const fetchSessionInfo = async () => {
-      // 1. Parse User Agent
       const ua = navigator.userAgent;
-      let deviceType = 'Desktop';
-      if (/mobile/i.test(ua)) deviceType = 'Mobile';
-      if (/pad/i.test(ua)) deviceType = 'Tablet';
 
-      let os = 'Unknown OS';
-      if (ua.indexOf("Win") !== -1) os = "Windows";
-      if (ua.indexOf("Mac") !== -1) os = "macOS";
-      if (ua.indexOf("Linux") !== -1) os = "Linux";
-      if (ua.indexOf("Android") !== -1) os = "Android";
-      if (ua.indexOf("iOS") !== -1) os = "iOS";
-
+      // 1. Better Browser Detection
       let browser = 'Unknown Browser';
-      if (ua.indexOf("Chrome") !== -1) browser = "Chrome";
-      if (ua.indexOf("Firefox") !== -1) browser = "Firefox";
-      if (ua.indexOf("Safari") !== -1) browser = "Safari";
-      if (ua.indexOf("Edg") !== -1) browser = "Edge";
+      if (ua.indexOf("Edg") !== -1) {
+        browser = "Edge";
+      } else if (ua.indexOf("Chrome") !== -1) {
+        browser = "Chrome";
+      } else if (ua.indexOf("Firefox") !== -1) {
+        browser = "Firefox";
+      } else if (ua.indexOf("Safari") !== -1) {
+        browser = "Safari";
+      }
 
-      // 2. Fetch IP & Location
+      // 2. Better OS Detection (fixing iPad vs Mac)
+      let os = 'Unknown OS';
+      const platform = navigator.platform;
+      const maxTouchPoints = navigator.maxTouchPoints || 0;
+
+      if (/iPad|iPhone|iPod/.test(ua) || (platform === 'MacIntel' && maxTouchPoints > 1)) {
+        os = /iPad/.test(ua) || (platform === 'MacIntel' && maxTouchPoints > 1) ? 'iPadOS' : 'iOS';
+      } else if (/Mac/.test(ua)) {
+        os = "macOS";
+      } else if (/Win/.test(ua)) {
+        os = "Windows";
+      } else if (/Android/.test(ua)) {
+        os = "Android";
+      } else if (/Linux/.test(ua)) {
+        os = "Linux";
+      }
+
+      // 3. Fetch IP & Location
       let location = 'Unknown Location';
       let ip = '';
       try {
