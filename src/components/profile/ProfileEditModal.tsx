@@ -149,10 +149,10 @@ const ProfileEditModal: React.FC<ProfileEditModalProps> = ({ isOpen, onClose, on
                     {/* Avatar Upload */}
                     <div className="flex flex-col items-center gap-4">
                         <div className="relative">
-                            <div className="w-32 h-32 rounded-full p-1 bg-gradient-to-tr from-pink-500 via-purple-500 to-orange-500">
+                            <div className="w-32 h-32 rounded-full">
                                 <img
                                     src={profile.avatar_url || user?.user_metadata?.avatar_url || user?.user_metadata?.picture || `https://ui-avatars.com/api/?name=${encodeURIComponent(profile.display_name || 'User')}&background=random`}
-                                    className="w-full h-full rounded-full object-cover border-4 border-[#0A0A0F]"
+                                    className="w-full h-full rounded-full object-cover"
                                     alt="Avatar"
                                 />
                             </div>

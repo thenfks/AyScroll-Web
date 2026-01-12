@@ -25,29 +25,31 @@ export const Sidebar = () => {
   const location = useLocation();
   const { user } = useAuth();
   const [username, setUsername] = useState<string | null>(null);
+  const [avatarUrl, setAvatarUrl] = useState<string | null>(null);
 
   useEffect(() => {
     if (user) {
-      loadUsername();
+      loadUserProfile();
     }
   }, [user]);
 
-  const loadUsername = async () => {
+  const loadUserProfile = async () => {
     if (!user) return;
 
     const { data, error } = await supabase
       .from('user_profiles')
-      .select('username')
+      .select('username, avatar_url')
       .eq('id', user.id)
       .single();
 
     if (error) {
-      console.error('Error loading username:', error);
+      console.error('Error loading user profile:', error);
       return;
     }
 
     if (data) {
       setUsername(data.username);
+      setAvatarUrl(data.avatar_url);
     }
   };
 
@@ -119,7 +121,7 @@ export const Sidebar = () => {
         {/* User Profile / Guest */}
         <Link to="/profile" className="flex items-center gap-3 px-4 py-3 rounded-xl bg-sidebar-accent">
           <Avatar className="w-10 h-10">
-            <AvatarImage src={user?.user_metadata?.avatar_url || user?.user_metadata?.picture} />
+            <AvatarImage src={avatarUrl || user?.user_metadata?.avatar_url || user?.user_metadata?.picture} />
             <AvatarFallback className="bg-primary/20 text-primary">
               {user ? user.user_metadata?.name?.charAt(0).toUpperCase() : 'G'}
             </AvatarFallback>

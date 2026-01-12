@@ -12,12 +12,40 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu';
+import { useState, useEffect } from 'react';
+import { supabase } from '@/integrations/supabase/client';
 
 export const Header = () => {
   const { user, signOut, isGuest } = useAuth();
+  const [avatarUrl, setAvatarUrl] = useState<string | null>(null);
+
+  useEffect(() => {
+    if (user && !isGuest) {
+      loadAvatar();
+    }
+  }, [user, isGuest]);
+
+  const loadAvatar = async () => {
+    if (!user) return;
+
+    const { data, error } = await supabase
+      .from('user_profiles')
+      .select('avatar_url')
+      .eq('id', user.id)
+      .single();
+
+    if (error) {
+      console.error('Error loading avatar:', error);
+      return;
+    }
+
+    if (data) {
+      setAvatarUrl(data.avatar_url);
+    }
+  };
 
   const userName = user?.user_metadata?.name || user?.email;
-  const userAvatar = user?.user_metadata?.avatar_url;
+  const userAvatar = avatarUrl || user?.user_metadata?.avatar_url || user?.user_metadata?.picture;
   const userHandle = user?.user_metadata?.username ? `@${user.user_metadata.username}` : '';
 
   return (
