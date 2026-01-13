@@ -103,6 +103,35 @@ const SubscriptionSection: React.FC = () => {
     }
   ];
 
+  const handleCancel = async () => {
+    if (!confirm("Are you sure you want to cancel your Pro subscription? You will lose access to Pro features immediately.")) return;
+
+    const toastId = toast.loading("Canceling subscription...");
+
+    try {
+      // 1. Auth update
+      await supabase.auth.updateUser({ data: { is_pro: false, tier: 'free' } });
+
+      // 2. DB update
+      if (user?.id) {
+        await supabase.from('profiles').update({
+          subscription_tier: 'free',
+          subscription_status: 'canceled'
+        } as any).eq('id', user.id);
+      }
+
+      toast.dismiss(toastId);
+      toast.success("Subscription canceled.", {
+        description: "You have been downgraded to the Free plan."
+      });
+
+      setTimeout(() => window.location.reload(), 1500);
+    } catch (e) {
+      console.error("Cancel failed", e);
+      toast.error("Failed to cancel subscription");
+    }
+  };
+
   return (
     <div className="space-y-6 md:space-y-8 animate-in fade-in slide-in-from-right-4 duration-500">
       <div className="flex flex-col items-center text-center space-y-4">
@@ -190,10 +219,21 @@ const SubscriptionSection: React.FC = () => {
 
       {/* Billing History Section */}
       <div className="max-w-7xl mx-auto mt-20">
-        <h3 className="text-xl font-black text-white mb-6 flex items-center gap-2">
-          <FileText className="w-5 h-5 text-orange-500" />
-          Billing History
-        </h3>
+        <div className="flex items-center justify-between mb-6">
+          <h3 className="text-xl font-black text-white flex items-center gap-2">
+            <FileText className="w-5 h-5 text-orange-500" />
+            Billing History
+          </h3>
+
+          {isPro && (
+            <button
+              onClick={handleCancel}
+              className="text-xs font-bold text-red-400 hover:text-red-300 hover:bg-red-500/10 px-4 py-2 rounded-lg transition-colors border border-transparent hover:border-red-500/20"
+            >
+              Cancel Subscription
+            </button>
+          )}
+        </div>
 
         <div className="bg-[#101010] border border-white/5 rounded-[24px] overflow-hidden">
           <div className="overflow-x-auto">
@@ -242,6 +282,23 @@ const SubscriptionSection: React.FC = () => {
           */}
         </div>
       </div>
+
+      {/* DEV ONLY: Reset Button */}
+      {import.meta.env.DEV && (
+        <div className="fixed bottom-4 right-4 opacity-50 hover:opacity-100 transition-opacity">
+          <button
+            onClick={async () => {
+              if (!confirm('Reset account to FREE tier?')) return;
+              const { error } = await supabase.auth.updateUser({ data: { is_pro: false, tier: 'free' } });
+              if (user?.id) await supabase.from('profiles').update({ subscription_tier: 'free', subscription_status: 'inactive' } as any).eq('id', user.id);
+              if (!error) window.location.reload();
+            }}
+            className="px-3 py-1 bg-red-500/20 text-red-400 text-xs rounded border border-red-500/50"
+          >
+            [DEV] Reset to Free
+          </button>
+        </div>
+      )}
     </div>
   );
 };

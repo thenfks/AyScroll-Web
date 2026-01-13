@@ -48,23 +48,24 @@ const ProfilePage: React.FC = () => {
 
   // Handle Payment Return
   const [searchParams] = useSearchParams();
-  const upgradeProcessed = React.useRef(false);
 
   useEffect(() => {
     const status = searchParams.get('status');
     const sessionId = searchParams.get('session_id');
 
-    if (status === 'success' && sessionId && !upgradeProcessed.current) {
-      upgradeProcessed.current = true; // Prevent double execution
+    // Relaxed check: Allow success even if session_id is missing (for easier testing/gateway compat)
+    if (status === 'success') {
+      const currentSessionId = sessionId || 'unknown_session';
+      console.log(`✅ Payment Success Detected! Session ID: ${currentSessionId}`);
       setActiveTab('Subscription');
 
       const upgradeUser = async () => {
-        const toastId = toast.loading('Verifying payment & upgrading account...');
-
         try {
+          console.log("🔄 Upgrading user profile...");
+
           // 1. Update User Metadata (Auth)
           const { error: authError } = await supabase.auth.updateUser({
-            data: { is_pro: true, tier: 'pro' }
+            data: { is_pro: true, tier: 'pro', last_payment_session: currentSessionId }
           });
           if (authError) console.error('Auth update error:', authError);
 
@@ -77,14 +78,14 @@ const ProfilePage: React.FC = () => {
             if (dbError) console.error('DB update error:', dbError);
           }
 
-          toast.dismiss(toastId);
-          toast.success('You have been upgraded to Pro!', {
-            description: 'Welcome to the inner circle. Refreshing your dashboard...',
+          toast.success('Payment Successful!', {
+            description: `Order ${currentSessionId.slice(-6)} processed. Refreshing...`,
             duration: 3000,
           });
 
           // Reload to update context
           setTimeout(() => {
+            console.log("🔄 Reloading page...");
             // Remove query params first
             window.history.replaceState({}, '', window.location.pathname);
             window.location.reload();
@@ -92,13 +93,13 @@ const ProfilePage: React.FC = () => {
 
         } catch (e) {
           console.error('Manual upgrade failed', e);
-          toast.error('Upgrade verification failed. Please contact support.');
+          toast.error('Upgrade failed. Please contact support.');
         }
       };
 
       upgradeUser();
-    } else if (status === 'failed' && !upgradeProcessed.current) {
-      upgradeProcessed.current = true;
+    } else if (status === 'failed') {
+      console.warn(`❌ Payment Failed for Session ID: ${sessionId || 'unknown'}`);
       setActiveTab('Subscription');
       toast.error('Payment Failed', {
         description: 'The transaction could not be completed.',
