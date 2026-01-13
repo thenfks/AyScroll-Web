@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { Diamond, ArrowRight, Receipt, Upload, Loader2 } from 'lucide-react';
+import { Diamond, ArrowRight, Receipt, Upload, Loader2, ShieldCheck } from 'lucide-react';
 import { useAuth } from '@/contexts/AuthContext';
 import { supabase } from '@/integrations/supabase/client';
 
@@ -62,7 +62,7 @@ const SubscriptionCard: React.FC<SubscriptionCardProps> = ({ onManageClick }) =>
 
     const isPro = subscription?.tier?.toLowerCase() === 'pro' || subscription?.tier?.toLowerCase() === 'premium';
     const displayTier = isPro ? 'AyScroll Pro' : 'AyScroll Free';
-    const displayPrice = isPro ? '$19.00 / month' : '$0.00 / month';
+    const displayPrice = isPro ? '₹499 / month' : '₹0 / month';
 
     // Calculate days remaining if endDate exists
     let daysRemaining = 0;
@@ -115,11 +115,11 @@ const SubscriptionCard: React.FC<SubscriptionCardProps> = ({ onManageClick }) =>
                             <div className="h-full bg-gradient-to-r from-pink-500 to-purple-600 rounded-full" style={{ width: progressWidth }}></div>
                         </div>
                     </div>
-                ) : (
+                ) : !isPro ? (
                     <div className="space-y-2">
                         <p className="text-[11px] font-medium text-white/40">Upgrade to Pro to unlock all features.</p>
                     </div>
-                )}
+                ) : null}
             </div>
 
             <div className="relative z-10 space-y-3">
@@ -162,9 +162,9 @@ const SubscriptionCard: React.FC<SubscriptionCardProps> = ({ onManageClick }) =>
                 </div>
             </div>
 
-            <div className="mt-4 flex items-center justify-center gap-1.5">
-                <span className="w-2 h-2 text-white/20">🔒</span>
-                <span className="text-[10px] font-medium text-white/20">Secured by NFKS Pay</span>
+            <div className="mt-6 flex items-center justify-center gap-2 py-2 border-t border-white/[0.02]">
+                <ShieldCheck className="w-3.5 h-3.5 text-emerald-500/50" />
+                <span className="text-[10px] font-bold uppercase tracking-widest text-white/20">Secured by NFKS Pay</span>
             </div>
         </section>
     );
