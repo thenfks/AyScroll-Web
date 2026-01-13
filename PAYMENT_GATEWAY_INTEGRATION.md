@@ -306,6 +306,42 @@ Authorization: Bearer {API_KEY}
 
 ---
 
+### 6. Server-Side Webhook (The Secure Way)
+
+We have implemented a **Supabase Edge Function** to securely handle payment updates. This replaces the need for client-side simulation in production.
+
+#### **Function: `payment-webhook`**
+
+This function listens for `payment.success` events from the Gateway and updates the database securely (bypassing RLS).
+
+**Source Code**: `supabase/functions/payment-webhook/index.ts`
+
+#### **Deployment Instructions:**
+
+1.  **Login to Supabase CLI:**
+    ```bash
+    supabase login
+    ```
+
+2.  **Deploy the Function:**
+    ```bash
+    supabase functions deploy payment-webhook --project-ref [YOUR_PROJECT_ID]
+    ```
+
+3.  **Set Secrets (If needed):**
+    ```bash
+    supabase secrets set WEBHOOK_SECRET=your_secret_here --project-ref [YOUR_PROJECT_ID]
+    ```
+
+#### **Webhook URL:**
+
+Once deployed, your Webhook URL will be:
+`https://[YOUR_PROJECT_ID].supabase.co/functions/v1/payment-webhook`
+
+> **Action:** Provide this URL to the **NFKS Payment Gateway** developer to use as the `webhook_url` in the checkout creation request.
+
+---
+
 ## 🔄 Payment Flow
 
 ```

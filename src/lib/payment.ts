@@ -31,6 +31,9 @@ export async function initiateCheckout({
             return;
         }
 
+        const supabaseUrl = import.meta.env.VITE_SUPABASE_URL || 'https://wbsepuoccppuqirtowzg.supabase.co';
+        const webhookUrl = `${supabaseUrl}/functions/v1/payment-webhook`;
+
         const response = await fetch(`${API_URL}/checkout/create`, {
             method: 'POST',
             headers: {
@@ -57,7 +60,7 @@ export async function initiateCheckout({
                     failure: window.location.origin + '/profile?status=failed',
                     cancel: window.location.origin + '/profile?status=cancelled'
                 },
-                webhook_url: 'https://api.ayscroll.com/webhooks/payment' // Placeholder for production
+                webhook_url: webhookUrl // Dynamic Webhook URL
             })
         });
 
