@@ -147,7 +147,7 @@ const SubscriptionSection: React.FC<SubscriptionSectionProps> = ({ initialView }
       {view === 'plans' ? (
         <>
           <div className="flex flex-col items-center text-center space-y-4">
-            <h3 className="text-2xl md:text-3xl font-black text-white tracking-tighter">Choose Your Orbit</h3>
+            <h3 className="text-2xl md:text-3xl font-black text-white tracking-tighter">Choose Your Subscription</h3>
 
             {/* Billing Toggle */}
             <div className="flex bg-[#101010] p-1.5 rounded-xl border border-white/5 shadow-inner">
@@ -302,22 +302,6 @@ const SubscriptionSection: React.FC<SubscriptionSectionProps> = ({ initialView }
         </div>
       </div>
 
-      {/* DEV ONLY: Reset Button */}
-      {import.meta.env.DEV && (
-        <div className="fixed bottom-4 right-4 opacity-50 hover:opacity-100 transition-opacity">
-          <button
-            onClick={async () => {
-              if (!confirm('Reset account to FREE tier?')) return;
-              const { error } = await supabase.auth.updateUser({ data: { is_pro: false, tier: 'free' } });
-              if (user?.id) await supabase.from('user_profiles').update({ subscription_tier: 'free', subscription_status: 'inactive' } as any).eq('id', user.id);
-              if (!error) window.location.reload();
-            }}
-            className="px-3 py-1 bg-red-500/20 text-red-400 text-xs rounded border border-red-500/50"
-          >
-            [DEV] Reset to Free
-          </button>
-        </div>
-      )}
     </div>
   );
 };

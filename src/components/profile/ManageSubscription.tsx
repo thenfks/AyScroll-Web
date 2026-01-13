@@ -40,7 +40,7 @@ const ManageSubscription: React.FC<ManageSubscriptionProps> = ({ onViewPlans, on
             <div className="flex flex-col md:flex-row md:items-end justify-between gap-4">
                 <div>
                     <h3 className="text-2xl font-black text-white tracking-tight mb-1">Manage Subscription</h3>
-                    <p className="text-white/40 text-sm font-medium">View and update your orbit preferences.</p>
+                    <p className="text-white/40 text-sm font-medium">View and update your subscription preferences.</p>
                 </div>
                 <div className="flex items-center gap-3">
                     <button
@@ -126,7 +126,7 @@ const ManageSubscription: React.FC<ManageSubscriptionProps> = ({ onViewPlans, on
                     <div className="p-4 rounded-2xl bg-orange-500/5 border border-orange-500/10 flex items-start gap-3">
                         <AlertCircle className="w-4 h-4 text-orange-500/60 shrink-0 mt-0.5" />
                         <p className="text-[11px] font-medium text-white/40 leading-relaxed">
-                            Updating your payment method will affect all future transactions in your current Orbit.
+                            Updating your payment method will affect all future transactions in your current subscription.
                         </p>
                     </div>
                 </div>
@@ -144,7 +144,7 @@ const ManageSubscription: React.FC<ManageSubscriptionProps> = ({ onViewPlans, on
                         className="px-6 py-2.5 rounded-xl border border-red-500/20 text-red-500/60 hover:text-red-500 hover:bg-red-500/10 transition-all text-[10px] font-black uppercase tracking-widest flex items-center gap-2"
                     >
                         <XCircle className="w-3.5 h-3.5" />
-                        Cancel Orbit
+                        Cancel Subscription
                     </button>
                 </div>
             </div>
