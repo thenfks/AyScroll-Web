@@ -44,11 +44,10 @@ const SubscriptionSection: React.FC = () => {
 
     // Parse price to number (remove ₹ and commas if any)
     const amountInRupees = parseInt(price.replace(/[^0-9]/g, ''));
-    const amountInPaise = amountInRupees * 100;
 
     await initiateCheckout({
       planId: planName.toLowerCase(),
-      amount: amountInPaise,
+      amount: amountInRupees,
       userId: user.id,
       userEmail: user.email || '',
       userName: user.user_metadata?.full_name || 'User',

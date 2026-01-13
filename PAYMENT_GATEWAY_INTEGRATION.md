@@ -668,6 +668,21 @@ Use tools like:
 
 ---
 
+## 🛠️ Troubleshooting
+
+### Common Issues
+
+#### 🔴 CORS Error
+**Error**: `Access to fetch ... has been blocked by CORS policy`
+**Cause**: The payment gateway server has not whitelisted your client domain.
+**Fix**: Update `next.config.js` or CORS middleware on the Gateway:
+```typescript
+// middleware.ts on Payment Gateway
+const allowedOrigins = ['https://ayscroll.com', 'http://localhost:5173', 'http://localhost:8081'];
+```
+
+---
+
 ## 📦 Implementation Checklist
 
 ### Payment Gateway (Next.js) - Your Task:
