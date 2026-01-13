@@ -6,6 +6,8 @@ import { useSearchParams } from 'react-router-dom';
 import { toast } from 'sonner';
 import { initiateCheckout } from '@/lib/payment';
 
+import { supabase } from '@/integrations/supabase/client';
+
 const SubscriptionSection: React.FC = () => {
   const { user } = useAuth();
   const [billingCycle, setBillingCycle] = useState<'Annual' | 'Monthly'>('Annual');
@@ -21,18 +23,43 @@ const SubscriptionSection: React.FC = () => {
     const sessionId = searchParams.get('session_id');
 
     if (status === 'success' && sessionId) {
-      toast.success('Payment Successful!', {
-        description: 'Your subscription has been activated. Invoice sent to email.',
-        duration: 5000,
-      });
-      // Here you would typically re-fetch user profile to update "isPro" state
-      // window.history.replaceState({}, '', window.location.pathname); // Clean URL
+      const upgradeUser = async () => {
+        try {
+          // 1. Update User Metadata (Auth)
+          await supabase.auth.updateUser({
+            data: { is_pro: true, tier: 'pro' }
+          });
+
+          // 2. Update Profiles Table (DB)
+          if (user?.id) {
+            await supabase.from('profiles').update({
+              subscription_tier: 'pro',
+              subscription_status: 'active'
+            } as any).eq('id', user.id);
+          }
+
+          toast.success('Payment Successful!', {
+            description: 'Your subscription has been activated. Refreshing...',
+            duration: 2000,
+          });
+
+          // Reload to update context
+          setTimeout(() => {
+            window.location.reload();
+          }, 2000);
+
+        } catch (e) {
+          console.error('Manual upgrade failed', e);
+        }
+      };
+
+      upgradeUser();
     } else if (status === 'failed') {
       toast.error('Payment Failed', {
         description: 'Please try again or use a different card.',
       });
     }
-  }, [searchParams]);
+  }, [searchParams, user?.id]);
 
   const handleUpgrade = async (planName: string, price: string) => {
     if (!user) {
