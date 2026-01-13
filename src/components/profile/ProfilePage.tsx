@@ -2,10 +2,12 @@ import React, { useState, useEffect } from 'react';
 import { Sidebar } from '../layout/Sidebar';
 import { User, Sparkles } from 'lucide-react';
 import { useAuth } from '@/contexts/AuthContext';
-import { useNavigate, useLocation } from 'react-router-dom';
+import { useNavigate, useLocation, useSearchParams } from 'react-router-dom';
 import { useIsMobile } from '@/hooks/use-mobile';
 import { MobileHeader } from '../layout/MobileHeader';
 import { MobileNavDrawer } from '../layout/MobileNavDrawer';
+import { toast } from 'sonner';
+import { supabase } from '@/integrations/supabase/client';
 
 // Import the new sub-components
 import Toggle from './Toggle';
@@ -43,6 +45,54 @@ const ProfilePage: React.FC = () => {
       window.history.replaceState({}, document.title);
     }
   }, [location.state]);
+
+  // Handle Payment Return
+  const [searchParams] = useSearchParams();
+  useEffect(() => {
+    const status = searchParams.get('status');
+    const sessionId = searchParams.get('session_id');
+
+    if (status === 'success' && sessionId) {
+      setActiveTab('Subscription'); // Show the subscription tab
+
+      const upgradeUser = async () => {
+        try {
+          // 1. Update User Metadata (Auth)
+          await supabase.auth.updateUser({
+            data: { is_pro: true, tier: 'pro' }
+          });
+
+          // 2. Update Profiles Table (DB)
+          if (user?.id) {
+            await supabase.from('profiles').update({
+              subscription_tier: 'pro',
+              subscription_status: 'active'
+            } as any).eq('id', user.id);
+          }
+
+          toast.success('Payment Successful!', {
+            description: 'Your subscription has been activated. Refreshing...',
+            duration: 2000,
+          });
+
+          // Reload to update context
+          setTimeout(() => {
+            window.location.href = window.location.pathname; // Clear query params on reload
+          }, 2000);
+
+        } catch (e) {
+          console.error('Manual upgrade failed', e);
+        }
+      };
+
+      upgradeUser();
+    } else if (status === 'failed') {
+      setActiveTab('Subscription');
+      toast.error('Payment Failed', {
+        description: 'Please try again or use a different card.',
+      });
+    }
+  }, [searchParams, user]);
 
   const handleEditClick = () => {
     if (isMobile) {
