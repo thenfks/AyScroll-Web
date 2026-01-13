@@ -114,7 +114,7 @@ const SubscriptionSection: React.FC = () => {
 
       // 2. DB update
       if (user?.id) {
-        await supabase.from('profiles').update({
+        await supabase.from('user_profiles').update({
           subscription_tier: 'free',
           subscription_status: 'canceled'
         } as any).eq('id', user.id);
@@ -290,7 +290,7 @@ const SubscriptionSection: React.FC = () => {
             onClick={async () => {
               if (!confirm('Reset account to FREE tier?')) return;
               const { error } = await supabase.auth.updateUser({ data: { is_pro: false, tier: 'free' } });
-              if (user?.id) await supabase.from('profiles').update({ subscription_tier: 'free', subscription_status: 'inactive' } as any).eq('id', user.id);
+              if (user?.id) await supabase.from('user_profiles').update({ subscription_tier: 'free', subscription_status: 'inactive' } as any).eq('id', user.id);
               if (!error) window.location.reload();
             }}
             className="px-3 py-1 bg-red-500/20 text-red-400 text-xs rounded border border-red-500/50"

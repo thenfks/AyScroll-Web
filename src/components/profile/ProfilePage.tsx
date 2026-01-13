@@ -71,7 +71,7 @@ const ProfilePage: React.FC = () => {
 
           // 2. Update Profiles Table (DB)
           if (user?.id) {
-            const { error: dbError } = await supabase.from('profiles').update({
+            const { error: dbError } = await supabase.from('user_profiles').update({
               subscription_tier: 'pro',
               subscription_status: 'active'
             } as any).eq('id', user.id);

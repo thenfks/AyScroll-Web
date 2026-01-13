@@ -24,27 +24,33 @@ const SubscriptionCard: React.FC<SubscriptionCardProps> = ({ onManageClick }) =>
 
     const loadSubscription = async () => {
         try {
-            const { data, error } = await supabase
+            // Fetch Detail from DB
+            const { data } = await supabase
                 .from('user_profiles')
                 .select('subscription_tier, subscription_status, subscription_end_date')
                 .eq('id', user?.id)
                 .single();
 
-            if (error) throw error;
+            // Logic: Trust Metadata OR DB (whichever grants Pro)
+            const isMetadataPro = user?.user_metadata?.is_pro === true;
+            const isDbPro = data?.subscription_tier === 'pro' || data?.subscription_tier === 'premium';
 
-            if (data) {
-                setSubscription({
-                    tier: data.subscription_tier || 'free',
-                    status: data.subscription_status || 'inactive',
-                    endDate: data.subscription_end_date,
-                });
-            }
+            const effectiveTier = (isMetadataPro || isDbPro) ? 'pro' : (data?.subscription_tier || 'free');
+            const effectiveStatus = (isMetadataPro || isDbPro) ? 'active' : (data?.subscription_status || 'inactive');
+
+            setSubscription({
+                tier: effectiveTier,
+                status: effectiveStatus,
+                endDate: data?.subscription_end_date || null,
+            });
+
         } catch (error) {
             console.error('Error loading subscription:', error);
         } finally {
             setLoading(false);
         }
     };
+
 
     if (loading) {
         return (
@@ -158,7 +164,7 @@ const SubscriptionCard: React.FC<SubscriptionCardProps> = ({ onManageClick }) =>
 
             <div className="mt-4 flex items-center justify-center gap-1.5">
                 <span className="w-2 h-2 text-white/20">🔒</span>
-                <span className="text-[10px] font-medium text-white/20">Secure payment via Stripe</span>
+                <span className="text-[10px] font-medium text-white/20">Secured by NFKS Pay</span>
             </div>
         </section>
     );
