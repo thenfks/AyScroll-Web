@@ -48,48 +48,60 @@ const ProfilePage: React.FC = () => {
 
   // Handle Payment Return
   const [searchParams] = useSearchParams();
+  const upgradeProcessed = React.useRef(false);
+
   useEffect(() => {
     const status = searchParams.get('status');
     const sessionId = searchParams.get('session_id');
 
-    if (status === 'success' && sessionId) {
-      setActiveTab('Subscription'); // Show the subscription tab
+    if (status === 'success' && sessionId && !upgradeProcessed.current) {
+      upgradeProcessed.current = true; // Prevent double execution
+      setActiveTab('Subscription');
 
       const upgradeUser = async () => {
+        const toastId = toast.loading('Verifying payment & upgrading account...');
+
         try {
           // 1. Update User Metadata (Auth)
-          await supabase.auth.updateUser({
+          const { error: authError } = await supabase.auth.updateUser({
             data: { is_pro: true, tier: 'pro' }
           });
+          if (authError) console.error('Auth update error:', authError);
 
           // 2. Update Profiles Table (DB)
           if (user?.id) {
-            await supabase.from('profiles').update({
+            const { error: dbError } = await supabase.from('profiles').update({
               subscription_tier: 'pro',
               subscription_status: 'active'
             } as any).eq('id', user.id);
+            if (dbError) console.error('DB update error:', dbError);
           }
 
-          toast.success('Payment Successful!', {
-            description: 'Your subscription has been activated. Refreshing...',
-            duration: 2000,
+          toast.dismiss(toastId);
+          toast.success('You have been upgraded to Pro!', {
+            description: 'Welcome to the inner circle. Refreshing your dashboard...',
+            duration: 3000,
           });
 
           // Reload to update context
           setTimeout(() => {
-            window.location.href = window.location.pathname; // Clear query params on reload
+            // Remove query params first
+            window.history.replaceState({}, '', window.location.pathname);
+            window.location.reload();
           }, 2000);
 
         } catch (e) {
           console.error('Manual upgrade failed', e);
+          toast.error('Upgrade verification failed. Please contact support.');
         }
       };
 
       upgradeUser();
-    } else if (status === 'failed') {
+    } else if (status === 'failed' && !upgradeProcessed.current) {
+      upgradeProcessed.current = true;
       setActiveTab('Subscription');
       toast.error('Payment Failed', {
-        description: 'Please try again or use a different card.',
+        description: 'The transaction could not be completed.',
       });
     }
   }, [searchParams, user]);

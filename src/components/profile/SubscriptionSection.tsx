@@ -17,49 +17,6 @@ const SubscriptionSection: React.FC = () => {
   // Check if user has pro status from metadata
   const isPro = user?.user_metadata?.is_pro === true;
 
-  // Handle Return from Payment Gateway
-  React.useEffect(() => {
-    const status = searchParams.get('status');
-    const sessionId = searchParams.get('session_id');
-
-    if (status === 'success' && sessionId) {
-      const upgradeUser = async () => {
-        try {
-          // 1. Update User Metadata (Auth)
-          await supabase.auth.updateUser({
-            data: { is_pro: true, tier: 'pro' }
-          });
-
-          // 2. Update Profiles Table (DB)
-          if (user?.id) {
-            await supabase.from('profiles').update({
-              subscription_tier: 'pro',
-              subscription_status: 'active'
-            } as any).eq('id', user.id);
-          }
-
-          toast.success('Payment Successful!', {
-            description: 'Your subscription has been activated. Refreshing...',
-            duration: 2000,
-          });
-
-          // Reload to update context
-          setTimeout(() => {
-            window.location.reload();
-          }, 2000);
-
-        } catch (e) {
-          console.error('Manual upgrade failed', e);
-        }
-      };
-
-      upgradeUser();
-    } else if (status === 'failed') {
-      toast.error('Payment Failed', {
-        description: 'Please try again or use a different card.',
-      });
-    }
-  }, [searchParams, user?.id]);
 
   const handleUpgrade = async (planName: string, price: string) => {
     if (!user) {
