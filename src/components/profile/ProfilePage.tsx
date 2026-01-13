@@ -36,6 +36,7 @@ const ProfilePage: React.FC = () => {
   const [autoDownload, setAutoDownload] = useState(false);
   const [isEditModalOpen, setIsEditModalOpen] = useState(false);
   const [refreshKey, setRefreshKey] = useState(0);
+  const [subscriptionView, setSubscriptionView] = useState<'plans' | 'manage' | 'billing' | undefined>(undefined);
 
   // Sync activeTab with navigation state (e.g., from Analysis page)
   useEffect(() => {
@@ -161,7 +162,20 @@ const ProfilePage: React.FC = () => {
           <div className="grid grid-cols-12 gap-4 md:gap-6">
             {/* Left Column: Account & Preferences */}
             <div className="col-span-12 lg:col-span-4 space-y-4 md:space-y-6">
-              <SubscriptionCard onManageClick={() => setActiveTab('Subscription')} />
+              <SubscriptionCard
+                onManageClick={() => {
+                  setSubscriptionView('manage');
+                  setActiveTab('Subscription');
+                }}
+                onBillingClick={() => {
+                  setSubscriptionView('billing');
+                  setActiveTab('Subscription');
+                }}
+                onUpgradeClick={() => {
+                  setSubscriptionView('plans');
+                  setActiveTab('Subscription');
+                }}
+              />
               <AccountNavigation activeTab={activeTab === 'Edit Profile' ? 'Personal Info' : activeTab} setActiveTab={setActiveTab} logout={signOut} />
               <PreferencesSection
                 darkMode={darkMode}
@@ -186,7 +200,7 @@ const ProfilePage: React.FC = () => {
               ) : activeTab === 'Login & Security' ? (
                 <SecuritySection />
               ) : activeTab === 'Subscription' ? (
-                <SubscriptionSection />
+                <SubscriptionSection initialView={subscriptionView} />
               ) : (
                 <div className="flex flex-col items-center justify-center h-[400px] md:h-[500px] text-center space-y-6 animate-in fade-in duration-500">
                   <div className="w-16 h-16 md:w-20 md:h-20 rounded-2xl md:rounded-[32px] bg-white/[0.03] border border-white/10 flex items-center justify-center shadow-2xl">

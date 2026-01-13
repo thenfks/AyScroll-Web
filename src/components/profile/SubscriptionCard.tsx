@@ -5,9 +5,11 @@ import { supabase } from '@/integrations/supabase/client';
 
 interface SubscriptionCardProps {
     onManageClick: () => void;
+    onBillingClick: () => void;
+    onUpgradeClick: () => void;
 }
 
-const SubscriptionCard: React.FC<SubscriptionCardProps> = ({ onManageClick }) => {
+const SubscriptionCard: React.FC<SubscriptionCardProps> = ({ onManageClick, onBillingClick, onUpgradeClick }) => {
     const { user } = useAuth();
     const [loading, setLoading] = useState(true);
     const [subscription, setSubscription] = useState<{
@@ -142,11 +144,17 @@ const SubscriptionCard: React.FC<SubscriptionCardProps> = ({ onManageClick }) =>
                 )}
 
                 <div className="grid grid-cols-2 gap-3">
-                    <button className="py-3 px-4 rounded-2xl bg-white/[0.03] border border-white/5 hover:bg-white/[0.05] transition-colors flex items-center justify-center gap-2 group/btn">
+                    <button
+                        onClick={onBillingClick}
+                        className="py-3 px-4 rounded-2xl bg-white/[0.03] border border-white/5 hover:bg-white/[0.05] transition-colors flex items-center justify-center gap-2 group/btn"
+                    >
                         <Receipt className="w-4 h-4 text-white/40 group-hover/btn:text-white transition-colors" />
                         <span className="text-xs font-bold text-white/60 group-hover/btn:text-white transition-colors">Billing Info</span>
                     </button>
-                    <button className="py-3 px-4 rounded-2xl bg-white/[0.03] border border-white/5 hover:bg-white/[0.05] transition-colors flex items-center justify-center gap-2 group/btn">
+                    <button
+                        onClick={onUpgradeClick}
+                        className="py-3 px-4 rounded-2xl bg-white/[0.03] border border-white/5 hover:bg-white/[0.05] transition-colors flex items-center justify-center gap-2 group/btn"
+                    >
                         {isPro ? (
                             <>
                                 <Upload className="w-4 h-4 text-white/40 group-hover/btn:text-white transition-colors" />
