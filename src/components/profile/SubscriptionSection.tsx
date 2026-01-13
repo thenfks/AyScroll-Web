@@ -1,22 +1,61 @@
 import React, { useState } from 'react';
-import { Check } from 'lucide-react';
+import { Check, FileText, Download } from 'lucide-react';
 import { useAuth } from '@/contexts/AuthContext';
+
+import { useSearchParams } from 'react-router-dom';
+import { toast } from 'sonner';
+import { initiateCheckout } from '@/lib/payment';
 
 const SubscriptionSection: React.FC = () => {
   const { user } = useAuth();
   const [billingCycle, setBillingCycle] = useState<'Annual' | 'Monthly'>('Annual');
   const [isUpgrading, setIsUpgrading] = useState(false);
+  const [searchParams] = useSearchParams();
 
   // Check if user has pro status from metadata
   const isPro = user?.user_metadata?.is_pro === true;
 
-  const handleUpgrade = () => {
+  // Handle Return from Payment Gateway
+  React.useEffect(() => {
+    const status = searchParams.get('status');
+    const sessionId = searchParams.get('session_id');
+
+    if (status === 'success' && sessionId) {
+      toast.success('Payment Successful!', {
+        description: 'Your subscription has been activated. Invoice sent to email.',
+        duration: 5000,
+      });
+      // Here you would typically re-fetch user profile to update "isPro" state
+      // window.history.replaceState({}, '', window.location.pathname); // Clean URL
+    } else if (status === 'failed') {
+      toast.error('Payment Failed', {
+        description: 'Please try again or use a different card.',
+      });
+    }
+  }, [searchParams]);
+
+  const handleUpgrade = async (planName: string, price: string) => {
+    if (!user) {
+      toast.error('Please login to upgrade');
+      return;
+    }
+
     setIsUpgrading(true);
-    // Simulate upgrade - in production this would call a payment API
-    setTimeout(() => {
-      setIsUpgrading(false);
-      // Show toast or update UI
-    }, 800);
+
+    // Parse price to number (remove ₹ and commas if any)
+    const amountInRupees = parseInt(price.replace(/[^0-9]/g, ''));
+    const amountInPaise = amountInRupees * 100;
+
+    await initiateCheckout({
+      planId: planName.toLowerCase(),
+      amount: amountInPaise,
+      userId: user.id,
+      userEmail: user.email || '',
+      userName: user.user_metadata?.full_name || 'User',
+      billingCycle
+    });
+
+    setIsUpgrading(false);
   };
 
   const plans = [
@@ -57,7 +96,7 @@ const SubscriptionSection: React.FC = () => {
       popular: true,
       badge: isPro ? 'Active' : 'Most Popular',
       highlight: true,
-      onClick: isPro ? undefined : handleUpgrade,
+      onClick: isPro ? undefined : () => handleUpgrade('Pro', billingCycle === 'Annual' ? '399' : '499'),
       disabled: isPro
     },
     {
@@ -77,7 +116,7 @@ const SubscriptionSection: React.FC = () => {
       ],
       cta: isPro ? 'Switch Plan' : 'Get Started',
       badge: 'Popular',
-      onClick: isPro ? undefined : handleUpgrade
+      onClick: isPro ? undefined : () => handleUpgrade('Go', billingCycle === 'Annual' ? '249' : '299')
     }
   ];
 
@@ -164,6 +203,61 @@ const SubscriptionSection: React.FC = () => {
             </button>
           </div>
         ))}
+      </div>
+
+      {/* Billing History Section */}
+      <div className="max-w-7xl mx-auto mt-20">
+        <h3 className="text-xl font-black text-white mb-6 flex items-center gap-2">
+          <FileText className="w-5 h-5 text-orange-500" />
+          Billing History
+        </h3>
+
+        <div className="bg-[#101010] border border-white/5 rounded-[24px] overflow-hidden">
+          <div className="overflow-x-auto">
+            <table className="w-full text-left text-sm whitespace-nowrap">
+              <thead>
+                <tr className="border-b border-white/5 bg-white/[0.02]">
+                  <th className="px-6 py-4 font-bold text-white/40 uppercase tracking-widest text-[10px]">Date</th>
+                  <th className="px-6 py-4 font-bold text-white/40 uppercase tracking-widest text-[10px]">Plan</th>
+                  <th className="px-6 py-4 font-bold text-white/40 uppercase tracking-widest text-[10px]">Amount</th>
+                  <th className="px-6 py-4 font-bold text-white/40 uppercase tracking-widest text-[10px]">Status</th>
+                  <th className="px-6 py-4 font-bold text-white/40 uppercase tracking-widest text-[10px] text-right">Invoice</th>
+                </tr>
+              </thead>
+              <tbody className="divide-y divide-white/5">
+                {[
+                  { id: 'INV-2025-001', date: 'Jan 13, 2026', plan: 'AyScroll Pro (Monthly)', amount: '₹499.00', status: 'Paid' },
+                  { id: 'INV-2024-012', date: 'Dec 13, 2025', plan: 'AyScroll Pro (Monthly)', amount: '₹499.00', status: 'Paid' },
+                  { id: 'INV-2024-011', date: 'Nov 13, 2025', plan: 'AyScroll Pro (Monthly)', amount: '₹499.00', status: 'Paid' }
+                ].map((invoice) => (
+                  <tr key={invoice.id} className="hover:bg-white/[0.02] transition-colors">
+                    <td className="px-6 py-4 text-white/80 font-medium">{invoice.date}</td>
+                    <td className="px-6 py-4 text-white/80">{invoice.plan}</td>
+                    <td className="px-6 py-4 text-white/80">{invoice.amount}</td>
+                    <td className="px-6 py-4">
+                      <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-[10px] font-bold uppercase tracking-widest bg-emerald-500/10 text-emerald-400 border border-emerald-500/20">
+                        {invoice.status}
+                      </span>
+                    </td>
+                    <td className="px-6 py-4 text-right">
+                      <button className="text-white/40 hover:text-orange-500 transition-colors inline-flex items-center gap-1.5 text-xs font-medium group">
+                        <span>Download</span>
+                        <Download className="w-3.5 h-3.5 group-hover:-translate-y-0.5 transition-transform" />
+                      </button>
+                    </td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
+
+          {/* Empty State (Optional - currently hidden as we have mock data) */}
+          {/* 
+          <div className="p-8 text-center text-white/30 text-sm">
+            No invoices found
+          </div> 
+          */}
+        </div>
       </div>
     </div>
   );
