@@ -53,9 +53,9 @@ export async function initiateCheckout({
                     name: userName
                 },
                 redirect_urls: {
-                    success: window.location.origin + '/subscription?status=success',
-                    failure: window.location.origin + '/subscription?status=failed',
-                    cancel: window.location.origin + '/subscription?status=cancelled'
+                    success: window.location.origin + '/profile?status=success',
+                    failure: window.location.origin + '/profile?status=failed',
+                    cancel: window.location.origin + '/profile?status=cancelled'
                 },
                 webhook_url: 'https://api.ayscroll.com/webhooks/payment' // Placeholder for production
             })
@@ -86,7 +86,7 @@ export async function initiateCheckout({
         });
 
         setTimeout(() => {
-            window.location.href = window.location.origin + '/subscription?status=success&session_id=demo_session_123';
+            window.location.href = window.location.origin + '/profile?status=success&session_id=demo_session_123';
         }, 2000);
     }
 }
