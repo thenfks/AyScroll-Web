@@ -75,6 +75,34 @@ serve(async (req) => {
             // We don't throw here, as DB update is more critical
         }
 
+        // 6. Trigger Subscription Email
+        try {
+            const { data: userData } = await supabaseClient.auth.admin.getUserById(userId);
+            if (userData?.user) {
+                const supabaseUrl = Deno.env.get('SUPABASE_URL') ?? '';
+                const serviceRoleKey = Deno.env.get('SUPABASE_SERVICE_ROLE_KEY') ?? '';
+
+                console.log(`Sending Upgrade Email to: ${userData.user.email}`);
+
+                fetch(`${supabaseUrl}/functions/v1/subscription-emails`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Authorization': `Bearer ${serviceRoleKey}`
+                    },
+                    body: JSON.stringify({
+                        type: 'upgrade',
+                        email: userData.user.email,
+                        userName: userData.user.user_metadata?.full_name || 'User',
+                        planName: planId === 'go' ? 'AyScroll Go' : 'AyScroll Pro',
+                        price: planId === 'go' ? '₹299' : '₹499'
+                    })
+                }).catch(e => console.error("Email trigger failed:", e));
+            }
+        } catch (emailErr) {
+            console.error("Failed to trigger subscription email:", emailErr);
+        }
+
         return new Response(
             JSON.stringify({ success: true, message: "User upgraded successfully" }),
             { headers: { ...corsHeaders, 'Content-Type': 'application/json' }, status: 200 }

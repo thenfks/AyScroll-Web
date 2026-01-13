@@ -128,6 +128,20 @@ const SubscriptionSection: React.FC<SubscriptionSectionProps> = ({ initialView }
           subscription_tier: 'free',
           subscription_status: 'canceled'
         } as any).eq('id', user.id);
+
+        // 3. Trigger Downgrade Email
+        try {
+          await supabase.functions.invoke('subscription-emails', {
+            body: {
+              type: 'downgrade',
+              email: user.email,
+              userName: user.user_metadata?.full_name || 'User',
+              planName: 'Pro' // Assuming Pro since ONLY Pro users see the cancel button
+            }
+          });
+        } catch (emailErr) {
+          console.error("Failed to send cancellation email", emailErr);
+        }
       }
 
       toast.dismiss(toastId);
