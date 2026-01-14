@@ -114,7 +114,7 @@ const ManageSubscription: React.FC<ManageSubscriptionProps> = ({ tier, status, o
                     </div>
                 </div>
 
-                {/* Payment Method Card */}
+                {/* Payment Method Card - Dynamic with nFKs Pay */}
                 <div className="p-8 rounded-[32px] bg-[#101010] border border-white/5 flex flex-col justify-between">
                     <div>
                         <div className="flex items-center justify-between mb-8">
@@ -122,18 +122,33 @@ const ManageSubscription: React.FC<ManageSubscriptionProps> = ({ tier, status, o
                                 <div className="w-10 h-10 rounded-xl bg-white/5 flex items-center justify-center">
                                     <CreditCard className="w-5 h-5 text-white/40" />
                                 </div>
-                                <h5 className="text-sm font-bold text-white/80">Payment Method</h5>
+                                <div>
+                                    <h5 className="text-sm font-bold text-white/80">Payment Method</h5>
+                                    <p className="text-[10px] font-black text-white/20 uppercase tracking-widest">via nFKs Pay Gateway</p>
+                                </div>
                             </div>
                         </div>
 
                         <div className="p-4 rounded-2xl bg-white/[0.02] border border-white/5 flex items-center justify-between mb-4">
                             <div className="flex items-center gap-3">
-                                <div className="w-12 h-8 rounded-lg bg-indigo-600 flex items-center justify-center text-[10px] font-black text-white tracking-tighter">
-                                    {subscription.card.brand.toUpperCase()}
-                                </div>
+                                {user?.user_metadata?.payment_type === 'upi' ? (
+                                    <div className="w-12 h-8 rounded-lg bg-emerald-600 flex items-center justify-center text-[10px] font-black text-white tracking-tighter shadow-lg shadow-emerald-500/20">
+                                        UPI
+                                    </div>
+                                ) : (
+                                    <div className="w-12 h-8 rounded-lg bg-indigo-600 flex items-center justify-center text-[10px] font-black text-white tracking-tighter shadow-lg shadow-indigo-500/20">
+                                        {user?.user_metadata?.card_brand?.toUpperCase() || 'VISA'}
+                                    </div>
+                                )}
                                 <div>
-                                    <p className="text-sm font-bold text-white tracking-tight">•••• •••• •••• {subscription.card.last4}</p>
-                                    <p className="text-[10px] font-medium text-white/20">Expires 12/28</p>
+                                    <p className="text-sm font-bold text-white tracking-tight">
+                                        {user?.user_metadata?.payment_type === 'upi'
+                                            ? user?.user_metadata?.upi_id || 'mayank@upi'
+                                            : `•••• •••• •••• ${user?.user_metadata?.card_last4 || '4242'}`}
+                                    </p>
+                                    <p className="text-[10px] font-medium text-white/20">
+                                        {user?.user_metadata?.payment_type === 'upi' ? 'Primary UPI ID' : `Expires ${user?.user_metadata?.card_expiry || '12/28'}`}
+                                    </p>
                                 </div>
                             </div>
                             <button

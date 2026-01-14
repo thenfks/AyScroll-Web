@@ -11,6 +11,8 @@ import {
 } from 'lucide-react';
 import { useAuth } from '@/contexts/AuthContext';
 import { useToast } from '@/hooks/use-toast';
+import { supabase } from '@/integrations/supabase/client';
+import { cn } from '@/lib/utils';
 
 interface BillingInfoProps {
     onBack: () => void;
@@ -28,21 +30,53 @@ const BillingInfo: React.FC<BillingInfoProps> = ({ onBack }) => {
         city: user?.user_metadata?.city || '',
         state: user?.user_metadata?.state || '',
         zip: user?.user_metadata?.zip || '',
-        country: user?.user_metadata?.country || 'India'
+        country: user?.user_metadata?.country || 'India',
+        paymentType: user?.user_metadata?.payment_type || 'card',
+        upiId: user?.user_metadata?.upi_id || '',
+        cardLast4: user?.user_metadata?.card_last4 || '4242',
+        cardExpiry: user?.user_metadata?.card_expiry || '12/28',
+        cardBrand: user?.user_metadata?.card_brand || 'visa'
     });
 
     const [isSaving, setIsSaving] = useState(false);
 
     const handleSave = async () => {
         setIsSaving(true);
-        // Simulate API delay
-        await new Promise(resolve => setTimeout(resolve, 800));
-        toast({
-            title: 'Billing Information Updated',
-            description: 'Your tax and business details have been saved.',
-            variant: 'success'
-        });
-        setIsSaving(false);
+
+        try {
+            const { error } = await supabase.auth.updateUser({
+                data: {
+                    business_name: formData.businessName,
+                    tax_id: formData.taxId,
+                    address: formData.address,
+                    city: formData.city,
+                    state: formData.state,
+                    zip: formData.zip,
+                    country: formData.country,
+                    payment_type: formData.paymentType,
+                    upi_id: formData.upiId,
+                    card_last4: formData.cardLast4,
+                    card_expiry: formData.cardExpiry,
+                    card_brand: formData.cardBrand
+                }
+            });
+
+            if (error) throw error;
+
+            toast({
+                title: 'Billing Information Updated',
+                description: 'Your details and payment preferences have been synced with nFKs Pay.',
+                variant: 'success'
+            });
+        } catch (error: any) {
+            toast({
+                title: 'Save Failed',
+                description: error.message || 'Could not update billing info.',
+                variant: 'destructive'
+            });
+        } finally {
+            setIsSaving(false);
+        }
     };
 
     return (
@@ -168,6 +202,73 @@ const BillingInfo: React.FC<BillingInfoProps> = ({ onBack }) => {
                                         <option>Canada</option>
                                     </select>
                                 </div>
+                            </div>
+                        </div>
+
+                        {/* Payment Preferences */}
+                        <div className="space-y-6 pt-4 border-t border-white/5">
+                            <h4 className="text-[10px] font-black uppercase tracking-[0.2em] text-white/20 px-1">nFKs Pay Preferences</h4>
+
+                            <div className="flex gap-3">
+                                <button
+                                    onClick={() => setFormData({ ...formData, paymentType: 'card' })}
+                                    className={cn(
+                                        "flex-1 py-3 px-4 rounded-xl border text-[11px] font-black uppercase tracking-widest transition-all flex items-center justify-center gap-2",
+                                        formData.paymentType === 'card'
+                                            ? "bg-indigo-500/10 border-indigo-500/50 text-indigo-400"
+                                            : "bg-white/[0.03] border-white/10 text-white/40 hover:text-white"
+                                    )}
+                                >
+                                    <CreditCard className="w-4 h-4" /> Credit / Debit
+                                </button>
+                                <button
+                                    onClick={() => setFormData({ ...formData, paymentType: 'upi' })}
+                                    className={cn(
+                                        "flex-1 py-3 px-4 rounded-xl border text-[11px] font-black uppercase tracking-widest transition-all flex items-center justify-center gap-2",
+                                        formData.paymentType === 'upi'
+                                            ? "bg-emerald-500/10 border-emerald-500/50 text-emerald-400"
+                                            : "bg-white/[0.03] border-white/10 text-white/40 hover:text-white"
+                                    )}
+                                >
+                                    <Globe className="w-4 h-4" /> UPI / Virtual
+                                </button>
+                            </div>
+
+                            <div className="animate-in fade-in slide-in-from-top-2 duration-300">
+                                {formData.paymentType === 'upi' ? (
+                                    <div className="space-y-2">
+                                        <label className="text-xs font-bold text-white/40 ml-1">Universal UPI ID</label>
+                                        <input
+                                            type="text"
+                                            value={formData.upiId}
+                                            onChange={(e) => setFormData({ ...formData, upiId: e.target.value })}
+                                            placeholder="e.g. mayank@upi"
+                                            className="w-full bg-white/[0.03] border border-white/10 rounded-xl px-4 py-3 text-sm text-white focus:outline-none focus:border-emerald-500/50 transition-colors"
+                                        />
+                                    </div>
+                                ) : (
+                                    <div className="grid grid-cols-2 gap-4">
+                                        <div className="space-y-2">
+                                            <label className="text-xs font-bold text-white/40 ml-1">Card Number (Last 4)</label>
+                                            <input
+                                                type="text"
+                                                maxLength={4}
+                                                value={formData.cardLast4}
+                                                onChange={(e) => setFormData({ ...formData, cardLast4: e.target.value })}
+                                                className="w-full bg-white/[0.03] border border-white/10 rounded-xl px-4 py-3 text-sm text-white focus:outline-none focus:border-indigo-500/50 transition-colors"
+                                            />
+                                        </div>
+                                        <div className="space-y-2">
+                                            <label className="text-xs font-bold text-white/40 ml-1">Expiry (MM/YY)</label>
+                                            <input
+                                                type="text"
+                                                value={formData.cardExpiry}
+                                                onChange={(e) => setFormData({ ...formData, cardExpiry: e.target.value })}
+                                                className="w-full bg-white/[0.03] border border-white/10 rounded-xl px-4 py-3 text-sm text-white focus:outline-none focus:border-indigo-500/50 transition-colors"
+                                            />
+                                        </div>
+                                    </div>
+                                )}
                             </div>
                         </div>
 

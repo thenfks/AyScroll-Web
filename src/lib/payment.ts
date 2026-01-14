@@ -7,6 +7,7 @@ interface CheckoutOptions {
     userEmail: string;
     userName: string;
     billingCycle: 'Annual' | 'Monthly';
+    metadata?: any;
 }
 
 export async function initiateCheckout({
@@ -15,7 +16,8 @@ export async function initiateCheckout({
     userId,
     userEmail,
     userName,
-    billingCycle
+    billingCycle,
+    metadata
 }: CheckoutOptions) {
     try {
         const API_URL = import.meta.env.VITE_PAYMENT_API_URL || 'https://payments.nfks.co.in/api/v1';
@@ -59,11 +61,18 @@ export async function initiateCheckout({
                     email: userEmail,
                     name: userName
                 },
+                payment_method_preference: {
+                    type: metadata?.payment_type || 'card',
+                    upi_id: metadata?.upi_id || null,
+                    card_last4: metadata?.card_last4 || null,
+                    card_expiry: metadata?.card_expiry || null
+                },
                 metadata: {
                     user_id: userId,
                     plan_id: planId,
                     billingCycle: billingCycle,
-                    source: 'ayscroll-web'
+                    source: 'ayscroll-web',
+                    ...metadata
                 },
                 redirect_urls: {
                     success: window.location.origin + `/profile?status=success&plan_id=${planId}&amount=${amount}&cycle=${billingCycle}`,

@@ -255,7 +255,7 @@ const ProfilePage: React.FC = () => {
       {isMobile && <MobileHeader onMenuClick={() => setMobileNavOpen(true)} />}
       <MobileNavDrawer open={mobileNavOpen} onOpenChange={setMobileNavOpen} />
 
-      <div className={`flex-1 flex flex-col min-w-0 overflow-y-auto no-scrollbar ${isMobile ? 'pt-16' : 'pl-[240px]'}`}>
+      <div className={`flex-1 flex flex-col min-w-0 overflow-y-auto no-scrollbar ${isMobile ? 'pt-24' : 'pl-[240px]'}`}>
         <div className={`flex-1 max-w-[1400px] mx-auto w-full ${isMobile ? 'px-3 py-4 space-y-4' : 'px-4 md:px-8 py-6 space-y-6'}`}>
 
           <ProfileHeader key={refreshKey} user={user} onEditClick={handleEditClick} />

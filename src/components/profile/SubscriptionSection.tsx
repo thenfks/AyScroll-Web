@@ -148,7 +148,13 @@ const SubscriptionSection: React.FC<SubscriptionSectionProps> = ({ initialView }
       userId: user.id,
       userEmail: user.email || '',
       userName: user.user_metadata?.full_name || 'User',
-      billingCycle
+      billingCycle,
+      metadata: {
+        payment_type: user.user_metadata?.payment_type,
+        upi_id: user.user_metadata?.upi_id,
+        card_last4: user.user_metadata?.card_last4,
+        card_expiry: user.user_metadata?.card_expiry
+      }
     });
 
     setIsUpgrading(false);

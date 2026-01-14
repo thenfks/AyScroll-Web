@@ -86,7 +86,7 @@ export const MobileNavDrawer: React.FC<MobileNavDrawerProps> = ({ open, onOpenCh
 
   return (
     <Sheet open={open} onOpenChange={onOpenChange}>
-      <SheetContent side="right" className="w-[300px] bg-sidebar border-l border-border p-0 scrollbar-hide overflow-hidden [&>button]:top-8">
+      <SheetContent side="right" className="w-[270px] bg-sidebar border-l border-border p-0 scrollbar-hide overflow-hidden [&>button]:top-8">
         <SheetHeader className="p-6 border-b border-white/5">
           <SheetTitle className="flex items-center gap-3">
             <img src="/ayscroll-official-logo.png" alt="AyScroll Logo" className="w-8 h-8" />
@@ -119,7 +119,10 @@ export const MobileNavDrawer: React.FC<MobileNavDrawerProps> = ({ open, onOpenCh
           {/* Minimalist Manage Subscription Option */}
           {user && (
             <button
-              onClick={() => handleNavClick('/profile')}
+              onClick={() => {
+                navigate('/profile', { state: { targetTab: 'Subscription' } });
+                onOpenChange(false);
+              }}
               className={cn(
                 "w-full flex items-center gap-4 px-4 py-3.5 rounded-2xl transition-all text-white/60 hover:bg-white/5 hover:text-white",
                 location.pathname === '/profile' && "bg-white/5 text-white"

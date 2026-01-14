@@ -12,8 +12,8 @@ interface MainLayoutProps {
   fullScreenMobile?: boolean;
 }
 
-export const MainLayout: React.FC<MainLayoutProps> = ({ 
-  children, 
+export const MainLayout: React.FC<MainLayoutProps> = ({
+  children,
   showRightSidebar = true,
   fullScreenMobile = false
 }) => {
@@ -26,28 +26,28 @@ export const MainLayout: React.FC<MainLayoutProps> = ({
       <div className="hidden md:block">
         <Sidebar />
       </div>
-      
+
       {/* Desktop Header - Hidden on mobile */}
       <div className="hidden md:block">
         <Header />
       </div>
-      
+
       {/* Mobile Header */}
       {isMobile && !fullScreenMobile && (
         <MobileHeader onMenuClick={() => setMobileNavOpen(true)} />
       )}
-      
+
       {/* Mobile Nav Drawer */}
       <MobileNavDrawer open={mobileNavOpen} onOpenChange={setMobileNavOpen} />
-      
+
       {/* Main Content */}
-      <main 
+      <main
         className={`
           min-h-screen
-          ${isMobile 
-            ? fullScreenMobile 
-              ? 'pt-0' 
-              : 'pt-16 px-4 pb-8'
+          ${isMobile
+            ? fullScreenMobile
+              ? 'pt-0'
+              : 'pt-24 px-4 pb-8'
             : `pt-20 pl-[240px] ${showRightSidebar ? 'pr-[320px]' : ''}`
           }
         `}
@@ -56,7 +56,7 @@ export const MainLayout: React.FC<MainLayoutProps> = ({
           {children}
         </div>
       </main>
-      
+
       {/* Right Sidebar - Hidden on mobile */}
       {showRightSidebar && !isMobile && <RightSidebar />}
     </div>
