@@ -4,6 +4,7 @@ import { User, Sparkles } from 'lucide-react';
 import { useAuth } from '@/contexts/AuthContext';
 import { useNavigate, useLocation, useSearchParams } from 'react-router-dom';
 import { useIsMobile } from '@/hooks/use-mobile';
+import { useTheme } from '@/hooks/use-theme';
 import { MobileHeader } from '../layout/MobileHeader';
 import { MobileNavDrawer } from '../layout/MobileNavDrawer';
 import { toast as sonnerToast } from 'sonner';
@@ -32,9 +33,9 @@ const ProfilePage: React.FC = () => {
   const navigate = useNavigate();
   const location = useLocation();
   const isMobile = useIsMobile();
+  const { isDark, setTheme } = useTheme();
   const [mobileNavOpen, setMobileNavOpen] = useState(false);
   const [activeTab, setActiveTab] = useState('Personal Info');
-  const [darkMode, setDarkMode] = useState(true);
   const [autoDownload, setAutoDownload] = useState(false);
   const [isEditModalOpen, setIsEditModalOpen] = useState(false);
   const [refreshKey, setRefreshKey] = useState(0);
@@ -295,8 +296,8 @@ const ProfilePage: React.FC = () => {
                 <>
                   <AccountNavigation activeTab={activeTab === 'Edit Profile' ? 'Personal Info' : activeTab} setActiveTab={setActiveTab} logout={signOut} />
                   <PreferencesSection
-                    darkMode={darkMode}
-                    setDarkMode={setDarkMode}
+                    darkMode={isDark}
+                    setDarkMode={(enabled) => setTheme(enabled ? 'dark' : 'light')}
                     autoDownload={autoDownload}
                     setAutoDownload={setAutoDownload}
                   />
@@ -336,8 +337,8 @@ const ProfilePage: React.FC = () => {
                   <MinimalistMobileAccount
                     activeTab={activeTab === 'Edit Profile' ? 'Personal Info' : activeTab}
                     setActiveTab={setActiveTab}
-                    darkMode={darkMode}
-                    setDarkMode={setDarkMode}
+                    darkMode={isDark}
+                    setDarkMode={(enabled) => setTheme(enabled ? 'dark' : 'light')}
                     autoDownload={autoDownload}
                     setAutoDownload={setAutoDownload}
                     logout={signOut}
