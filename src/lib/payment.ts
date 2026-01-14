@@ -30,7 +30,7 @@ export async function initiateCheckout({
                 variant: 'loading'
             });
             setTimeout(() => {
-                window.location.href = `/subscription?status=success&session_id=mock_session_${Date.now()}`;
+                window.location.href = `/profile?status=success&session_id=mock_session_${Date.now()}&plan_id=${planId}&amount=${amount}&cycle=${billingCycle}`;
             }, 1500);
             return;
         }
@@ -60,9 +60,9 @@ export async function initiateCheckout({
                     name: userName
                 },
                 redirect_urls: {
-                    success: window.location.origin + '/profile?status=success',
-                    failure: window.location.origin + '/profile?status=failed',
-                    cancel: window.location.origin + '/profile?status=cancelled'
+                    success: window.location.origin + `/profile?status=success&plan_id=${planId}&amount=${amount}&cycle=${billingCycle}`,
+                    failure: window.location.origin + `/profile?status=failed&plan_id=${planId}&amount=${amount}&cycle=${billingCycle}`,
+                    cancel: window.location.origin + `/profile?status=cancelled&plan_id=${planId}&amount=${amount}&cycle=${billingCycle}`
                 },
                 webhook_url: webhookUrl // Dynamic Webhook URL
             })

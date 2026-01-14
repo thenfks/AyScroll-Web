@@ -231,6 +231,35 @@ export interface Database {
                 Insert: Omit<UserUpload, 'id' | 'created_at' | 'updated_at' | 'views_count' | 'likes_count'>;
                 Update: Partial<Omit<UserUpload, 'id' | 'created_at'>>;
             };
+            billing_history: {
+                Row: {
+                    id: string;
+                    user_id: string;
+                    plan_name: string;
+                    amount: string;
+                    status: string;
+                    invoice_id: string;
+                    created_at: string;
+                };
+                Insert: Omit<{
+                    id: string;
+                    user_id: string;
+                    plan_name: string;
+                    amount: string;
+                    status: string;
+                    invoice_id: string;
+                    created_at: string;
+                }, 'id' | 'created_at'>;
+                Update: Partial<Omit<{
+                    id: string;
+                    user_id: string;
+                    plan_name: string;
+                    amount: string;
+                    status: string;
+                    invoice_id: string;
+                    created_at: string;
+                }, 'id' | 'created_at'>>;
+            };
         };
     };
 }

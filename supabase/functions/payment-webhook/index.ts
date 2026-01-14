@@ -78,23 +78,20 @@ serve(async (req) => {
         // 6. Log Transaction in Billing History
         try {
             const amount = data.amount || (planId === 'go' ? 299 : 499);
-            const currency = data.currency || 'INR';
+            const cycle = data.metadata?.billingCycle || (amount > 1000 ? 'Annual' : 'Monthly');
+            const planLabel = `AyScroll ${planId.charAt(0).toUpperCase() + planId.slice(1)} (${cycle})`;
 
             await supabaseClient
                 .from('billing_history')
                 .insert({
                     user_id: userId,
-                    plan_name: `AyScroll ${planId === 'go' ? 'Go' : 'Pro'} (Monthly)`,
+                    plan_name: planLabel,
                     amount: `₹${amount}`,
                     status: 'Paid',
                     invoice_id: data.payment_id || data.metadata?.order_id || `INV-${Date.now()}`
                 });
-        } catch (billingErr) {
-            console.error("Failed to log billing history:", billingErr);
-        }
 
-        // 7. Trigger Subscription Email
-        try {
+            // 7. Trigger Subscription Email
             const { data: userData } = await supabaseClient.auth.admin.getUserById(userId);
             if (userData?.user) {
                 const supabaseUrl = Deno.env.get('SUPABASE_URL') ?? '';
@@ -112,13 +109,13 @@ serve(async (req) => {
                         type: 'upgrade',
                         email: userData.user.email,
                         userName: userData.user.user_metadata?.full_name || 'User',
-                        planName: planId === 'go' ? 'AyScroll Go' : 'AyScroll Pro',
-                        price: planId === 'go' ? '₹299' : '₹499'
+                        planName: planLabel,
+                        price: `₹${amount}`
                     })
                 }).catch(e => console.error("Email trigger failed:", e));
             }
-        } catch (emailErr) {
-            console.error("Failed to trigger subscription email:", emailErr);
+        } catch (billingErr) {
+            console.error("Failed to log billing history or send email:", billingErr);
         }
 
         return new Response(

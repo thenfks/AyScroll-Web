@@ -65,9 +65,13 @@ const SubscriptionCard: React.FC<SubscriptionCardProps> = ({ onManageClick, onBi
         );
     }
 
-    const isPro = subscription?.tier?.toLowerCase() === 'pro' || subscription?.tier?.toLowerCase() === 'premium';
-    const displayTier = isPro ? 'AyScroll Pro' : 'AyScroll Free';
-    const displayPrice = isPro ? '₹499 / month' : '₹0 / month';
+    const tier = subscription?.tier?.toLowerCase();
+    const isPaid = tier === 'pro' || tier === 'premium' || tier === 'go';
+    const isGo = tier === 'go';
+
+    const displayTier = isGo ? 'AyScroll Go' : (isPaid ? 'AyScroll Pro' : 'AyScroll Free');
+    const displayPrice = isGo ? '₹249 / month' : (isPaid ? '₹499 / month' : '₹0 / month');
+    const isPro = isPaid; // Keep isPro naming for UI bits that should look premium for both paid tiers
 
     // Calculate days remaining if endDate exists
     let daysRemaining = 0;

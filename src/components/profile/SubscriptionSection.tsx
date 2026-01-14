@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { Check, FileText, Download } from 'lucide-react';
+import { Check, FileText, Download, X, Printer } from 'lucide-react';
 import { useAuth } from '@/contexts/AuthContext';
 import { useSearchParams } from 'react-router-dom';
 import { toast as sonnerToast } from 'sonner';
@@ -76,14 +76,32 @@ const SubscriptionSection: React.FC<SubscriptionSectionProps> = ({ initialView }
         setLoadingStatus(false);
       }
 
-      const { data, error } = await supabase
-        .from('billing_history')
-        .select('*')
-        .eq('user_id', user.id)
-        .order('created_at', { ascending: false });
+      try {
+        // Attempt fetch with sort
+        let { data, error } = await supabase
+          .from('billing_history')
+          .select('*')
+          .eq('user_id', user.id)
+          .order('created_at', { ascending: false });
 
-      if (!error && data) {
-        setBillingHistory(data);
+        // Fallback if created_at is missing or other sort error
+        if (error && (error.message.includes('created_at') || error.code === '42703')) {
+          console.warn("Sorting by created_at failed, falling back to unsorted fetch.");
+          const fallback = await supabase
+            .from('billing_history')
+            .select('*')
+            .eq('user_id', user.id);
+          data = fallback.data;
+          error = fallback.error;
+        }
+
+        if (error) {
+          console.error("Billing history fetch error:", error);
+        } else if (data) {
+          setBillingHistory(data);
+        }
+      } catch (err) {
+        console.error("Catch billing history error:", err);
       }
       setLoadingHistory(false);
     };
@@ -103,11 +121,12 @@ const SubscriptionSection: React.FC<SubscriptionSectionProps> = ({ initialView }
 
     setIsUpgrading(true);
 
-    const amountInRupees = parseInt(price.replace(/[^0-9]/g, ''));
+    const monthlyPrice = parseInt(price.replace(/[^0-9]/g, ''));
+    const totalAmount = billingCycle === 'Annual' ? monthlyPrice * 12 : monthlyPrice;
 
     await initiateCheckout({
       planId: planName.toLowerCase(),
-      amount: amountInRupees,
+      amount: totalAmount,
       userId: user.id,
       userEmail: user.email || '',
       userName: user.user_metadata?.full_name || 'User',
@@ -115,6 +134,17 @@ const SubscriptionSection: React.FC<SubscriptionSectionProps> = ({ initialView }
     });
 
     setIsUpgrading(false);
+  };
+
+  const [selectedInvoice, setSelectedInvoice] = useState<any>(null);
+
+  const handleDownloadInvoice = (invoice: any) => {
+    setSelectedInvoice(invoice);
+    toast({
+      title: "Opening Invoice",
+      description: `Viewing receipt for ${invoice.plan_name}...`,
+      variant: "success"
+    });
   };
 
   const plans = [
@@ -151,12 +181,12 @@ const SubscriptionSection: React.FC<SubscriptionSectionProps> = ({ initialView }
         'Priority support',
         'Ad-free experience'
       ],
-      cta: isPro ? 'Current Plan' : isUpgrading ? 'Processing...' : 'Get Pro',
+      cta: dbTier === 'pro' ? 'Current Plan' : isUpgrading ? 'Proceed to Payment Gateway' : isPro ? 'Switch Plan' : 'Get Pro',
       popular: true,
-      badge: isPro ? 'Active' : 'Most Popular',
+      badge: dbTier === 'pro' ? 'Active' : 'Most Popular',
       highlight: true,
-      onClick: isPro ? undefined : () => handleUpgrade('Pro', billingCycle === 'Annual' ? '399' : '499'),
-      disabled: isPro
+      onClick: dbTier === 'pro' ? undefined : () => handleUpgrade('Pro', billingCycle === 'Annual' ? '399' : '499'),
+      disabled: dbTier === 'pro'
     },
     {
       name: 'Go',
@@ -173,9 +203,10 @@ const SubscriptionSection: React.FC<SubscriptionSectionProps> = ({ initialView }
         'Offline support',
         'Progress Tracker'
       ],
-      cta: isPro ? 'Switch Plan' : 'Get Started',
+      cta: dbTier === 'go' ? 'Current Plan' : isUpgrading ? 'Proceed to Payment Gateway' : isPro ? 'Switch Plan' : 'Get Go',
       badge: 'Popular',
-      onClick: isPro ? undefined : () => handleUpgrade('Go', billingCycle === 'Annual' ? '249' : '299')
+      highlight: true,
+      onClick: dbTier === 'go' ? undefined : () => handleUpgrade('Go', billingCycle === 'Annual' ? '249' : '299')
     }
   ];
 
@@ -455,7 +486,10 @@ const SubscriptionSection: React.FC<SubscriptionSectionProps> = ({ initialView }
                         })()}
                       </td>
                       <td className="px-6 py-4 text-right">
-                        <button className="text-white/40 hover:text-orange-500 transition-colors inline-flex items-center gap-1.5 text-xs font-medium group">
+                        <button
+                          onClick={() => handleDownloadInvoice(invoice)}
+                          className="text-white/40 hover:text-orange-500 transition-colors inline-flex items-center gap-1.5 text-xs font-medium group"
+                        >
                           <span>Download</span>
                           <Download className="w-3.5 h-3.5 group-hover:-translate-y-0.5 transition-transform" />
                         </button>
@@ -468,6 +502,96 @@ const SubscriptionSection: React.FC<SubscriptionSectionProps> = ({ initialView }
           </div>
         </div>
       </div>
+
+      {/* Invoice Modal */}
+      {selectedInvoice && (
+        <div className="fixed inset-0 z-[100] flex items-center justify-center p-4 md:p-8">
+          <div
+            className="absolute inset-0 bg-black/60 backdrop-blur-sm animate-in fade-in duration-300"
+            onClick={() => setSelectedInvoice(null)}
+          />
+          <div className="relative w-full max-w-2xl bg-[#0A0A0B] border border-white/10 rounded-[40px] shadow-2xl overflow-hidden animate-in zoom-in-95 duration-300">
+            {/* Modal Header */}
+            <div className="px-8 py-6 border-b border-white/5 flex items-center justify-between bg-white/[0.02]">
+              <div className="flex items-center gap-3">
+                <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-pink-500 to-orange-500 p-[1px]">
+                  <div className="w-full h-full rounded-xl bg-black/40 flex items-center justify-center">
+                    <FileText className="w-5 h-5 text-white" />
+                  </div>
+                </div>
+                <div>
+                  <h3 className="text-xl font-black text-white tracking-tight">Invoice Receipt</h3>
+                  <p className="text-[10px] font-bold text-white/30 uppercase tracking-widest">Transaction Statement</p>
+                </div>
+              </div>
+              <button
+                onClick={() => setSelectedInvoice(null)}
+                className="w-10 h-10 rounded-full bg-white/5 border border-white/10 flex items-center justify-center text-white/40 hover:text-white transition-colors"
+              >
+                <X className="w-5 h-5" />
+              </button>
+            </div>
+
+            {/* Modal Content */}
+            <div className="p-8 space-y-8">
+              <div className="flex flex-col md:flex-row justify-between gap-8">
+                <div className="space-y-4">
+                  <div>
+                    <p className="text-[10px] font-black text-white/20 uppercase tracking-[0.2em] mb-1">Invoice ID</p>
+                    <p className="text-sm font-bold text-white font-mono uppercase">{selectedInvoice.invoice_id}</p>
+                  </div>
+                  <div>
+                    <p className="text-[10px] font-black text-white/20 uppercase tracking-[0.2em] mb-1">Date Processed</p>
+                    <p className="text-sm font-bold text-white">
+                      {new Date(selectedInvoice.created_at || Date.now()).toLocaleDateString('en-US', {
+                        month: 'long',
+                        day: 'numeric',
+                        year: 'numeric',
+                        hour: '2-digit',
+                        minute: '2-digit'
+                      })}
+                    </p>
+                  </div>
+                </div>
+                <div className="text-left md:text-right">
+                  <div className="mb-4">
+                    <p className="text-[10px] font-black text-white/20 uppercase tracking-[0.2em] mb-1">Status</p>
+                    <span className={`inline-flex items-center px-4 py-1 rounded-full text-[11px] font-black uppercase tracking-widest border ${selectedInvoice.status?.toLowerCase() === 'paid'
+                      ? 'bg-emerald-500/10 text-emerald-400 border-emerald-500/20'
+                      : 'bg-orange-500/10 text-orange-400 border-orange-500/20'
+                      }`}>
+                      {selectedInvoice.status}
+                    </span>
+                  </div>
+                </div>
+              </div>
+
+              <div className="rounded-[24px] bg-white/[0.02] border border-white/5 p-6 space-y-4">
+                <div className="flex justify-between items-center pb-4 border-b border-white/5">
+                  <p className="text-sm font-bold text-white/60">Subscription Plan</p>
+                  <p className="text-sm font-bold text-white">{selectedInvoice.plan_name}</p>
+                </div>
+                <div className="flex justify-between items-center text-2xl">
+                  <p className="font-black text-white/20 uppercase tracking-tighter">Total Amount</p>
+                  <p className="font-black text-white">{selectedInvoice.amount}</p>
+                </div>
+              </div>
+
+              <div className="flex flex-col gap-4 pt-4">
+                <button
+                  onClick={() => window.print()}
+                  className="w-full py-4 bg-white/5 border border-white/10 rounded-2xl font-black text-white uppercase tracking-widest text-xs flex items-center justify-center gap-2 hover:bg-white/[0.08] transition-all"
+                >
+                  <Printer className="w-4 h-4" /> Print Document
+                </button>
+                <p className="text-center text-[10px] font-medium text-white/20">
+                  This is a digital receipt for your cosmic journey at AyScroll.
+                </p>
+              </div>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 };

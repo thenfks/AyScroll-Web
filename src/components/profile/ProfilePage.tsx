@@ -65,6 +65,11 @@ const ProfilePage: React.FC = () => {
 
     if (status === 'success') {
       const currentSessionId = sessionId === 'unknown' ? `SESS-${Date.now().toString().slice(-6)}` : sessionId;
+      const planId = searchParams.get('plan_id') || 'pro';
+      const amount = searchParams.get('amount') || '499';
+      const cycle = searchParams.get('cycle') || 'Monthly';
+      const planLabel = `AyScroll ${planId.charAt(0).toUpperCase() + planId.slice(1)} (${cycle})`;
+
       console.log(`✅ Payment Success Detected! Session ID: ${currentSessionId}`);
       setActiveTab('Subscription');
 
@@ -77,26 +82,32 @@ const ProfilePage: React.FC = () => {
 
           // 1. Update User Metadata (Auth)
           const { error: authError } = await supabase.auth.updateUser({
-            data: { is_pro: true, tier: 'pro', last_payment_session: currentSessionId }
+            data: { is_pro: true, tier: planId, last_payment_session: currentSessionId }
           });
           if (authError) console.error('Auth update error:', authError);
 
           // 2. Update Profiles Table (DB)
           if (user?.id) {
             const { error: dbError } = await supabase.from('user_profiles').update({
-              subscription_tier: 'pro',
+              subscription_tier: planId,
               subscription_status: 'active'
             } as any).eq('id', user.id) as any;
             if (dbError) console.error('DB update error:', dbError);
 
             // 3. Log to Billing History (Frontend Fallback)
-            await supabase.from('billing_history').insert({
-              user_id: user.id,
-              plan_name: 'AyScroll Pro (Monthly)',
-              amount: '₹499',
-              status: 'Paid',
-              invoice_id: currentSessionId
-            } as any);
+            try {
+              const { error: billingError } = await supabase.from('billing_history').insert({
+                user_id: user.id,
+                plan_name: planLabel,
+                amount: `₹${amount}`,
+                status: 'Paid',
+                invoice_id: currentSessionId
+              } as any);
+              if (billingError) console.error('Billing history insert error:', billingError);
+              else console.log('✅ Billing history record created');
+            } catch (err) {
+              console.error('Catch billing history error:', err);
+            }
           }
 
           // 4. Refresh session to update UI
@@ -121,6 +132,10 @@ const ProfilePage: React.FC = () => {
       upgradeUser();
     } else if (status === 'failed' || status === 'cancelled') {
       const currentSessionId = sessionId || `SESS-ERR-${Date.now().toString().slice(-6)}`;
+      const planId = searchParams.get('plan_id') || 'pro';
+      const cycle = searchParams.get('cycle') || 'Monthly';
+      const planLabel = `AyScroll ${planId.charAt(0).toUpperCase() + planId.slice(1)} (${cycle})`;
+
       console.warn(`❌ Payment ${status.toUpperCase()} for Session ID: ${currentSessionId}`);
       setActiveTab('Subscription');
 
@@ -130,13 +145,19 @@ const ProfilePage: React.FC = () => {
       // Log the interrupted/cancelled transaction to history
       const logInterruptedTransaction = async () => {
         if (user?.id) {
-          await supabase.from('billing_history').insert({
-            user_id: user.id,
-            plan_name: 'AyScroll Pro (Monthly)',
-            amount: '₹0',
-            status: status === 'cancelled' ? 'Cancelled' : 'Interrupted',
-            invoice_id: currentSessionId
-          } as any);
+          try {
+            const { error: billingError } = await supabase.from('billing_history').insert({
+              user_id: user.id,
+              plan_name: planLabel,
+              amount: '₹0',
+              status: status === 'cancelled' ? 'Cancelled' : 'Interrupted',
+              invoice_id: currentSessionId
+            } as any);
+            if (billingError) console.error('Aborted payment log error:', billingError);
+            else console.log('✅ Aborted payment recorded');
+          } catch (err) {
+            console.error('Catch aborted payment log error:', err);
+          }
         }
       };
 
