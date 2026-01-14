@@ -41,7 +41,7 @@ const PersonalInfoSection: React.FC = () => {
         .from('daily_learning_activity')
         .select('activity_date, minutes_spent')
         .eq('user_id', user.id)
-        .gte('activity_date', last7Days[0].dateStr);
+        .gte('activity_date', last7Days[0].dateStr) as { data: { activity_date: string; minutes_spent: number }[] | null };
 
       // Map to chart format
       const chartData = last7Days.map(d => {
