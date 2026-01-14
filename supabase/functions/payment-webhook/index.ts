@@ -26,6 +26,43 @@ serve(async (req) => {
 
         // 2. Validate Event Type
         const eventType = body.event || body.type; // Adapt to gateway format
+        const data = body.payload || body.data || body;
+
+        if (eventType === 'payment.failed') {
+            const userId = data.customer?.user_id || data.metadata?.user_id || data.user_id;
+            const planId = data.metadata?.plan_id || data.plan_id || 'pro';
+
+            console.log(`Payment FAILED for User: ${userId}, Plan: ${planId}`);
+
+            if (userId) {
+                const { data: userData } = await supabaseClient.auth.admin.getUserById(userId);
+                if (userData?.user) {
+                    const supabaseUrl = Deno.env.get('SUPABASE_URL') ?? '';
+                    const serviceRoleKey = Deno.env.get('SUPABASE_SERVICE_ROLE_KEY') ?? '';
+
+                    fetch(`${supabaseUrl}/functions/v1/subscription-emails`, {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json',
+                            'Authorization': `Bearer ${serviceRoleKey}`
+                        },
+                        body: JSON.stringify({
+                            type: 'failed',
+                            email: userData.user.email,
+                            userName: userData.user.user_metadata?.full_name || 'User',
+                            planName: planId.charAt(0).toUpperCase() + planId.slice(1),
+                            price: data.amount ? `₹${data.amount}` : 'N/A'
+                        })
+                    }).catch(e => console.error("Failed Email trigger failed:", e));
+                }
+            }
+
+            return new Response(
+                JSON.stringify({ success: true, message: 'Failure email triggered' }),
+                { headers: { ...corsHeaders, 'Content-Type': 'application/json' }, status: 200 }
+            )
+        }
+
         if (eventType !== 'payment.success' && eventType !== 'checkout.session.completed') {
             return new Response(
                 JSON.stringify({ message: 'Event ignored', event: eventType }),
@@ -34,13 +71,8 @@ serve(async (req) => {
         }
 
         // 3. Extract User & Plan Details
-        // Adjust this based on exactly what NFKS Gateway sends. 
-        // Assuming standard format: payload.customer.user_id OR payload.metadata.user_id
-        const data = body.payload || body.data || body;
-
-        // Look for user_id and plan_id in likely places
         const userId = data.customer?.user_id || data.metadata?.user_id || data.user_id;
-        const planId = data.metadata?.plan_id || data.plan_id || 'pro'; // Check metadata first
+        const planId = data.metadata?.plan_id || data.plan_id || 'pro';
 
         if (!userId) {
             throw new Error("Missing user_id in webhook payload");
@@ -77,7 +109,7 @@ serve(async (req) => {
             throw dbError;
         }
 
-        // 5. Update Auth Metadata (Optional but recommended)
+        // 5. Update Auth Metadata
         const { error: authError } = await supabaseClient.auth.admin.updateUserById(
             userId,
             { user_metadata: { is_pro: true, tier: planId } }
@@ -85,14 +117,15 @@ serve(async (req) => {
 
         if (authError) {
             console.error("Auth Metadata Update Failed:", authError);
-            // We don't throw here, as DB update is more critical
         }
 
         // 6. Log Transaction in Billing History
         try {
             const amount = data.amount || (planId === 'go' ? 299 : 499);
-            const cycle = data.metadata?.billingCycle || (amount > 1000 ? 'Annual' : 'Monthly');
-            const planLabel = `AyScroll ${planId.charAt(0).toUpperCase() + planId.slice(1)} (${cycle})`;
+            const cycleText = data.metadata?.billingCycle || (amount > 1000 ? 'Annual' : 'Monthly');
+            const planLabel = `AyScroll ${planId.charAt(0).toUpperCase() + planId.slice(1)} (${cycleText})`;
+            const invoiceId = data.payment_id || data.metadata?.order_id || `INV-${Date.now()}`;
+            const currentDate = new Date().toLocaleDateString('en-US', { month: 'long', day: 'numeric', year: 'numeric' });
 
             await supabaseClient
                 .from('billing_history')
@@ -101,7 +134,7 @@ serve(async (req) => {
                     plan_name: planLabel,
                     amount: `₹${amount}`,
                     status: 'Paid',
-                    invoice_id: data.payment_id || data.metadata?.order_id || `INV-${Date.now()}`
+                    invoice_id: invoiceId
                 });
 
             // 7. Trigger Subscription Email
@@ -123,7 +156,9 @@ serve(async (req) => {
                         email: userData.user.email,
                         userName: userData.user.user_metadata?.full_name || 'User',
                         planName: planLabel,
-                        price: `₹${amount}`
+                        price: `₹${amount}`,
+                        invoiceId: invoiceId,
+                        date: currentDate
                     })
                 }).catch(e => console.error("Email trigger failed:", e));
             }

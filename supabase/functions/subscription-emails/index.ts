@@ -13,14 +13,17 @@ serve(async (req) => {
     }
 
     try {
-        const { type, email, userName, planName, price } = await req.json()
+        const { type, email, userName, planName, price, invoiceId, date } = await req.json()
 
         let subject = ""
         let htmlContent = ""
         let textContent = ""
 
+        const logoUrl = "https://ayscroll.com/ayscroll-official-logo.png"
+        const currentYear = new Date().getFullYear()
+
         if (type === 'upgrade') {
-            subject = "Welcome to AyScroll Pro! 🎉"
+            subject = `Invoice for your AyScroll ${planName} Subscription 🧾`
             htmlContent = `
                 <!DOCTYPE html>
                 <html>
@@ -28,46 +31,70 @@ serve(async (req) => {
                     <meta charset="UTF-8">
                     <meta name="viewport" content="width=device-width, initial-scale=1.0">
                     <style>
-                        body { font-family: -apple-system, sans-serif; line-height: 1.6; color: #333; background-color: #ffffff; margin: 0; padding: 0; }
-                        .container { max-width: 600px; margin: 0 auto; padding: 40px 20px; }
-                        .header { text-align: center; margin-bottom: 40px; }
-                        .header img { width: 120px; margin-bottom: 20px; }
-                        .card { background: #101010; color: white; padding: 40px; border-radius: 32px; text-align: center; border: 1px solid rgba(255,255,255,0.1); }
-                        .tier-badge { display: inline-block; padding: 6px 16px; border-radius: 99px; background: rgba(236, 72, 153, 0.1); color: #ec4899; font-weight: 800; text-transform: uppercase; letter-spacing: 2px; font-size: 10px; margin-bottom: 20px; }
-                        .title { font-size: 32px; font-weight: 900; margin-bottom: 10px; letter-spacing: -1px; }
-                        .price { color: rgba(255,255,255,0.4); font-size: 14px; font-weight: 700; margin-bottom: 30px; }
-                        .feature-list { text-align: left; background: rgba(255,255,255,0.03); padding: 25px; border-radius: 20px; margin-bottom: 30px; }
-                        .feature-item { display: flex; align-items: center; gap: 10px; margin-bottom: 12px; font-size: 14px; color: rgba(255,255,255,0.7); }
-                        .footer { margin-top: 50px; text-align: center; color: #718096; font-size: 12px; }
-                        .button { display: inline-block; padding: 16px 40px; background: linear-gradient(to right, #ec4899, #f97316); color: white !important; text-decoration: none; border-radius: 12px; font-weight: 900; text-transform: uppercase; letter-spacing: 1px; font-size: 12px; }
+                        body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif; line-height: 1.6; color: #1a202c; background-color: #f7fafc; margin: 0; padding: 0; }
+                        .container { max-width: 600px; margin: 20px auto; background: #ffffff; border-radius: 16px; overflow: hidden; box-shadow: 0 4px 6px rgba(0,0,0,0.05); }
+                        .header { background: #000000; padding: 40px; text-align: center; }
+                        .header img { width: 140px; }
+                        .content { padding: 40px; }
+                        .greeting { font-size: 24px; font-weight: 800; margin-bottom: 8px; color: #000; }
+                        .sub-greeting { color: #718096; margin-bottom: 30px; }
+                        .invoice-card { background: #f8fafc; border: 1px solid #edf2f7; border-radius: 12px; padding: 24px; margin-bottom: 30px; }
+                        .invoice-row { display: flex; justify-content: space-between; margin-bottom: 12px; font-size: 14px; }
+                        .invoice-label { color: #718096; font-weight: 600; }
+                        .invoice-value { color: #1a202c; font-weight: 700; }
+                        .total-row { border-top: 1px solid #edf2f7; padding-top: 12px; margin-top: 12px; font-size: 18px; }
+                        .total-label { font-weight: 800; }
+                        .total-value { font-weight: 800; color: #ec4899; }
+                        .button { display: inline-block; width: 100%; text-align: center; padding: 16px; background: linear-gradient(135deg, #ec4899 0%, #f97316 100%); color: #ffffff !important; text-decoration: none; border-radius: 12px; font-weight: 700; font-size: 16px; margin-top: 20px; box-sizing: border-box; }
+                        .footer { padding: 30px; text-align: center; color: #a0aec0; font-size: 12px; background: #f8fafc; }
+                        .feature-box { margin-top: 30px; border-left: 4px solid #f97316; padding-left: 20px; }
+                        .feature-title { font-weight: 700; font-size: 14px; margin-bottom: 5px; }
                     </style>
                 </head>
                 <body>
                     <div class="container">
-                        <div class="header"><img src="https://ayscroll.com/ayscroll-official-logo.png" alt="AyScroll"></div>
-                        <div class="card">
-                            <div class="tier-badge">${planName} Activated</div>
-                            <h1 class="title">You're in the Orbit! 🦅</h1>
-                            <p class="price">${price || '₹499'} / Monthly</p>
-                            <div class="feature-list">
-                                <div class="feature-item">✅ Unlimited lesson access</div>
-                                <div class="feature-item">✅ AI-powered recommendations</div>
-                                <div class="feature-item">✅ Advanced analytics</div>
-                                <div class="feature-item">✅ Offline download</div>
+                        <div class="header"><img src="${logoUrl}" alt="AyScroll"></div>
+                        <div class="content">
+                            <h1 class="greeting">Welcome to the Pro Orbit! 🚀</h1>
+                            <p class="sub-greeting">Hi ${userName}, your subscription to ${planName} is now active. Here is your transaction summary.</p>
+                            
+                            <div class="invoice-card">
+                                <div class="invoice-row">
+                                    <span class="invoice-label">Invoice ID</span>
+                                    <span class="invoice-value">${invoiceId || 'INV-' + Math.random().toString(36).substr(2, 9).toUpperCase()}</span>
+                                </div>
+                                <div class="invoice-row">
+                                    <span class="invoice-label">Date</span>
+                                    <span class="invoice-value">${date || new Date().toLocaleDateString()}</span>
+                                </div>
+                                <div class="invoice-row">
+                                    <span class="invoice-label">Plan</span>
+                                    <span class="invoice-value">${planName}</span>
+                                </div>
+                                <div class="total-row invoice-row">
+                                    <span class="total-label">Total Amount</span>
+                                    <span class="total-value">${price}</span>
+                                </div>
                             </div>
-                            <a href="https://ayscroll.com/topics" class="button">Access All Topics</a>
+
+                            <div class="feature-box">
+                                <div class="feature-title">What's next?</div>
+                                <p style="font-size: 14px; margin: 0; color: #4a5568;">You now have full access to AI recommendations, advanced analytics, and offline downloads. Start your journey now!</p>
+                            </div>
+
+                            <a href="https://ayscroll.com/topics" class="button">Start Learning</a>
                         </div>
                         <div class="footer">
-                            <p>AyScroll • Bhopal, Madhya Pradesh, India</p>
-                            <p>© 2026 AyScroll. All Rights Reserved.</p>
+                            <p>AyScroll • Global Learning Platform</p>
+                            <p>© ${currentYear} AyScroll. All Rights Reserved.</p>
                         </div>
                     </div>
                 </body>
                 </html>
             `
-            textContent = `Welcome to AyScroll Pro, ${userName}! Your subscription is now active.`
+            textContent = `Hi ${userName}, your AyScroll ${planName} subscription is active. Total: ${price}. Invoice: ${invoiceId}`
         } else if (type === 'downgrade') {
-            subject = "Your AyScroll Subscription has changed"
+            subject = "Your AyScroll Subscription has been Cancelled 🕊️"
             htmlContent = `
                 <!DOCTYPE html>
                 <html>
@@ -75,33 +102,109 @@ serve(async (req) => {
                     <meta charset="UTF-8">
                     <meta name="viewport" content="width=device-width, initial-scale=1.0">
                     <style>
-                        body { font-family: -apple-system, sans-serif; line-height: 1.6; color: #333; background-color: #ffffff; margin: 0; padding: 0; }
-                        .container { max-width: 600px; margin: 0 auto; padding: 40px 20px; }
-                        .header { text-align: center; margin-bottom: 40px; }
-                        .card { background: #f7fafc; padding: 40px; border-radius: 32px; text-align: center; border: 1px solid #e2e8f0; }
-                        .title { font-size: 24px; font-weight: 800; color: #2d3748; margin-bottom: 15px; }
-                        .text { color: #4a5568; margin-bottom: 25px; }
-                        .button { display: inline-block; padding: 14px 30px; background: #2d3748; color: white !important; text-decoration: none; border-radius: 10px; font-weight: 700; font-size: 14px; }
-                        .footer { margin-top: 50px; text-align: center; color: #a0aec0; font-size: 12px; }
+                        body { font-family: -apple-system, sans-serif; line-height: 1.6; color: #333; background-color: #f7fafc; margin: 0; padding: 0; }
+                        .container { max-width: 600px; margin: 20px auto; background: #ffffff; border-radius: 16px; overflow: hidden; box-shadow: 0 4px 6px rgba(0,0,0,0.05); }
+                        .header { background: #000000; padding: 30px; text-align: center; }
+                        .header img { width: 100px; }
+                        .content { padding: 40px; text-align: center; }
+                        .title { font-size: 24px; font-weight: 800; color: #2d3748; margin-bottom: 20px; }
+                        .text { color: #4a5568; margin-bottom: 30px; font-size: 16px; text-align: left; }
+                        .button { display: inline-block; padding: 14px 30px; background: #000000; color: #ffffff !important; text-decoration: none; border-radius: 10px; font-weight: 700; font-size: 14px; }
+                        .footer { padding: 30px; text-align: center; color: #a0aec0; font-size: 12px; }
                     </style>
                 </head>
                 <body>
                     <div class="container">
-                        <div class="header"><img src="https://ayscroll.com/ayscroll-official-logo.png" alt="AyScroll" width="80"></div>
-                        <div class="card">
-                            <h1 class="title">Subscription Canceled</h1>
-                            <p class="text">Your ${planName || 'Pro'} subscription has been canceled and you've been moved to the Free plan. We're sorry to see you go!</p>
-                            <p class="text">You can rejoin the Pro orbit anytime to get back your exclusive features.</p>
+                        <div class="header"><img src="${logoUrl}" alt="AyScroll"></div>
+                        <div class="content">
+                            <h1 class="title">We're sorry to see you go!</h1>
+                            <p class="text">Hi ${userName}, this is to confirm that your ${planName || 'Pro'} subscription has been cancelled. You will still have access to your features until the end of your current billing period.</p>
+                            <p class="text">Your account has been moved to the Free plan. You can always come back and upgrade anytime!</p>
                             <a href="https://ayscroll.com/pricing" class="button">View Plans</a>
                         </div>
                         <div class="footer">
-                            <p>AyScroll Team</p>
+                            <p>The AyScroll Team</p>
+                            <p>© ${currentYear} AyScroll. All Rights Reserved.</p>
                         </div>
                     </div>
                 </body>
                 </html>
             `
-            textContent = `Your AyScroll subscription has been canceled. You have been moved to the Free plan.`
+            textContent = `Hi ${userName}, your AyScroll subscription has been cancelled. You've been moved to the Free plan.`
+        } else if (type === 'failed') {
+            subject = "Payment Failed: Your AyScroll Subscription ⚠️"
+            htmlContent = `
+                <!DOCTYPE html>
+                <html>
+                <head>
+                    <meta charset="UTF-8">
+                    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+                    <style>
+                        body { font-family: -apple-system, sans-serif; line-height: 1.6; color: #333; background-color: #f7fafc; margin: 0; padding: 0 ; }
+                        .container { max-width: 600px; margin: 20px auto; background: #ffffff; border-radius: 16px; overflow: hidden; box-shadow: 0 4px 6px rgba(0,0,0,0.05); }
+                        .header { background: #000000; padding: 30px; text-align: center; }
+                        .header img { width: 100px; }
+                        .content { padding: 40px; }
+                        .title { font-size: 24px; font-weight: 800; color: #e53e3e; margin-bottom: 20px; }
+                        .text { color: #4a5568; margin-bottom: 30px; font-size: 16px; }
+                        .button { display: inline-block; width: 100%; text-align: center; padding: 16px; background: #000000; color: #ffffff !important; text-decoration: none; border-radius: 12px; font-weight: 700; font-size: 16px; box-sizing: border-box; }
+                        .footer { padding: 30px; text-align: center; color: #a0aec0; font-size: 12px; }
+                    </style>
+                </head>
+                <body>
+                    <div class="container">
+                        <div class="header"><img src="${logoUrl}" alt="AyScroll"></div>
+                        <div class="content">
+                            <h1 class="title">Payment Unsuccessful</h1>
+                            <p class="text">Hi ${userName}, we were unable to process your payment for the ${planName} plan. Don't worry, no charges were made from our side.</p>
+                            <p class="text">This usually happens due to bank restrictions or temporary network issues. You can try again using a different payment method.</p>
+                            <a href="https://ayscroll.com/pricing" class="button">Try Again</a>
+                        </div>
+                        <div class="footer">
+                            <p>Need help? Reply to this email or contact support@ayscroll.com</p>
+                        </div>
+                    </div>
+                </body>
+                </html>
+            `
+            textContent = `Hi ${userName}, your payment for AyScroll ${planName} failed. Please try again.`
+        } else if (type === 'interrupted') {
+            subject = "Complete your AyScroll Upgrade! ✨"
+            htmlContent = `
+                <!DOCTYPE html>
+                <html>
+                <head>
+                    <meta charset="UTF-8">
+                    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+                    <style>
+                        body { font-family: -apple-system, sans-serif; line-height: 1.6; color: #333; background-color: #f7fafc; margin: 0; padding: 0; }
+                        .container { max-width: 600px; margin: 20px auto; background: #ffffff; border-radius: 16px; overflow: hidden; box-shadow: 0 4px 6px rgba(0,0,0,0.05); }
+                        .header { background: #000000; padding: 30px; text-align: center; }
+                        .header img { width: 100px; }
+                        .content { padding: 40px; }
+                        .title { font-size: 24px; font-weight: 800; color: #2d3748; margin-bottom: 20px; }
+                        .text { color: #4a5568; margin-bottom: 30px; font-size: 16px; }
+                        .button { display: inline-block; width: 100%; text-align: center; padding: 16px; background: linear-gradient(135deg, #ec4899 0%, #f97316 100%); color: #ffffff !important; text-decoration: none; border-radius: 12px; font-weight: 700; font-size: 16px; box-sizing: border-box; }
+                        .footer { padding: 30px; text-align: center; color: #a0aec0; font-size: 12px; }
+                    </style>
+                </head>
+                <body>
+                    <div class="container">
+                        <div class="header"><img src="${logoUrl}" alt="AyScroll"></div>
+                        <div class="content">
+                            <h1 class="title">Almost there!</h1>
+                            <p class="text">Hi ${userName}, we noticed you started an upgrade to ${planName} but didn't finish the transaction. We've saved your progress!</p>
+                            <p class="text">Complete your upgrade now to unlock all premium features and continue your learning journey.</p>
+                            <a href="https://ayscroll.com/pricing" class="button">Complete Upgrade</a>
+                        </div>
+                        <div class="footer">
+                            <p>© ${currentYear} AyScroll. All Rights Reserved.</p>
+                        </div>
+                    </div>
+                </body>
+                </html>
+            `
+            textContent = `Hi ${userName}, you have an incomplete upgrade to AyScroll ${planName}. Complete it now!`
         }
 
         const response = await fetch('https://api.brevo.com/v3/smtp/email', {
@@ -110,6 +213,7 @@ serve(async (req) => {
                 'accept': 'application/json',
                 'api-key': BREVO_API_KEY,
                 'content-type': 'application/json',
+                'cross-domain': 'true'
             },
             body: JSON.stringify({
                 sender: { name: "AyScroll", email: "support@ayscroll.com" },
@@ -122,6 +226,7 @@ serve(async (req) => {
 
         if (!response.ok) {
             const error = await response.json()
+            console.error("Brevo Error:", error)
             throw new Error(error.message || 'Failed to send email')
         }
 
@@ -131,6 +236,7 @@ serve(async (req) => {
         })
 
     } catch (error) {
+        console.error("Function Error:", error.message)
         return new Response(JSON.stringify({ error: error.message }), {
             headers: { ...corsHeaders, 'Content-Type': 'application/json' },
             status: 400

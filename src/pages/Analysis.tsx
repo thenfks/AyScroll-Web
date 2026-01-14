@@ -8,6 +8,8 @@ import { supabase } from '@/integrations/supabase/client';
 import { useAuth } from '@/contexts/AuthContext';
 import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
+import { GradientButton } from '@/components/ui/GradientButton';
+import { cn } from '@/lib/utils';
 
 const stats = [
   { label: 'Streak', value: '12', unit: 'Days', icon: Flame, color: 'from-orange-500 to-red-500', bgColor: 'bg-orange-500/10' },
@@ -155,13 +157,13 @@ const Analysis = () => {
               </div>
             </div>
 
-            <button
+            <GradientButton
               onClick={() => navigate('/profile', { state: { targetTab: 'Subscription' } })}
-              className="px-12 py-5 bg-gradient-to-r from-pink-500 to-purple-600 rounded-2xl font-black text-white shadow-xl shadow-pink-500/20 hover:scale-[1.05] active:scale-[0.98] transition-all uppercase tracking-widest text-sm flex items-center gap-2"
+              className="px-12 py-7 text-sm flex items-center gap-2"
             >
               Upgrade to Unlock
               <Zap className="w-4 h-4 fill-white" />
-            </button>
+            </GradientButton>
           </div>
         </MainLayout>
       </ProtectedRoute>
@@ -186,23 +188,30 @@ const Analysis = () => {
             </div>
 
             <div className="flex items-center gap-1 p-1 bg-white/[0.03] rounded-xl border border-white/5">
-              <button className="px-4 py-2 rounded-lg text-[10px] font-black uppercase tracking-widest bg-gradient-to-r from-pink-500 to-orange-500 text-white">
+              <GradientButton
+                className="px-4 py-2 text-[10px]"
+                gradient="brand"
+              >
                 Week
-              </button>
-              <button className="px-4 py-2 rounded-lg text-[10px] font-black uppercase tracking-widest text-white/40 hover:text-white transition-colors">
+              </GradientButton>
+              <GradientButton
+                className="px-4 py-2 text-[10px] text-white/40 hover:text-white"
+                gradient="dark"
+                glow={false}
+              >
                 Month
-              </button>
+              </GradientButton>
             </div>
           </div>
 
           {/* AI Insight Card */}
-          <div className="p-5 md:p-6 rounded-2xl md:rounded-3xl bg-gradient-to-br from-purple-500/10 to-pink-500/10 border border-purple-500/20 mb-6">
+          <div className="p-5 md:p-6 rounded-2xl md:rounded-3xl bg-brand-gradient/10 border-pink-500/20 mb-6">
             <div className="flex items-start gap-4">
-              <div className="w-12 h-12 rounded-xl bg-gradient-to-br from-purple-500 to-pink-500 flex items-center justify-center shrink-0">
+              <div className="w-12 h-12 rounded-xl bg-brand-gradient flex items-center justify-center shrink-0">
                 <Brain className="w-6 h-6 text-white" />
               </div>
               <div>
-                <p className="text-[10px] font-black uppercase tracking-widest text-purple-400 mb-1">AI Mastery Insight</p>
+                <p className="text-[10px] font-black uppercase tracking-widest text-pink-500 mb-1">AI Mastery Insight</p>
                 <p className="text-white font-medium leading-relaxed">
                   Based on your learning patterns, focusing on <span className="text-pink-400">System Design</span> concepts
                   in the morning could boost your retention by 23%. Your peak focus hours are between 9-11 AM.
@@ -378,10 +387,10 @@ const Analysis = () => {
 
           {/* Generate Path CTA */}
           <button className="w-full p-6 rounded-3xl bg-white/5 border border-white/10 flex items-center justify-between group hover:bg-white/10 hover:border-pink-500/30 transition-all duration-300 relative overflow-hidden">
-            <div className="absolute inset-0 bg-gradient-to-br from-pink-500/5 to-purple-500/5 opacity-0 group-hover:opacity-100 transition-opacity" />
+            <div className="absolute inset-0 bg-brand-gradient/5 opacity-0 group-hover:opacity-100 transition-opacity" />
 
             <div className="flex items-center gap-5 relative z-10">
-              <div className="w-14 h-14 rounded-2xl bg-gradient-to-br from-pink-500 to-purple-600 flex items-center justify-center shadow-lg shadow-pink-500/20 group-hover:scale-110 transition-transform duration-500">
+              <div className="w-14 h-14 rounded-2xl bg-brand-gradient flex items-center justify-center shadow-lg shadow-pink-500/20 group-hover:scale-110 transition-transform duration-500">
                 <Sparkles className="w-7 h-7 text-white" />
               </div>
               <div className="text-left">

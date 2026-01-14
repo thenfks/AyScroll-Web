@@ -3,6 +3,7 @@ import { Flame, BadgeCheck } from 'lucide-react';
 import { User } from '@supabase/supabase-js';
 import { supabase } from '@/integrations/supabase/client';
 import { UserProfile } from '@/types/database';
+import { GradientButton } from '@/components/ui/GradientButton';
 
 interface ProfileHeaderProps {
   user: User;
@@ -39,7 +40,7 @@ const ProfileHeader: React.FC<ProfileHeaderProps> = ({ user, onEditClick }) => {
   return (
     <header className="relative p-4 md:p-10 rounded-[28px] md:rounded-[40px] bg-white/[0.03] border border-white/10 overflow-hidden flex flex-col lg:flex-row items-center justify-between gap-5 md:gap-8 shadow-2xl">
       <div className="flex flex-col md:flex-row items-center gap-5 md:gap-8 relative z-10 w-full">
-        <div className={`w-20 h-20 md:w-32 md:h-32 lg:w-40 lg:h-40 rounded-full shrink-0 ${isPro ? 'p-1 md:p-1.5 bg-gradient-to-tr from-pink-500 via-purple-500 to-orange-500 shadow-2xl' : ''}`}>
+        <div className={`w-20 h-20 md:w-32 md:h-32 lg:w-40 lg:h-40 rounded-full shrink-0 ${isPro ? 'p-1 md:p-1.5 bg-brand-gradient shadow-2xl' : ''}`}>
           <img
             src={profile?.avatar_url || user.user_metadata?.avatar_url || user.user_metadata?.picture || `https://ui-avatars.com/api/?name=${encodeURIComponent(profile?.display_name || user.user_metadata?.name || 'User')}&background=random`}
             className={`w-full h-full rounded-full object-cover ${isPro ? 'border-[3px] md:border-[6px] border-[#020203]' : ''}`}
@@ -67,15 +68,21 @@ const ProfileHeader: React.FC<ProfileHeaderProps> = ({ user, onEditClick }) => {
             )}
           </div>
           <div className="flex items-center justify-center md:justify-start gap-2.5 md:gap-4">
-            <button
+            <GradientButton
               onClick={onEditClick}
-              className="px-5 md:px-12 py-2.5 md:py-3.5 bg-gradient-to-r from-pink-500 to-purple-600 rounded-full font-black text-white shadow-xl shadow-pink-500/20 hover:scale-105 active:scale-95 transition-all uppercase tracking-widest text-[9px] md:text-[11px]"
+              round
+              className="px-5 md:px-12 py-2.5 md:py-3.5 text-[9px] md:text-[11px]"
             >
               Edit Profile
-            </button>
-            <button className="px-5 md:px-12 py-2.5 md:py-3.5 bg-white/[0.05] border border-white/10 rounded-full font-black text-white/60 hover:text-white hover:bg-white/10 transition-all uppercase tracking-widest text-[9px] md:text-[11px]">
+            </GradientButton>
+            <GradientButton
+              round
+              gradient="dark"
+              glow={false}
+              className="px-5 md:px-12 py-2.5 md:py-3.5 text-[9px] md:text-[11px] text-white/60 hover:text-white"
+            >
               Share
-            </button>
+            </GradientButton>
           </div>
         </div>
       </div>

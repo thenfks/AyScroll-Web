@@ -91,7 +91,7 @@ const SubscriptionCard: React.FC<SubscriptionCardProps> = ({ onManageClick, onBi
     return (
         <section className="p-6 rounded-[40px] bg-[#1A1A1A] border border-white/5 shadow-xl relative overflow-hidden group">
             {/* Background Gradient Effect */}
-            <div className={`absolute top-0 right-0 w-64 h-64 rounded-full blur-3xl -translate-y-1/2 translate-x-1/2 transition-all duration-500 ${isPro ? 'bg-purple-500/10 group-hover:bg-purple-500/15' : 'bg-gray-500/5 group-hover:bg-gray-500/10'}`}></div>
+            <div className={`absolute top-0 right-0 w-64 h-64 rounded-full blur-3xl -translate-y-1/2 translate-x-1/2 transition-all duration-500 ${isPro ? 'bg-pink-500/10 group-hover:bg-pink-500/15' : 'bg-gray-500/5 group-hover:bg-gray-500/10'}`}></div>
 
             <div className="flex items-center justify-between mb-6 relative z-10">
                 <h3 className="text-lg font-bold text-white">Subscription</h3>
@@ -103,7 +103,7 @@ const SubscriptionCard: React.FC<SubscriptionCardProps> = ({ onManageClick, onBi
 
             <div className="relative z-10 p-5 rounded-3xl bg-white/[0.03] border border-white/5 mb-6">
                 <div className="flex items-center gap-4 mb-6">
-                    <div className={`w-12 h-12 rounded-2xl p-[1px] ${isPro ? 'bg-gradient-to-br from-pink-500 to-purple-600' : 'bg-white/10'}`}>
+                    <div className={`w-12 h-12 rounded-2xl p-[1px] ${isPro ? 'bg-brand-gradient' : 'bg-white/10'}`}>
                         <div className="w-full h-full rounded-2xl bg-black/40 backdrop-blur-sm flex items-center justify-center">
                             <Diamond className={`w-5 h-5 ${isPro ? 'text-white fill-white/20' : 'text-white/40'}`} />
                         </div>
@@ -121,7 +121,7 @@ const SubscriptionCard: React.FC<SubscriptionCardProps> = ({ onManageClick, onBi
                             <span className="text-white/60">{formattedEndDate}</span>
                         </div>
                         <div className="h-1.5 w-full bg-white/5 rounded-full overflow-hidden">
-                            <div className="h-full bg-gradient-to-r from-pink-500 to-purple-600 rounded-full" style={{ width: progressWidth }}></div>
+                            <div className="h-full bg-brand-gradient rounded-full" style={{ width: progressWidth }}></div>
                         </div>
                     </div>
                 ) : !isPro ? (
@@ -143,7 +143,7 @@ const SubscriptionCard: React.FC<SubscriptionCardProps> = ({ onManageClick, onBi
                 ) : (
                     <button
                         onClick={onUpgradeClick}
-                        className="w-full py-3.5 bg-gradient-to-r from-pink-500 to-purple-600 text-white rounded-2xl font-bold text-sm tracking-wide hover:scale-[1.02] active:scale-[0.98] transition-all flex items-center justify-center gap-2 shadow-lg shadow-pink-500/20"
+                        className="w-full py-3.5 bg-brand-gradient text-white rounded-2xl font-bold text-sm tracking-wide hover:scale-[1.02] active:scale-[0.98] transition-all flex items-center justify-center gap-2 shadow-lg shadow-pink-500/20"
                     >
                         Upgrade to Pro
                         <Upload className="w-4 h-4" />

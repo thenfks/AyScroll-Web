@@ -24,7 +24,7 @@ const MinimalistMobileAccount: React.FC<MinimalistMobileAccountProps> = ({
 }) => {
     const accountItems = [
         { name: 'Personal Info', icon: User, color: 'text-pink-500' },
-        { name: 'Login & Security', icon: ShieldCheck, color: 'text-purple-500' },
+        { name: 'Login & Security', icon: ShieldCheck, color: 'text-pink-500' },
         { name: 'Notifications', icon: Bell, color: 'text-orange-500' },
     ];
 

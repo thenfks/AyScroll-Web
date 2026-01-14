@@ -1,5 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { Check, FileText, Download, X, Printer, Trash2 } from 'lucide-react';
+import { cn } from '@/lib/utils';
+import { GradientButton } from '@/components/ui/GradientButton';
 import { useAuth } from '@/contexts/AuthContext';
 import { useSearchParams } from 'react-router-dom';
 import { toast as sonnerToast } from 'sonner';
@@ -414,13 +416,18 @@ const SubscriptionSection: React.FC<SubscriptionSectionProps> = ({ initialView }
 
             <div className="flex bg-[#101010] p-1.5 rounded-xl border border-white/5 shadow-inner">
               {(['Annual', 'Monthly'] as const).map((cycle) => (
-                <button
+                <GradientButton
                   key={cycle}
                   onClick={() => setBillingCycle(cycle)}
-                  className={`px-6 md:px-8 py-2.5 rounded-lg text-[10px] font-black uppercase tracking-widest transition-all ${billingCycle === cycle ? 'bg-gradient-to-r from-pink-500 to-orange-500 text-white shadow-lg shadow-orange-500/20' : 'text-white/30 hover:text-white/60'}`}
+                  gradient={billingCycle === cycle ? 'brand' : 'dark'}
+                  glow={billingCycle === cycle}
+                  className={cn(
+                    "px-6 md:px-8 py-2.5 text-[10px] uppercase tracking-widest",
+                    billingCycle !== cycle && "border-transparent bg-transparent hover:bg-white/5"
+                  )}
                 >
                   {cycle}
-                </button>
+                </GradientButton>
               ))}
             </div>
           </div>
@@ -475,18 +482,18 @@ const SubscriptionSection: React.FC<SubscriptionSectionProps> = ({ initialView }
                   ))}
                 </div>
 
-                <button
+                <GradientButton
                   onClick={plan.onClick}
                   disabled={plan.disabled && plan.name !== 'Go'}
-                  className={`w-full py-4 rounded-xl font-bold text-white uppercase tracking-widest text-[11px] transition-all hover:scale-[1.02] active:scale-[0.98] ${plan.disabled && plan.name !== 'Go'
-                    ? 'bg-white/5 text-white/20 cursor-default border border-white/5'
-                    : plan.highlight
-                      ? 'bg-gradient-to-r from-pink-500 to-orange-500 shadow-lg shadow-orange-500/20'
-                      : 'bg-white/10 hover:bg-white/20 border border-white/5'
-                    }`}
+                  gradient={plan.disabled && plan.name !== 'Go' ? 'dark' : (plan.highlight ? 'brand' : 'dark')}
+                  glow={plan.highlight && !(plan.disabled && plan.name !== 'Go')}
+                  className={cn(
+                    "w-full py-6 text-[11px]",
+                    plan.disabled && plan.name !== 'Go' && "opacity-50 cursor-default"
+                  )}
                 >
                   {plan.cta}
-                </button>
+                </GradientButton>
               </div>
             ))}
           </div>

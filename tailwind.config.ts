@@ -112,6 +112,9 @@ export default {
         "pulse-glow": "pulse-glow 2s ease-in-out infinite",
         "scroll-slow": "scroll-slow 20s linear infinite",
       },
+      backgroundImage: {
+        'brand-gradient': 'linear-gradient(135deg, #ec4899 0%, #f97316 100%)',
+      },
     },
   },
   plugins: [require("tailwindcss-animate")],

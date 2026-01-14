@@ -180,10 +180,11 @@ const ProfilePage: React.FC = () => {
       // Clear params
       setSearchParams({}, { replace: true });
 
-      // Log the interrupted/cancelled transaction to history
-      const logInterruptedTransaction = async () => {
+      // Log the interrupted/cancelled transaction to history and send email
+      const handleAbortedPayment = async () => {
         if (user?.id) {
           try {
+            // 1. Log to history
             const { error: billingError } = await supabase.from('billing_history').insert({
               user_id: user.id,
               plan_name: planLabel,
@@ -193,17 +194,28 @@ const ProfilePage: React.FC = () => {
             } as any);
             if (billingError) console.error('Aborted payment log error:', billingError);
             else console.log('✅ Aborted payment recorded');
+
+            // 2. Trigger appropriate email
+            await supabase.functions.invoke('subscription-emails', {
+              body: {
+                type: status === 'cancelled' ? 'interrupted' : 'failed',
+                email: user.email,
+                userName: user.user_metadata?.full_name || 'User',
+                planName: planId.charAt(0).toUpperCase() + planId.slice(1)
+              }
+            });
+            console.log(`✅ ${status} email triggered`);
           } catch (err) {
-            console.error('Catch aborted payment log error:', err);
+            console.error('Error handling aborted payment email:', err);
           }
         }
       };
 
-      logInterruptedTransaction();
+      handleAbortedPayment();
 
       toast({
         title: status === 'cancelled' ? 'Payment Cancelled' : 'Payment Failed',
-        description: status === 'cancelled' ? 'You have cancelled the payment process.' : 'The transaction could not be completed.',
+        description: status === 'cancelled' ? 'You have cancelled the payment process. Check your email for more info.' : 'The transaction could not be completed.',
         variant: 'destructive',
       });
     }
@@ -315,7 +327,7 @@ const ProfilePage: React.FC = () => {
                   </div>
                   <h3 className="text-xl md:text-2xl font-black text-white tracking-tight">{activeTab} Coming Soon</h3>
                   <p className="text-white/40 max-w-xs font-medium text-sm">We are currently building this section of the AyScroll experience.</p>
-                  <button onClick={() => setActiveTab('Personal Info')} className="px-8 md:px-12 py-3 md:py-3.5 bg-gradient-to-r from-pink-500 to-purple-600 rounded-2xl text-[10px] md:text-[11px] font-black uppercase tracking-widest text-white shadow-xl shadow-pink-500/20 hover:scale-105 active:scale-95 transition-all">Return to Dashboard</button>
+                  <button onClick={() => setActiveTab('Personal Info')} className="px-8 md:px-12 py-3 md:py-3.5 bg-brand-gradient rounded-full text-[10px] md:text-[11px] font-black uppercase tracking-widest text-white shadow-xl shadow-pink-500/20 hover:scale-105 active:scale-95 transition-all">Return to Dashboard</button>
                 </div>
               )}
 

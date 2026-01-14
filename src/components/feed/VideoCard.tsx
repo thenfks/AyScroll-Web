@@ -60,7 +60,7 @@ export const VideoCard: React.FC<VideoCardProps> = (props) => {
           <>
             <div className="relative border-b border-white/5 pb-4 px-4">
               <h2 className="text-xl font-black text-white tracking-tight flex items-center gap-3">
-                <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-purple-500 via-pink-500 to-orange-500 flex items-center justify-center">
+                <div className="w-10 h-10 rounded-xl bg-brand-gradient flex items-center justify-center">
                   <Lightbulb className="w-5 h-5 text-white" />
                 </div>
                 Flashcards: {title}
@@ -75,13 +75,13 @@ export const VideoCard: React.FC<VideoCardProps> = (props) => {
                     className="relative p-5 rounded-2xl bg-white/[0.03] border border-white/10 overflow-hidden group hover:bg-white/[0.05] transition-colors"
                   >
                     {/* Gradient left border */}
-                    <div className="absolute left-0 top-0 bottom-0 w-1 bg-gradient-to-b from-purple-500 via-pink-500 to-orange-500" />
+                    <div className="absolute left-0 top-0 bottom-0 w-1 bg-brand-gradient" />
 
                     <div className="pl-4">
                       <p className="text-[10px] font-black uppercase tracking-widest text-pink-500 mb-2">Question</p>
                       <p className="text-white font-semibold mb-4">{card.question}</p>
 
-                      <p className="text-[10px] font-black uppercase tracking-widest text-purple-400 mb-2">Answer</p>
+                      <p className="text-[10px] font-black uppercase tracking-widest text-pink-500 mb-2">Answer</p>
                       <p className="text-white/70">{card.answer}</p>
                     </div>
                   </div>
@@ -102,7 +102,7 @@ export const VideoCard: React.FC<VideoCardProps> = (props) => {
           <>
             <div className="relative border-b border-white/5 pb-4 px-4">
               <h2 className="text-xl font-black text-white tracking-tight flex items-center gap-3">
-                <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-indigo-500 to-purple-500 flex items-center justify-center">
+                <div className="w-10 h-10 rounded-xl bg-brand-gradient flex items-center justify-center">
                   <FileText className="w-5 h-5 text-white" />
                 </div>
                 Reference Materials
@@ -145,9 +145,9 @@ export const VideoCard: React.FC<VideoCardProps> = (props) => {
                   })}
 
                   {/* Smart Analyser Upsell */}
-                  <div className="p-5 rounded-2xl bg-gradient-to-br from-purple-500/20 to-pink-500/20 border border-purple-500/30 mt-4">
+                  <div className="p-5 rounded-2xl bg-brand-gradient/10 border border-pink-500/20 mt-4">
                     <div className="flex items-center gap-3 mb-3">
-                      <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-purple-500 to-pink-500 flex items-center justify-center">
+                      <div className="w-10 h-10 rounded-xl bg-brand-gradient flex items-center justify-center">
                         <Sparkles className="w-5 h-5 text-white" />
                       </div>
                       <div>
@@ -158,7 +158,7 @@ export const VideoCard: React.FC<VideoCardProps> = (props) => {
                     <p className="text-white/60 text-sm mb-4">
                       Get comprehensive insights, related topics, and personalized learning paths.
                     </p>
-                    <button className="w-full py-3 rounded-xl bg-gradient-to-r from-purple-500 to-pink-500 text-white font-bold text-sm hover:opacity-90 transition-opacity">
+                    <button className="w-full py-3 rounded-xl bg-brand-gradient text-white font-bold text-sm hover:opacity-90 transition-opacity">
                       Unlock Pro Features
                     </button>
                   </div>
@@ -198,10 +198,10 @@ export const VideoCard: React.FC<VideoCardProps> = (props) => {
             <div className="p-4 space-y-4 overflow-y-auto max-h-[60vh]">
               {/* Master Insight CTA */}
               <button className="w-full p-5 rounded-3xl bg-white/5 border border-white/10 flex items-center justify-between group hover:bg-white/10 hover:border-pink-500/30 transition-all duration-300 relative overflow-hidden">
-                <div className="absolute inset-0 bg-gradient-to-br from-pink-500/5 to-purple-500/5 opacity-0 group-hover:opacity-100 transition-opacity" />
+                <div className="absolute inset-0 bg-brand-gradient/5 opacity-0 group-hover:opacity-100 transition-opacity" />
 
                 <div className="flex items-center gap-4 relative z-10">
-                  <div className="w-12 h-12 rounded-2xl bg-gradient-to-br from-pink-500 to-purple-600 flex items-center justify-center shadow-lg shadow-pink-500/20 group-hover:scale-110 transition-transform duration-500">
+                  <div className="w-12 h-12 rounded-2xl bg-brand-gradient flex items-center justify-center shadow-lg shadow-pink-500/20 group-hover:scale-110 transition-transform duration-500">
                     <Sparkles className="w-6 h-6 text-white" />
                   </div>
                   <div className="text-left">
@@ -232,10 +232,10 @@ export const VideoCard: React.FC<VideoCardProps> = (props) => {
               {/* Executive Summary */}
               {full_chapter_summary && (
                 <div className="p-5 rounded-2xl bg-white/[0.03] border border-white/10">
-                  <p className="text-[10px] font-black uppercase tracking-widest text-purple-400 mb-4">
+                  <p className="text-[10px] font-black uppercase tracking-widest text-pink-500 mb-4">
                     Executive Summary
                   </p>
-                  <blockquote className="text-white/70 italic border-l-2 border-purple-500 pl-4">
+                  <blockquote className="text-white/70 italic border-l-2 border-pink-500 pl-4">
                     "{full_chapter_summary}"
                   </blockquote>
                 </div>

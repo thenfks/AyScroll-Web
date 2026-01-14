@@ -4,6 +4,7 @@ import { Play } from 'lucide-react';
 import { MOCK_REELS } from '@/data/data';
 import { useSearchParams } from 'react-router-dom';
 import { useIsMobile } from '@/hooks/use-mobile';
+import { GradientButton } from '@/components/ui/GradientButton';
 
 const Explore: React.FC = () => {
   const [searchParams] = useSearchParams();
@@ -39,16 +40,16 @@ const Explore: React.FC = () => {
         {/* Categories */}
         <div className="flex items-center gap-2 md:gap-3 overflow-x-auto no-scrollbar pb-4 mb-6 -mx-4 px-4 md:mx-0 md:px-0">
           {categories.map((cat) => (
-            <button
+            <GradientButton
               key={cat.name}
               onClick={() => setSelectedCategory(cat.name)}
-              className={`px-5 md:px-8 py-2.5 md:py-3.5 rounded-xl md:rounded-2xl text-[10px] md:text-[12px] font-black uppercase tracking-widest whitespace-nowrap transition-all border shrink-0 ${selectedCategory === cat.name
-                ? 'bg-gradient-to-r from-pink-500 to-orange-500 text-white border-transparent shadow-lg shadow-pink-500/20'
-                : 'bg-white/[0.05] text-white/40 border-white/5 hover:border-white/20 hover:text-white hover:bg-white/[0.08]'
+              gradient={selectedCategory === cat.name ? 'brand' : 'dark'}
+              glow={selectedCategory === cat.name}
+              className={`px-5 md:px-8 py-2.5 md:py-3.5 text-[10px] md:text-[12px] whitespace-nowrap shrink-0 ${selectedCategory !== cat.name && "border-white/5 hover:border-white/20"
                 }`}
             >
               {cat.name}
-            </button>
+            </GradientButton>
           ))}
         </div>
 

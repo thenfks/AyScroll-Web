@@ -106,7 +106,7 @@ export const MobileNavDrawer: React.FC<MobileNavDrawerProps> = ({ open, onOpenCh
                 className={cn(
                   "w-full flex items-center gap-4 px-4 py-3.5 rounded-2xl transition-all",
                   isActive
-                    ? "bg-gradient-to-r from-pink-500/20 to-orange-500/20 text-pink-500 border border-pink-500/20"
+                    ? "bg-brand-gradient/20 text-pink-500 border border-pink-500/20"
                     : "text-white/60 hover:bg-white/5 hover:text-white"
                 )}
               >
@@ -141,7 +141,7 @@ export const MobileNavDrawer: React.FC<MobileNavDrawerProps> = ({ open, onOpenCh
               className={cn(
                 "w-full flex items-center gap-4 px-4 py-3.5 rounded-2xl transition-all",
                 location.pathname === settingsNavLink.path
-                  ? "bg-gradient-to-r from-pink-500/20 to-orange-500/20 text-pink-500 border border-pink-500/20"
+                  ? "bg-brand-gradient/20 text-pink-500 border border-pink-500/20"
                   : "text-white/60 hover:bg-white/5 hover:text-white"
               )}
             >
@@ -159,7 +159,7 @@ export const MobileNavDrawer: React.FC<MobileNavDrawerProps> = ({ open, onOpenCh
           >
             <Avatar className="w-12 h-12">
               <AvatarImage src={avatarUrl || user?.user_metadata?.avatar_url || user?.user_metadata?.picture} />
-              <AvatarFallback className="bg-gradient-to-br from-pink-500 to-purple-500 text-white font-bold">
+              <AvatarFallback className="bg-brand-gradient text-white font-bold">
                 {user ? (displayName || user.user_metadata?.name)?.charAt(0).toUpperCase() : 'G'}
               </AvatarFallback>
             </Avatar>
@@ -171,7 +171,7 @@ export const MobileNavDrawer: React.FC<MobileNavDrawerProps> = ({ open, onOpenCh
                 {user && isPro && (
                   <span className={cn(
                     "px-1.5 py-0.5 rounded-md text-[8px] font-black uppercase tracking-tighter shrink-0 leading-none",
-                    "bg-gradient-to-r from-pink-500 to-orange-500 text-white shadow-lg shadow-pink-500/20"
+                    "bg-brand-gradient text-white shadow-lg shadow-pink-500/20"
                   )}>
                     {tier?.toUpperCase() || 'PRO'}
                   </span>

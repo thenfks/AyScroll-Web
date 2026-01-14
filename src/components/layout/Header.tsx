@@ -1,4 +1,5 @@
 import { Search, Sparkles, Bell, Plus } from 'lucide-react';
+import { GradientButton } from '@/components/ui/GradientButton';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { useAuth } from '@/contexts/AuthContext';
@@ -121,12 +122,13 @@ export const Header = () => {
           </>
         ) : (
           <>
-            <Button className="w-10 h-10 rounded-xl bg-white/5 border border-white/10 hover:bg-white/10 hover:border-pink-500/50 transition-all duration-300 p-0 flex items-center justify-center group relative overflow-hidden">
-              {/* Subtle Glow Background */}
-              <div className="absolute inset-0 bg-gradient-to-tr from-pink-500/10 to-orange-500/10 opacity-0 group-hover:opacity-100 transition-opacity" />
-
-              <Sparkles className="w-5 h-5 text-white/70 group-hover:text-pink-500 transition-colors relative z-10" />
-            </Button>
+            <GradientButton
+              round
+              className="w-10 h-10 p-0"
+              title="Post New Content"
+            >
+              <Plus className="w-5 h-5 text-white" />
+            </GradientButton>
           </>
         )}
       </div>
