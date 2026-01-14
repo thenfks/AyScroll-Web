@@ -61,6 +61,10 @@ const ProfilePage: React.FC = () => {
       setActiveTab('Subscription');
 
       const upgradeUser = async () => {
+        // Clear query params immediately to prevent reload loops
+        const newUrl = window.location.pathname;
+        window.history.replaceState({}, '', newUrl);
+
         try {
           console.log("🔄 Upgrading user profile...");
 
@@ -77,21 +81,26 @@ const ProfilePage: React.FC = () => {
               subscription_status: 'active'
             } as any).eq('id', user.id);
             if (dbError) console.error('DB update error:', dbError);
+
+            // 3. Log to Billing History (Frontend Fallback)
+            await supabase.from('billing_history').insert({
+              user_id: user.id,
+              plan_name: 'AyScroll Pro (Monthly)',
+              amount: '₹499',
+              status: 'Paid',
+              invoice_id: currentSessionId
+            } as any);
           }
 
+          // 4. Refresh session to update UI immediately
+          await supabase.auth.refreshSession();
+
           toast.success('Payment Successful!', {
-            description: `Order ${currentSessionId.slice(-6)} processed. Refreshing...`,
+            description: `Order ${currentSessionId.slice(-6)} processed.`,
             duration: 3000,
           });
 
-          // Reload to update context
-          setTimeout(() => {
-            console.log("🔄 Reloading page...");
-            // Remove query params first
-            window.history.replaceState({}, '', window.location.pathname);
-            window.location.reload();
-          }, 2000);
-
+          // No longer need a hard reload since we refreshed the session
         } catch (e) {
           console.error('Manual upgrade failed', e);
           toast.error('Upgrade failed. Please contact support.');

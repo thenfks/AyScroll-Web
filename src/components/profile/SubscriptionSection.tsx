@@ -17,8 +17,9 @@ const SubscriptionSection: React.FC<SubscriptionSectionProps> = ({ initialView }
   const [billingCycle, setBillingCycle] = useState<'Annual' | 'Monthly'>('Annual');
   const [isUpgrading, setIsUpgrading] = useState(false);
   const [searchParams] = useSearchParams();
+  const [billingHistory, setBillingHistory] = useState<any[]>([]);
+  const [loadingHistory, setLoadingHistory] = useState(true);
 
-  // Check if user has pro status from metadata
   const isPro = user?.user_metadata?.is_pro === true;
   const [view, setView] = useState<'plans' | 'manage' | 'billing'>(initialView || (isPro ? 'manage' : 'plans'));
 
@@ -28,6 +29,23 @@ const SubscriptionSection: React.FC<SubscriptionSectionProps> = ({ initialView }
     }
   }, [initialView]);
 
+  useEffect(() => {
+    const fetchHistory = async () => {
+      if (!user) return;
+      const { data, error } = await supabase
+        .from('billing_history')
+        .select('*')
+        .order('created_at', { ascending: false });
+
+      if (!error && data) {
+        setBillingHistory(data);
+      }
+      setLoadingHistory(false);
+    };
+
+    fetchHistory();
+  }, [user]);
+
   const handleUpgrade = async (planName: string, price: string) => {
     if (!user) {
       toast.error('Please login to upgrade');
@@ -36,7 +54,6 @@ const SubscriptionSection: React.FC<SubscriptionSectionProps> = ({ initialView }
 
     setIsUpgrading(true);
 
-    // Parse price to number (remove ₹ and commas if any)
     const amountInRupees = parseInt(price.replace(/[^0-9]/g, ''));
 
     await initiateCheckout({
@@ -114,45 +131,82 @@ const SubscriptionSection: React.FC<SubscriptionSectionProps> = ({ initialView }
   ];
 
   const handleCancel = async () => {
-    if (!confirm("Are you sure you want to cancel your Pro subscription? You will lose access to Pro features immediately.")) return;
+    // Robust check for Pro status
+    const currentIsPro = user?.user_metadata?.is_pro === true;
+    if (!currentIsPro) {
+      toast.error("You don't have an active Pro subscription to cancel.");
+      return;
+    }
+
+    const confirmed = window.confirm("Are you sure you want to cancel your Pro subscription? You will lose access to Pro features immediately.");
+    if (!confirmed) return;
 
     const toastId = toast.loading("Canceling subscription...");
+    console.log("Starting cancellation for user:", user?.id);
 
     try {
-      // 1. Auth update
-      await supabase.auth.updateUser({ data: { is_pro: false, tier: 'free' } });
+      // 1. Update Auth User Metadata
+      const { data: authData, error: authError } = await supabase.auth.updateUser({
+        data: { is_pro: false, tier: 'free' }
+      });
 
-      // 2. DB update
+      if (authError) throw authError;
+      console.log("Auth metadata updated successfully");
+
+      // 2. Update DB Profile
       if (user?.id) {
-        await supabase.from('user_profiles').update({
+        const { error: dbError } = await supabase.from('user_profiles').update({
           subscription_tier: 'free',
           subscription_status: 'canceled'
         } as any).eq('id', user.id);
 
-        // 3. Trigger Downgrade Email
+        if (dbError) throw dbError;
+        console.log("DB profile updated successfully");
+
+        // 3. Log Cancellation to History
+        await supabase.from('billing_history').insert({
+          user_id: user.id,
+          plan_name: 'AyScroll Pro (Monthly)',
+          amount: '₹0',
+          status: 'Canceled',
+          invoice_id: `CAN-${Date.now().toString().slice(-6)}`
+        } as any);
+
+        // 4. Trigger Downgrade Email
         try {
           await supabase.functions.invoke('subscription-emails', {
             body: {
               type: 'downgrade',
               email: user.email,
               userName: user.user_metadata?.full_name || 'User',
-              planName: 'Pro' // Assuming Pro since ONLY Pro users see the cancel button
+              planName: 'Pro'
             }
           });
+          console.log("Cancellation email triggered");
         } catch (emailErr) {
           console.error("Failed to send cancellation email", emailErr);
         }
       }
 
+      // 4. Force session refresh to update local context
+      await supabase.auth.refreshSession();
+
       toast.dismiss(toastId);
       toast.success("Subscription canceled.", {
-        description: "You have been downgraded to the Free plan."
+        description: "Your account has been moved to the Free plan."
       });
 
-      setTimeout(() => window.location.reload(), 1500);
-    } catch (e) {
-      console.error("Cancel failed", e);
-      toast.error("Failed to cancel subscription");
+      // Reload after a short delay to ensure everything is synced
+      setTimeout(() => {
+        window.location.reload();
+      }, 1000);
+
+    } catch (e: any) {
+      console.error("Cancel failed:", e);
+      toast.dismiss(toastId);
+      toast.error("Cancellation failed", {
+        description: e.message || "Please try again or contact support."
+      });
     }
   };
 
@@ -163,7 +217,6 @@ const SubscriptionSection: React.FC<SubscriptionSectionProps> = ({ initialView }
           <div className="flex flex-col items-center text-center space-y-4">
             <h3 className="text-2xl md:text-3xl font-black text-white tracking-tighter">Choose Your Subscription</h3>
 
-            {/* Billing Toggle */}
             <div className="flex bg-[#101010] p-1.5 rounded-xl border border-white/5 shadow-inner">
               {(['Annual', 'Monthly'] as const).map((cycle) => (
                 <button
@@ -288,34 +341,39 @@ const SubscriptionSection: React.FC<SubscriptionSectionProps> = ({ initialView }
                 </tr>
               </thead>
               <tbody className="divide-y divide-white/5">
-                {[
-                  { id: 'INV-2025-001', date: 'Jan 13, 2026', plan: 'AyScroll Pro (Monthly)', amount: '₹499.00', status: 'Paid' },
-                  { id: 'INV-2024-012', date: 'Dec 13, 2025', plan: 'AyScroll Pro (Monthly)', amount: '₹499.00', status: 'Paid' },
-                  { id: 'INV-2024-011', date: 'Nov 13, 2025', plan: 'AyScroll Pro (Monthly)', amount: '₹499.00', status: 'Paid' }
-                ].map((invoice) => (
-                  <tr key={invoice.id} className="hover:bg-white/[0.02] transition-colors">
-                    <td className="px-6 py-4 text-white/80 font-medium">{invoice.date}</td>
-                    <td className="px-6 py-4 text-white/80">{invoice.plan}</td>
-                    <td className="px-6 py-4 text-white/80">{invoice.amount}</td>
-                    <td className="px-6 py-4">
-                      <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-[10px] font-bold uppercase tracking-widest bg-emerald-500/10 text-emerald-400 border border-emerald-500/20">
-                        {invoice.status}
-                      </span>
-                    </td>
-                    <td className="px-6 py-4 text-right">
-                      <button className="text-white/40 hover:text-orange-500 transition-colors inline-flex items-center gap-1.5 text-xs font-medium group">
-                        <span>Download</span>
-                        <Download className="w-3.5 h-3.5 group-hover:-translate-y-0.5 transition-transform" />
-                      </button>
-                    </td>
+                {loadingHistory ? (
+                  <tr>
+                    <td colSpan={5} className="px-6 py-12 text-center text-white/20 font-medium font-bold uppercase tracking-widest text-[10px]">Loading history...</td>
                   </tr>
-                ))}
+                ) : billingHistory.length === 0 ? (
+                  <tr>
+                    <td colSpan={5} className="px-6 py-12 text-center text-white/20 font-medium font-bold uppercase tracking-widest text-[10px]">No transaction records found.</td>
+                  </tr>
+                ) : (
+                  billingHistory.map((invoice) => (
+                    <tr key={invoice.id} className="hover:bg-white/[0.02] transition-colors">
+                      <td className="px-6 py-4 text-white/80 font-medium">{new Date(invoice.created_at).toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' })}</td>
+                      <td className="px-6 py-4 text-white/80">{invoice.plan_name}</td>
+                      <td className="px-6 py-4 text-white/80">{invoice.amount}</td>
+                      <td className="px-6 py-4">
+                        <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-[10px] font-bold uppercase tracking-widest bg-emerald-500/10 text-emerald-400 border border-emerald-500/20">
+                          {invoice.status}
+                        </span>
+                      </td>
+                      <td className="px-6 py-4 text-right">
+                        <button className="text-white/40 hover:text-orange-500 transition-colors inline-flex items-center gap-1.5 text-xs font-medium group">
+                          <span>Download</span>
+                          <Download className="w-3.5 h-3.5 group-hover:-translate-y-0.5 transition-transform" />
+                        </button>
+                      </td>
+                    </tr>
+                  ))
+                )}
               </tbody>
             </table>
           </div>
         </div>
       </div>
-
     </div>
   );
 };

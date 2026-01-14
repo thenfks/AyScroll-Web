@@ -7,7 +7,8 @@ import {
     XCircle,
     Download,
     AlertCircle,
-    Receipt
+    Receipt,
+    Shield
 } from 'lucide-react';
 import { useAuth } from '@/contexts/AuthContext';
 
@@ -20,14 +21,16 @@ interface ManageSubscriptionProps {
 const ManageSubscription: React.FC<ManageSubscriptionProps> = ({ onViewPlans, onBillingClick, onCancel }) => {
     const { user } = useAuth();
     const tier = user?.user_metadata?.tier || 'Pro';
+    const isPro = user?.user_metadata?.is_pro === true;
+    const isGo = tier?.toLowerCase() === 'go';
 
-    // Mock data for demo
+    // Real data mixed with some mock for UX
     const subscription = {
-        status: 'Active',
-        plan: `AyScroll ${tier}`,
-        price: tier === 'Pro' ? '₹499' : '₹299',
-        period: 'Monthly',
-        nextBilling: 'Feb 13, 2026',
+        status: isPro ? 'Active' : 'Canceled',
+        plan: isPro ? `AyScroll ${isGo ? 'Go' : 'Pro'}` : 'AyScroll Free',
+        price: isGo ? '₹299' : (isPro ? '₹499' : '₹0'),
+        period: isPro ? 'Monthly' : 'Forever',
+        nextBilling: isPro ? 'Feb 13, 2026' : 'N/A',
         card: {
             brand: 'Visa',
             last4: '4242'
@@ -67,13 +70,13 @@ const ManageSubscription: React.FC<ManageSubscriptionProps> = ({ onViewPlans, on
 
                     <div className="relative z-10">
                         <div className="flex items-center justify-between mb-8">
-                            <div className="w-12 h-12 rounded-2xl bg-gradient-to-br from-pink-500 to-orange-500 p-[1px]">
+                            <div className={`w-12 h-12 rounded-2xl ${isPro ? 'bg-gradient-to-br from-pink-500 to-orange-500' : 'bg-white/5'} p-[1px]`}>
                                 <div className="w-full h-full rounded-2xl bg-black/40 backdrop-blur-sm flex items-center justify-center">
-                                    <ShieldCheck className="w-6 h-6 text-white" />
+                                    {isPro ? <ShieldCheck className="w-6 h-6 text-white" /> : <Shield className="w-6 h-6 text-white/20" />}
                                 </div>
                             </div>
-                            <span className="px-3 py-1 rounded-full bg-emerald-500/10 text-emerald-400 border border-emerald-500/20 text-[10px] font-black uppercase tracking-widest flex items-center gap-1.5">
-                                <div className="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse"></div>
+                            <span className={`px-3 py-1 rounded-full ${isPro ? 'bg-emerald-500/10 text-emerald-400 border border-emerald-500/20' : 'bg-white/5 text-white/30 border border-white/10'} text-[10px] font-black uppercase tracking-widest flex items-center gap-1.5`}>
+                                {isPro && <div className="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse"></div>}
                                 {subscription.status}
                             </span>
                         </div>
@@ -89,7 +92,7 @@ const ManageSubscription: React.FC<ManageSubscriptionProps> = ({ onViewPlans, on
                             <div className="flex items-center gap-2">
                                 <Calendar className="w-4 h-4 text-white/20" />
                                 <div className="text-left">
-                                    <p className="text-[10px] font-black text-white/20 uppercase tracking-widest">Next Billing</p>
+                                    <p className="text-[10px] font-black text-white/20 uppercase tracking-widest">{isPro ? 'Next Billing' : 'Last Billing'}</p>
                                     <p className="text-sm font-bold text-white/60">{subscription.nextBilling}</p>
                                 </div>
                             </div>
@@ -126,28 +129,32 @@ const ManageSubscription: React.FC<ManageSubscriptionProps> = ({ onViewPlans, on
                     <div className="p-4 rounded-2xl bg-orange-500/5 border border-orange-500/10 flex items-start gap-3">
                         <AlertCircle className="w-4 h-4 text-orange-500/60 shrink-0 mt-0.5" />
                         <p className="text-[11px] font-medium text-white/40 leading-relaxed">
-                            Updating your payment method will affect all future transactions in your current subscription.
+                            {isPro
+                                ? "Updating your payment method will affect all future transactions in your current subscription."
+                                : "No active subscription found. Add a payment method to upgrade anytime."}
                         </p>
                     </div>
                 </div>
             </div>
 
             {/* Danger Zone */}
-            <div className="p-6 rounded-[32px] border border-red-500/10 bg-red-500/[0.02]">
-                <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
-                    <div>
-                        <h5 className="text-sm font-bold text-red-500/80 mb-1">Danger Zone</h5>
-                        <p className="text-[11px] font-medium text-white/20">Canceling your subscription will immediately downgrade you to the Free plan.</p>
+            {isPro && (
+                <div className="p-6 rounded-[32px] border border-red-500/10 bg-red-500/[0.02]">
+                    <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+                        <div>
+                            <h5 className="text-sm font-bold text-red-500/80 mb-1">Danger Zone</h5>
+                            <p className="text-[11px] font-medium text-white/20">Canceling your subscription will immediately downgrade you to the Free plan.</p>
+                        </div>
+                        <button
+                            onClick={onCancel}
+                            className="px-6 py-2.5 rounded-xl border border-red-500/20 text-red-500/60 hover:text-red-500 hover:bg-red-500/10 transition-all text-[10px] font-black uppercase tracking-widest flex items-center gap-2"
+                        >
+                            <XCircle className="w-3.5 h-3.5" />
+                            Cancel Subscription
+                        </button>
                     </div>
-                    <button
-                        onClick={onCancel}
-                        className="px-6 py-2.5 rounded-xl border border-red-500/20 text-red-500/60 hover:text-red-500 hover:bg-red-500/10 transition-all text-[10px] font-black uppercase tracking-widest flex items-center gap-2"
-                    >
-                        <XCircle className="w-3.5 h-3.5" />
-                        Cancel Subscription
-                    </button>
                 </div>
-            </div>
+            )}
         </div>
     );
 };

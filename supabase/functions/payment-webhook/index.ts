@@ -75,7 +75,25 @@ serve(async (req) => {
             // We don't throw here, as DB update is more critical
         }
 
-        // 6. Trigger Subscription Email
+        // 6. Log Transaction in Billing History
+        try {
+            const amount = data.amount || (planId === 'go' ? 299 : 499);
+            const currency = data.currency || 'INR';
+
+            await supabaseClient
+                .from('billing_history')
+                .insert({
+                    user_id: userId,
+                    plan_name: `AyScroll ${planId === 'go' ? 'Go' : 'Pro'} (Monthly)`,
+                    amount: `₹${amount}`,
+                    status: 'Paid',
+                    invoice_id: data.payment_id || data.metadata?.order_id || `INV-${Date.now()}`
+                });
+        } catch (billingErr) {
+            console.error("Failed to log billing history:", billingErr);
+        }
+
+        // 7. Trigger Subscription Email
         try {
             const { data: userData } = await supabaseClient.auth.admin.getUserById(userId);
             if (userData?.user) {

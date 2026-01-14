@@ -33,12 +33,16 @@ const SubscriptionCard: React.FC<SubscriptionCardProps> = ({ onManageClick, onBi
                 .eq('id', user?.id)
                 .single();
 
-            // Logic: Trust Metadata OR DB (whichever grants Pro)
-            const isMetadataPro = user?.user_metadata?.is_pro === true;
-            const isDbPro = data?.subscription_tier === 'pro' || data?.subscription_tier === 'premium';
+            // Strict Logic: Check both Metadata and DB
+            // Metadata is the source of truth for immediate access control
+            // DB is the source of truth for billing cycle details
+            const isPro = user?.user_metadata?.is_pro === true;
+            const dbTier = data?.subscription_tier || 'free';
 
-            const effectiveTier = (isMetadataPro || isDbPro) ? 'pro' : (data?.subscription_tier || 'free');
-            const effectiveStatus = (isMetadataPro || isDbPro) ? 'active' : (data?.subscription_status || 'inactive');
+            console.log("Subscription Check:", { isPro, dbTier });
+
+            const effectiveTier = isPro ? (dbTier === 'free' ? 'pro' : dbTier) : 'free';
+            const effectiveStatus = isPro ? 'active' : (data?.subscription_status || 'inactive');
 
             setSubscription({
                 tier: effectiveTier,
@@ -135,7 +139,7 @@ const SubscriptionCard: React.FC<SubscriptionCardProps> = ({ onManageClick, onBi
                     </button>
                 ) : (
                     <button
-                        onClick={onManageClick}
+                        onClick={onUpgradeClick}
                         className="w-full py-3.5 bg-gradient-to-r from-pink-500 to-purple-600 text-white rounded-2xl font-bold text-sm tracking-wide hover:scale-[1.02] active:scale-[0.98] transition-all flex items-center justify-center gap-2 shadow-lg shadow-pink-500/20"
                     >
                         Upgrade to Pro
