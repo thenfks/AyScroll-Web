@@ -261,5 +261,11 @@ export interface Database {
                 }, 'id' | 'created_at'>>;
             };
         };
+        Functions: {
+            get_email_by_username: {
+                Args: { p_username: string };
+                Returns: string | null;
+            };
+        };
     };
 }

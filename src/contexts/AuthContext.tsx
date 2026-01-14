@@ -180,7 +180,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
   };
 
   const signInWithUsername = async (username: string, password: string) => {
-    const { data: email, error: rpcError } = await supabase.rpc('get_email_by_username', { p_username: username });
+    const { data: email, error: rpcError } = await supabase.rpc('get_email_by_username' as any, { p_username: username }) as { data: string | null, error: any };
 
     if (rpcError) {
       return { error: rpcError };
@@ -266,7 +266,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
           // Update existing
           const { error } = await supabase
             .from('user_sessions')
-            .update(deviceInfo)
+            .update(deviceInfo as any)
             .eq('id', localSessionId);
 
           // If error (e.g. record deleted), we treat as invalid and let the loop handle it or creating new?
@@ -276,9 +276,9 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
           // Create new
           const { data, error } = await supabase
             .from('user_sessions')
-            .insert(deviceInfo)
+            .insert(deviceInfo as any)
             .select()
-            .single();
+            .single() as { data: { id: string } | null, error: any };
 
           if (data) {
             sessionStorage.setItem('ayscroll_session_id', data.id);
