@@ -117,7 +117,10 @@ export default {
         "scroll-slow": "scroll-slow 20s linear infinite",
       },
       backgroundImage: {
-        'brand-gradient': 'linear-gradient(135deg, #ec4899 0%, #f97316 100%)',
+        'brand-gradient': 'var(--gradient-primary)',
+        'accent-gradient': 'var(--gradient-accent)',
+        'card-gradient': 'var(--gradient-card)',
+        'flashcard-gradient': 'var(--gradient-flashcard)',
       },
     },
   },

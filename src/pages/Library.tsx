@@ -25,9 +25,9 @@ const Library = () => {
         <div className="max-w-5xl mx-auto">
           {/* Header with Tabs */}
           <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 mb-6">
-            <h1 className="text-2xl md:text-3xl font-black text-white tracking-tighter">Library</h1>
+            <h1 className="text-2xl md:text-3xl font-black text-foreground tracking-tighter">Library</h1>
 
-            <div className="flex items-center gap-1 p-1 bg-white/[0.03] rounded-2xl border border-white/5">
+            <div className="flex items-center gap-1 p-1 bg-secondary/50 rounded-2xl border border-border">
               {tabs.map((tab) => (
                 <GradientButton
                   key={tab.id}
@@ -36,7 +36,7 @@ const Library = () => {
                   glow={activeTab === tab.id}
                   className={cn(
                     "px-4 md:px-6 py-2 md:py-2.5 text-[10px] md:text-[11px]",
-                    activeTab !== tab.id && "bg-transparent border-transparent hover:bg-white/5"
+                    activeTab !== tab.id && "bg-transparent border-transparent"
                   )}
                 >
                   {tab.label}
@@ -46,7 +46,7 @@ const Library = () => {
           </div>
 
           {/* Hero - Resume Session */}
-          <div className="p-4 md:p-6 rounded-2xl md:rounded-3xl bg-gradient-to-br from-purple-500/10 to-pink-500/10 border border-purple-500/20 mb-6 md:mb-8">
+          <div className="p-4 md:p-6 rounded-2xl md:rounded-3xl bg-brand-gradient/10 border border-primary/20 mb-6 md:mb-8">
             <div className="flex flex-col md:flex-row gap-4 md:gap-6">
               {/* Thumbnail */}
               <div className="relative w-full md:w-48 aspect-video md:aspect-[4/5] rounded-xl md:rounded-2xl overflow-hidden shrink-0">
@@ -65,16 +65,16 @@ const Library = () => {
               {/* Info */}
               <div className="flex-1 flex flex-col justify-between py-1">
                 <div>
-                  <p className="text-[10px] font-black uppercase tracking-widest text-pink-500 mb-2">Resume Session</p>
-                  <h3 className="text-lg md:text-xl font-black text-white mb-2 line-clamp-2">{currentReel.title}</h3>
-                  <p className="text-white/50 text-sm mb-4 line-clamp-2">{currentReel.description}</p>
+                  <p className="text-[10px] font-black uppercase tracking-widest text-primary mb-2">Resume Session</p>
+                  <h3 className="text-lg md:text-xl font-black text-foreground mb-2 line-clamp-2">{currentReel.title}</h3>
+                  <p className="text-muted-foreground text-sm mb-4 line-clamp-2">{currentReel.description}</p>
 
                   {/* Progress */}
                   <div className="flex items-center gap-3 mb-4">
-                    <div className="flex-1 h-1.5 bg-white/10 rounded-full overflow-hidden">
+                    <div className="flex-1 h-1.5 bg-muted rounded-full overflow-hidden">
                       <div className="w-[35%] h-full bg-brand-gradient rounded-full" />
                     </div>
-                    <span className="text-white/40 text-xs font-bold">35%</span>
+                    <span className="text-muted-foreground text-xs font-bold">35%</span>
                   </div>
                 </div>
 
@@ -83,7 +83,7 @@ const Library = () => {
                   <GradientButton className="px-4 md:px-6 py-3 text-[10px] md:text-[11px]">
                     <Play className="w-4 h-4" /> Continue
                   </GradientButton>
-                  <GradientButton gradient="dark" glow={false} className="px-4 md:px-6 py-3 text-[10px] md:text-[11px] text-white/60 hover:text-white">
+                  <GradientButton gradient="dark" glow={false} className="px-4 md:px-6 py-3 text-[10px] md:text-[11px] text-muted-foreground hover:text-foreground">
                     <Clock className="w-4 h-4" /> Watch Later
                   </GradientButton>
                 </div>
@@ -93,8 +93,8 @@ const Library = () => {
 
           {/* Collections Grid */}
           <div className="mb-4 flex items-center justify-between">
-            <h2 className="text-lg font-bold text-white">Collections</h2>
-            <button className="text-[10px] font-black uppercase tracking-widest text-pink-500 flex items-center gap-1 hover:text-pink-400 transition-colors">
+            <h2 className="text-lg font-bold text-foreground">Collections</h2>
+            <button className="text-[10px] font-black uppercase tracking-widest text-primary flex items-center gap-1 hover:opacity-80 transition-colors">
               View All <ChevronRight className="w-3 h-3" />
             </button>
           </div>
@@ -103,7 +103,7 @@ const Library = () => {
             {savedReels.map((reel) => (
               <div key={reel.id} className="group cursor-pointer">
                 {/* Thumbnail */}
-                <div className="relative aspect-[4/5] rounded-xl md:rounded-2xl overflow-hidden border border-white/10 mb-3 bg-white/[0.02]">
+                <div className="relative aspect-[4/5] rounded-xl md:rounded-2xl overflow-hidden border border-border mb-3 bg-secondary">
                   <img
                     src={reel.thumbnail_url}
                     className="w-full h-full object-cover opacity-60 group-hover:opacity-80 transition-opacity"
@@ -127,10 +127,10 @@ const Library = () => {
                 <div className="flex items-center gap-2">
                   <img
                     src={reel.creator_avatar}
-                    className="w-6 h-6 rounded-full object-cover border border-white/10"
+                    className="w-6 h-6 rounded-full object-cover border border-border"
                     alt=""
                   />
-                  <span className="text-xs text-white/50 truncate">{reel.creator}</span>
+                  <span className="text-xs text-muted-foreground truncate">{reel.creator}</span>
                 </div>
               </div>
             ))}

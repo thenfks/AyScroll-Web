@@ -156,7 +156,7 @@ const ContainedBottomSheet: React.FC<ContainedBottomSheetProps> = ({
     <div
       ref={sheetRef}
       className={cn(
-        "absolute inset-x-0 bottom-0 z-40 flex flex-col rounded-t-3xl bg-[#121212]/95 backdrop-blur-xl border-t border-white/10",
+        "absolute inset-x-0 bottom-0 z-40 flex flex-col rounded-t-3xl bg-popover/95 backdrop-blur-xl border-t border-border",
         "transition-all duration-300 ease-out", // Changed to transition-all
         isOpen ? "translate-y-0" : "translate-y-full",
         className
@@ -165,7 +165,7 @@ const ContainedBottomSheet: React.FC<ContainedBottomSheetProps> = ({
       onClick={(e) => e.stopPropagation()}
     >
       <div
-        className="mx-auto mt-4 h-2 w-[100px] rounded-full bg-white/10 cursor-grab active:cursor-grabbing"
+        className="mx-auto mt-4 h-1.5 w-[40px] rounded-full bg-muted-foreground/30 cursor-grab active:cursor-grabbing"
         onMouseDown={handleMouseDown}
         onTouchStart={handleTouchStart}
       />

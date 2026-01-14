@@ -130,30 +130,30 @@ const Analysis = () => {
       <ProtectedRoute>
         <MainLayout showRightSidebar={false}>
           <div className="max-w-5xl mx-auto flex flex-col items-center justify-center min-h-[70vh] text-center p-6">
-            <div className="w-24 h-24 rounded-[32px] bg-gradient-to-br from-pink-500/10 to-purple-500/10 border border-pink-500/20 flex items-center justify-center mb-8 relative">
-              <BarChart2 className="w-10 h-10 text-pink-500" />
-              <div className="absolute -top-2 -right-2 w-8 h-8 bg-white text-black rounded-full flex items-center justify-center font-bold text-lg shadow-lg">🔒</div>
+            <div className="w-24 h-24 rounded-[32px] bg-secondary border border-primary/20 flex items-center justify-center mb-8 relative">
+              <BarChart2 className="w-10 h-10 text-primary" />
+              <div className="absolute -top-2 -right-2 w-8 h-8 bg-foreground text-background rounded-full flex items-center justify-center font-bold text-lg shadow-lg">🔒</div>
             </div>
-            <h1 className="text-3xl md:text-5xl font-black text-white mb-4 tracking-tighter">Advanced Analytics</h1>
-            <p className="text-white/40 max-w-md text-lg font-medium leading-relaxed mb-10">
+            <h1 className="text-3xl md:text-5xl font-black text-foreground mb-4 tracking-tighter">Advanced Analytics</h1>
+            <p className="text-muted-foreground max-w-md text-lg font-medium leading-relaxed mb-10">
               Unlock deep insights into your learning patterns, focus quality, and global ranking with AyScroll Pro.
             </p>
 
             <div className="grid grid-cols-1 md:grid-cols-3 gap-4 w-full max-w-2xl mb-12">
-              <div className="p-4 rounded-2xl bg-white/[0.03] border border-white/5 flex flex-col items-center">
-                <Target className="w-6 h-6 text-emerald-400 mb-3" />
-                <h3 className="text-white font-bold mb-1">Focus Metrics</h3>
-                <p className="text-white/30 text-xs">Track attention span</p>
+              <div className="p-4 rounded-2xl bg-secondary/50 border border-border flex flex-col items-center">
+                <Target className="w-6 h-6 text-green-500 mb-3" />
+                <h3 className="text-foreground font-bold mb-1">Focus Metrics</h3>
+                <p className="text-muted-foreground text-xs">Track attention span</p>
               </div>
-              <div className="p-4 rounded-2xl bg-white/[0.03] border border-white/5 flex flex-col items-center">
-                <TrendingUp className="w-6 h-6 text-orange-400 mb-3" />
-                <h3 className="text-white font-bold mb-1">Learning Velocity</h3>
-                <p className="text-white/30 text-xs">Measure speed of mastery</p>
+              <div className="p-4 rounded-2xl bg-secondary/50 border border-border flex flex-col items-center">
+                <TrendingUp className="w-6 h-6 text-orange-500 mb-3" />
+                <h3 className="text-foreground font-bold mb-1">Learning Velocity</h3>
+                <p className="text-muted-foreground text-xs">Measure speed of mastery</p>
               </div>
-              <div className="p-4 rounded-2xl bg-white/[0.03] border border-white/5 flex flex-col items-center">
-                <Brain className="w-6 h-6 text-purple-400 mb-3" />
-                <h3 className="text-white font-bold mb-1">AI Diagnostics</h3>
-                <p className="text-white/30 text-xs">Identify weak topics</p>
+              <div className="p-4 rounded-2xl bg-secondary/50 border border-border flex flex-col items-center">
+                <Brain className="w-6 h-6 text-primary mb-3" />
+                <h3 className="text-foreground font-bold mb-1">AI Diagnostics</h3>
+                <p className="text-muted-foreground text-xs">Identify weak topics</p>
               </div>
             </div>
 
@@ -179,15 +179,15 @@ const Analysis = () => {
           <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 mb-6">
             <div>
               <div className="flex items-center gap-2 mb-2">
-                <span className="px-3 py-1 rounded-full bg-emerald-500/10 border border-emerald-500/20 text-emerald-400 text-[10px] font-black uppercase tracking-widest flex items-center gap-1.5">
-                  <span className="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse" />
+                <span className="px-3 py-1 rounded-full bg-green-500/10 border border-green-500/20 text-green-500 text-[10px] font-black uppercase tracking-widest flex items-center gap-1.5">
+                  <span className="w-1.5 h-1.5 rounded-full bg-green-500 animate-pulse" />
                   Live AI Syncing
                 </span>
               </div>
-              <h1 className="text-2xl md:text-3xl font-black text-white tracking-tighter">Analysis</h1>
+              <h1 className="text-2xl md:text-3xl font-black text-foreground tracking-tighter">Analysis</h1>
             </div>
 
-            <div className="flex items-center gap-1 p-1 bg-white/[0.03] rounded-xl border border-white/5">
+            <div className="flex items-center gap-1 p-1 bg-secondary/50 rounded-xl border border-border">
               <GradientButton
                 className="px-4 py-2 text-[10px]"
                 gradient="brand"
@@ -195,7 +195,7 @@ const Analysis = () => {
                 Week
               </GradientButton>
               <GradientButton
-                className="px-4 py-2 text-[10px] text-white/40 hover:text-white"
+                className="px-4 py-2 text-[10px] text-muted-foreground hover:text-foreground"
                 gradient="dark"
                 glow={false}
               >
@@ -205,15 +205,15 @@ const Analysis = () => {
           </div>
 
           {/* AI Insight Card */}
-          <div className="p-5 md:p-6 rounded-2xl md:rounded-3xl bg-brand-gradient/10 border-pink-500/20 mb-6">
-            <div className="flex items-start gap-4">
+          <div className="p-5 md:p-6 rounded-2xl md:rounded-3xl bg-brand-gradient/10 border border-primary/20 mb-6 relative overflow-hidden">
+            <div className="flex items-start gap-4 relative z-10">
               <div className="w-12 h-12 rounded-xl bg-brand-gradient flex items-center justify-center shrink-0">
                 <Brain className="w-6 h-6 text-white" />
               </div>
               <div>
-                <p className="text-[10px] font-black uppercase tracking-widest text-pink-500 mb-1">AI Mastery Insight</p>
-                <p className="text-white font-medium leading-relaxed">
-                  Based on your learning patterns, focusing on <span className="text-pink-400">System Design</span> concepts
+                <p className="text-[10px] font-black uppercase tracking-widest text-primary mb-1">AI Mastery Insight</p>
+                <p className="text-foreground font-medium leading-relaxed">
+                  Based on your learning patterns, focusing on <span className="text-primary font-bold">System Design</span> concepts
                   in the morning could boost your retention by 23%. Your peak focus hours are between 9-11 AM.
                 </p>
               </div>
@@ -227,15 +227,15 @@ const Analysis = () => {
               return (
                 <div
                   key={stat.label}
-                  className="p-4 md:p-5 rounded-2xl bg-white/[0.03] border border-white/5"
+                  className="p-4 md:p-5 rounded-2xl bg-secondary/30 border border-border"
                 >
                   <div className={`w-10 h-10 rounded-xl ${stat.bgColor} flex items-center justify-center mb-3`}>
-                    <Icon className={`w-5 h-5 bg-gradient-to-r ${stat.color} bg-clip-text text-transparent`} style={{ color: `hsl(var(--primary))` }} />
+                    <Icon className={`w-5 h-5`} style={{ color: `hsl(var(--primary))` }} />
                   </div>
-                  <p className="text-2xl md:text-3xl font-black text-white tracking-tight">{stat.value}</p>
+                  <p className="text-2xl md:text-3xl font-black text-foreground tracking-tight">{stat.value}</p>
                   <div className="flex items-center gap-2 mt-1">
-                    <p className="text-[10px] font-black uppercase tracking-widest text-white/30">{stat.label}</p>
-                    <span className="text-[9px] text-emerald-400">{stat.unit}</span>
+                    <p className="text-[10px] font-black uppercase tracking-widest text-muted-foreground">{stat.label}</p>
+                    <span className="text-[9px] text-green-500">{stat.unit}</span>
                   </div>
                 </div>
               );
@@ -245,10 +245,10 @@ const Analysis = () => {
           {/* Charts Row */}
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-4 md:gap-6 mb-6 md:mb-8">
             {/* Daily Activity */}
-            <div className="p-5 rounded-2xl bg-white/[0.03] border border-white/5 h-[300px] flex flex-col">
+            <div className="p-5 rounded-2xl bg-secondary/30 border border-border h-[300px] flex flex-col">
               <div className="flex items-center justify-between mb-4">
-                <h3 className="text-lg font-bold text-white">Daily Activity</h3>
-                <TrendingUp className="w-4 h-4 text-emerald-400" />
+                <h3 className="text-lg font-bold text-foreground">Daily Activity</h3>
+                <TrendingUp className="w-4 h-4 text-green-500" />
               </div>
 
               <div className="flex-1 w-full -ml-2">
@@ -268,13 +268,13 @@ const Analysis = () => {
                       dataKey="day"
                       axisLine={false}
                       tickLine={false}
-                      tick={{ fill: 'rgba(255,255,255,0.3)', fontSize: 10, fontWeight: 900, letterSpacing: '1px' }}
+                      tick={{ fill: 'hsl(var(--muted-foreground))', opacity: 0.5, fontSize: 10, fontWeight: 900, letterSpacing: '1px' }}
                       dy={10}
                     />
                     <Tooltip
-                      contentStyle={{ backgroundColor: '#101010', border: '1px solid rgba(255,255,255,0.1)', borderRadius: '12px' }}
-                      itemStyle={{ color: '#fff', fontWeight: 'bold' }}
-                      cursor={{ stroke: 'rgba(255,255,255,0.1)', strokeWidth: 2, strokeDasharray: '4 4' }}
+                      contentStyle={{ backgroundColor: 'hsl(var(--card))', border: '1px solid hsl(var(--border))', borderRadius: '12px' }}
+                      itemStyle={{ color: 'hsl(var(--foreground))', fontWeight: 'bold' }}
+                      cursor={{ stroke: 'hsl(var(--border))', strokeWidth: 2, strokeDasharray: '4 4' }}
                     />
                     <Area
                       type="monotone"
@@ -290,15 +290,15 @@ const Analysis = () => {
             </div>
 
             {/* Focus Quality */}
-            <div className="p-5 rounded-2xl bg-white/[0.03] border border-white/5">
+            <div className="p-5 rounded-2xl bg-secondary/30 border border-border">
               <div className="flex items-center justify-between mb-4">
-                <h3 className="text-lg font-bold text-white">Focus Quality</h3>
-                <span className="text-emerald-400 text-sm font-bold">87%</span>
+                <h3 className="text-lg font-bold text-foreground">Focus Quality</h3>
+                <span className="text-green-500 text-sm font-bold">87%</span>
               </div>
               <div className="flex items-center justify-center py-6">
                 <div className="relative w-32 h-32">
                   <svg className="w-full h-full transform -rotate-90" viewBox="0 0 100 100">
-                    <circle cx="50" cy="50" r="40" fill="none" stroke="rgba(255,255,255,0.05)" strokeWidth="12" />
+                    <circle cx="50" cy="50" r="40" fill="none" stroke="hsl(var(--muted))" strokeOpacity="0.1" strokeWidth="12" />
                     <circle
                       cx="50" cy="50" r="40" fill="none"
                       stroke="url(#focusGradient)" strokeWidth="12"
@@ -313,7 +313,7 @@ const Analysis = () => {
                     </defs>
                   </svg>
                   <div className="absolute inset-0 flex items-center justify-center">
-                    <span className="text-3xl font-black text-white">87%</span>
+                    <span className="text-3xl font-black text-foreground">87%</span>
                   </div>
                 </div>
               </div>
@@ -323,18 +323,18 @@ const Analysis = () => {
           {/* Proficiency & Weak Topics */}
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-4 md:gap-6 mb-6 md:mb-8">
             {/* Proficiency Breakdown */}
-            <div className="p-5 rounded-2xl bg-white/[0.03] border border-white/5">
-              <h3 className="text-lg font-bold text-white mb-4">Proficiency Breakdown</h3>
+            <div className="p-5 rounded-2xl bg-secondary/30 border border-border">
+              <h3 className="text-lg font-bold text-foreground mb-4">Proficiency Breakdown</h3>
               <div className="space-y-4">
                 {proficiencyData.map((item) => (
                   <div key={item.topic}>
                     <div className="flex items-center justify-between mb-2">
-                      <span className="text-sm text-white/70">{item.topic}</span>
-                      <span className="text-sm font-bold text-white">{item.progress}%</span>
+                      <span className="text-sm text-muted-foreground">{item.topic}</span>
+                      <span className="text-sm font-bold text-foreground">{item.progress}%</span>
                     </div>
-                    <div className="h-2 bg-white/5 rounded-full overflow-hidden">
+                    <div className="h-2 bg-muted rounded-full overflow-hidden">
                       <div
-                        className={`h-full bg-gradient-to-r ${item.color} rounded-full transition-all duration-1000`}
+                        className={`h-full bg-brand-gradient rounded-full transition-all duration-1000`}
                         style={{ width: `${item.progress}%` }}
                       />
                     </div>
@@ -344,19 +344,19 @@ const Analysis = () => {
             </div>
 
             {/* Weak Topic Diagnostics */}
-            <div className="p-5 rounded-2xl bg-white/[0.03] border border-white/5">
-              <h3 className="text-lg font-bold text-white mb-4 flex items-center gap-2">
-                <AlertTriangle className="w-4 h-4 text-orange-400" />
+            <div className="p-5 rounded-2xl bg-secondary/30 border border-border">
+              <h3 className="text-lg font-bold text-foreground mb-4 flex items-center gap-2">
+                <AlertTriangle className="w-4 h-4 text-orange-500" />
                 Weak Topic Diagnostics
               </h3>
               <div className="space-y-3">
                 {weakTopics.map((item) => (
                   <div key={item.topic} className="p-4 rounded-xl bg-orange-500/5 border border-orange-500/10">
                     <div className="flex items-center justify-between mb-2">
-                      <span className="text-white font-semibold">{item.topic}</span>
-                      <span className="text-orange-400 font-bold text-sm">{item.score}%</span>
+                      <span className="text-foreground font-semibold">{item.topic}</span>
+                      <span className="text-orange-500 font-bold text-sm">{item.score}%</span>
                     </div>
-                    <p className="text-white/50 text-sm">{item.suggestion}</p>
+                    <p className="text-muted-foreground text-sm">{item.suggestion}</p>
                   </div>
                 ))}
               </div>
@@ -364,19 +364,19 @@ const Analysis = () => {
           </div>
 
           {/* Milestones */}
-          <div className="p-5 rounded-2xl bg-white/[0.03] border border-white/5 mb-6">
-            <h3 className="text-lg font-bold text-white mb-4">Upcoming Milestones</h3>
+          <div className="p-5 rounded-2xl bg-secondary/30 border border-border mb-6">
+            <h3 className="text-lg font-bold text-foreground mb-4">Upcoming Milestones</h3>
             <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
               {milestones.map((m) => (
-                <div key={m.name} className="p-4 rounded-xl bg-white/[0.03] border border-white/5">
+                <div key={m.name} className="p-4 rounded-xl bg-secondary/30 border border-border">
                   <div className="flex items-center justify-between mb-3">
                     <span className="text-2xl">{m.reward}</span>
-                    <span className="text-white/40 text-sm font-bold">{m.progress}%</span>
+                    <span className="text-muted-foreground text-sm font-bold">{m.progress}%</span>
                   </div>
-                  <p className="text-white font-semibold mb-2">{m.name}</p>
-                  <div className="h-1.5 bg-white/5 rounded-full overflow-hidden">
+                  <p className="text-foreground font-semibold mb-2">{m.name}</p>
+                  <div className="h-1.5 bg-muted rounded-full overflow-hidden">
                     <div
-                      className="h-full bg-gradient-to-r from-pink-500 to-purple-500 rounded-full"
+                      className="h-full bg-brand-gradient rounded-full"
                       style={{ width: `${m.progress}%` }}
                     />
                   </div>
@@ -386,19 +386,19 @@ const Analysis = () => {
           </div>
 
           {/* Generate Path CTA */}
-          <button className="w-full p-6 rounded-3xl bg-white/5 border border-white/10 flex items-center justify-between group hover:bg-white/10 hover:border-pink-500/30 transition-all duration-300 relative overflow-hidden">
+          <button className="w-full p-6 rounded-3xl bg-secondary/50 border border-border flex items-center justify-between group hover:bg-secondary/80 hover:border-primary/30 transition-all duration-300 relative overflow-hidden">
             <div className="absolute inset-0 bg-brand-gradient/5 opacity-0 group-hover:opacity-100 transition-opacity" />
 
             <div className="flex items-center gap-5 relative z-10">
-              <div className="w-14 h-14 rounded-2xl bg-brand-gradient flex items-center justify-center shadow-lg shadow-pink-500/20 group-hover:scale-110 transition-transform duration-500">
+              <div className="w-14 h-14 rounded-2xl bg-brand-gradient flex items-center justify-center shadow-lg shadow-primary/20 group-hover:scale-110 transition-transform duration-500">
                 <Sparkles className="w-7 h-7 text-white" />
               </div>
               <div className="text-left">
-                <p className="text-white font-black text-xl tracking-tight">Generate Custom Learning Path</p>
-                <p className="text-white/40 text-sm font-medium">AI-powered personalized curriculum</p>
+                <p className="text-foreground font-black text-xl tracking-tight">Generate Custom Learning Path</p>
+                <p className="text-muted-foreground text-sm font-medium">AI-powered personalized curriculum</p>
               </div>
             </div>
-            <ChevronRight className="w-6 h-6 text-white/40 group-hover:text-white group-hover:translate-x-1 transition-all duration-300 relative z-10" />
+            <ChevronRight className="w-6 h-6 text-muted-foreground group-hover:text-foreground group-hover:translate-x-1 transition-all duration-300 relative z-10" />
           </button>
         </div>
       </MainLayout>

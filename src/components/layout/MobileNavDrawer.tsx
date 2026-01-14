@@ -87,7 +87,7 @@ export const MobileNavDrawer: React.FC<MobileNavDrawerProps> = ({ open, onOpenCh
   return (
     <Sheet open={open} onOpenChange={onOpenChange}>
       <SheetContent side="right" className="w-[270px] bg-sidebar border-l border-border p-0 scrollbar-hide overflow-hidden [&>button]:top-8">
-        <SheetHeader className="p-6 border-b border-white/5">
+        <SheetHeader className="p-6 border-b border-border">
           <SheetTitle className="flex items-center gap-3">
             <img src="/ayscroll-official-logo.png" alt="AyScroll Logo" className="w-8 h-8" />
             <span className="text-xl font-bold text-foreground">AyScroll</span>
@@ -104,10 +104,10 @@ export const MobileNavDrawer: React.FC<MobileNavDrawerProps> = ({ open, onOpenCh
                 key={item.path}
                 onClick={() => handleNavClick(item.path)}
                 className={cn(
-                  "w-full flex items-center gap-4 px-4 py-3.5 rounded-2xl transition-all",
+                  "w-full flex items-center gap-4 px-4 py-3.5 rounded-2xl transition-all font-bold",
                   isActive
-                    ? "bg-brand-gradient/20 text-pink-500 border border-pink-500/20"
-                    : "text-white/60 hover:bg-white/5 hover:text-white"
+                    ? "bg-brand-gradient/20 text-primary border border-primary/20"
+                    : "text-muted-foreground hover:bg-secondary hover:text-foreground"
                 )}
               >
                 <Icon className="w-5 h-5" />
@@ -124,8 +124,8 @@ export const MobileNavDrawer: React.FC<MobileNavDrawerProps> = ({ open, onOpenCh
                 onOpenChange(false);
               }}
               className={cn(
-                "w-full flex items-center gap-4 px-4 py-3.5 rounded-2xl transition-all text-white/60 hover:bg-white/5 hover:text-white",
-                location.pathname === '/profile' && "bg-white/5 text-white"
+                "w-full flex items-center gap-4 px-4 py-3.5 rounded-2xl transition-all text-muted-foreground hover:bg-secondary hover:text-foreground font-bold",
+                location.pathname === '/profile' && "bg-secondary text-foreground"
               )}
             >
               <ShieldCheck className="w-5 h-5" />
@@ -139,10 +139,10 @@ export const MobileNavDrawer: React.FC<MobileNavDrawerProps> = ({ open, onOpenCh
             <button
               onClick={() => handleNavClick(settingsNavLink.path)}
               className={cn(
-                "w-full flex items-center gap-4 px-4 py-3.5 rounded-2xl transition-all",
+                "w-full flex items-center gap-4 px-4 py-3.5 rounded-2xl transition-all font-bold",
                 location.pathname === settingsNavLink.path
-                  ? "bg-brand-gradient/20 text-pink-500 border border-pink-500/20"
-                  : "text-white/60 hover:bg-white/5 hover:text-white"
+                  ? "bg-brand-gradient/20 text-primary border border-primary/20"
+                  : "text-muted-foreground hover:bg-secondary hover:text-foreground"
               )}
             >
               <settingsNavLink.icon className="w-5 h-5" />
@@ -152,10 +152,10 @@ export const MobileNavDrawer: React.FC<MobileNavDrawerProps> = ({ open, onOpenCh
         )}
 
         {/* User Section */}
-        <div className="absolute bottom-0 left-0 right-0 p-4 border-t border-white/5 bg-[#0A0A0F]">
+        <div className="absolute bottom-0 left-0 right-0 p-4 border-t border-border bg-sidebar">
           <button
             onClick={() => handleNavClick('/profile')}
-            className="w-full flex items-center gap-4 p-4 rounded-2xl bg-white/[0.03] border border-white/5 mb-3"
+            className="w-full flex items-center gap-4 p-4 rounded-2xl bg-secondary/50 border border-border mb-3"
           >
             <Avatar className="w-12 h-12">
               <AvatarImage src={avatarUrl || user?.user_metadata?.avatar_url || user?.user_metadata?.picture} />
@@ -165,7 +165,7 @@ export const MobileNavDrawer: React.FC<MobileNavDrawerProps> = ({ open, onOpenCh
             </Avatar>
             <div className="flex-1 text-left min-w-0">
               <div className="flex items-center gap-2 mb-0.5">
-                <p className="text-white font-semibold truncate leading-none">
+                <p className="text-foreground font-bold truncate leading-none">
                   {user ? (displayName || user.user_metadata?.name || 'User') : 'Guest'}
                 </p>
                 {user && isPro && (
@@ -177,7 +177,7 @@ export const MobileNavDrawer: React.FC<MobileNavDrawerProps> = ({ open, onOpenCh
                   </span>
                 )}
               </div>
-              <p className="text-white/40 text-sm truncate">
+              <p className="text-muted-foreground text-sm truncate font-medium">
                 {user ? `@${username || 'loading...'}` : 'Sign in to continue'}
               </p>
             </div>
@@ -186,10 +186,10 @@ export const MobileNavDrawer: React.FC<MobileNavDrawerProps> = ({ open, onOpenCh
           {user && (
             <button
               onClick={handleSignOut}
-              className="w-full flex items-center justify-center gap-2 py-3 rounded-xl bg-white/5 text-white/60 hover:bg-red-500/10 hover:text-red-400 transition-colors"
+              className="w-full flex items-center justify-center gap-2 py-3 rounded-xl bg-secondary/50 text-muted-foreground hover:bg-destructive/10 hover:text-destructive transition-colors font-bold"
             >
               <LogOut className="w-4 h-4" />
-              <span className="font-medium text-sm">Sign Out</span>
+              <span className="font-bold text-sm">Sign Out</span>
             </button>
           )}
         </div>

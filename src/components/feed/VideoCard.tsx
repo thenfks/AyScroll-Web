@@ -1,4 +1,4 @@
-import { useState, useRef } from 'react';
+import { useState, useRef, useEffect } from 'react';
 import { Play, Pause, X, Sparkles, Clock, Brain, ChevronRight, Lightbulb, FileText, Link2, Quote, Plus } from 'lucide-react'; // Added necessary icons
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { cn } from '@/lib/utils';
@@ -40,26 +40,66 @@ export const VideoCard: React.FC<VideoCardProps> = (props) => {
 
   const [isPlaying, setIsPlaying] = useState(true);
   const [activeSheet, setActiveSheet] = useState<ActiveSheet>(null); // New state for active sheet
+  const [showActionIcon, setShowActionIcon] = useState<'play' | 'pause' | null>(null);
   const videoRef = useRef<HTMLVideoElement>(null);
+  const iconTimeoutRef = useRef<NodeJS.Timeout | null>(null);
 
   const togglePlay = () => {
     if (videoRef.current) {
-      if (isPlaying) {
+      if (iconTimeoutRef.current) clearTimeout(iconTimeoutRef.current);
+
+      if (!videoRef.current.paused) {
         videoRef.current.pause();
+        setIsPlaying(false);
+        setShowActionIcon('pause');
       } else {
         videoRef.current.play();
+        setIsPlaying(true);
+        setShowActionIcon('play');
       }
-      setIsPlaying(!isPlaying);
+
+      iconTimeoutRef.current = setTimeout(() => {
+        setShowActionIcon(null);
+      }, 500);
     }
   };
+
+  useEffect(() => {
+    const observer = new IntersectionObserver(
+      (entries) => {
+        entries.forEach((entry) => {
+          if (videoRef.current) {
+            if (entry.isIntersecting) {
+              videoRef.current.play().catch(err => console.log("Autoplay blocked:", err));
+              setIsPlaying(true);
+            } else {
+              videoRef.current.pause();
+              setIsPlaying(false);
+            }
+          }
+        });
+      },
+      { threshold: 0.6 }
+    );
+
+    if (videoRef.current) {
+      observer.observe(videoRef.current);
+    }
+
+    return () => {
+      if (videoRef.current) {
+        observer.unobserve(videoRef.current);
+      }
+    };
+  }, []);
 
   const renderSheetContent = () => {
     switch (activeSheet) {
       case 'flashcards':
         return (
           <>
-            <div className="relative border-b border-white/5 pb-4 px-4">
-              <h2 className="text-xl font-black text-white tracking-tight flex items-center gap-3">
+            <div className="relative border-b border-border pb-4 px-4">
+              <h2 className="text-xl font-black text-foreground tracking-tight flex items-center gap-3">
                 <div className="w-10 h-10 rounded-xl bg-brand-gradient flex items-center justify-center">
                   <Lightbulb className="w-5 h-5 text-white" />
                 </div>
@@ -72,26 +112,26 @@ export const VideoCard: React.FC<VideoCardProps> = (props) => {
                 flashcards.map((card, index) => (
                   <div
                     key={index}
-                    className="relative p-5 rounded-2xl bg-white/[0.03] border border-white/10 overflow-hidden group hover:bg-white/[0.05] transition-colors"
+                    className="relative p-5 rounded-2xl bg-secondary/50 border border-border overflow-hidden group hover:bg-secondary/80 transition-colors"
                   >
                     {/* Gradient left border */}
                     <div className="absolute left-0 top-0 bottom-0 w-1 bg-brand-gradient" />
 
                     <div className="pl-4">
-                      <p className="text-[10px] font-black uppercase tracking-widest text-pink-500 mb-2">Question</p>
-                      <p className="text-white font-semibold mb-4">{card.question}</p>
+                      <p className="text-[10px] font-black uppercase tracking-widest text-primary mb-2">Question</p>
+                      <p className="text-foreground font-semibold mb-4">{card.question}</p>
 
-                      <p className="text-[10px] font-black uppercase tracking-widest text-pink-500 mb-2">Answer</p>
-                      <p className="text-white/70">{card.answer}</p>
+                      <p className="text-[10px] font-black uppercase tracking-widest text-primary mb-2">Answer</p>
+                      <p className="text-muted-foreground">{card.answer}</p>
                     </div>
                   </div>
                 ))
               ) : (
                 <div className="py-12 text-center">
-                  <div className="w-16 h-16 mx-auto rounded-2xl bg-white/5 flex items-center justify-center mb-4">
-                    <Lightbulb className="w-8 h-8 text-white/20" />
+                  <div className="w-16 h-16 mx-auto rounded-2xl bg-secondary flex items-center justify-center mb-4">
+                    <Lightbulb className="w-8 h-8 text-muted-foreground/20" />
                   </div>
-                  <p className="text-white/40 font-medium">No flashcards available</p>
+                  <p className="text-muted-foreground font-medium">No flashcards available</p>
                 </div>
               )}
             </div>
@@ -100,8 +140,8 @@ export const VideoCard: React.FC<VideoCardProps> = (props) => {
       case 'resources':
         return (
           <>
-            <div className="relative border-b border-white/5 pb-4 px-4">
-              <h2 className="text-xl font-black text-white tracking-tight flex items-center gap-3">
+            <div className="relative border-b border-border pb-4 px-4">
+              <h2 className="text-xl font-black text-foreground tracking-tight flex items-center gap-3">
                 <div className="w-10 h-10 rounded-xl bg-brand-gradient flex items-center justify-center">
                   <FileText className="w-5 h-5 text-white" />
                 </div>
@@ -120,21 +160,21 @@ export const VideoCard: React.FC<VideoCardProps> = (props) => {
                         href={resource.url}
                         target="_blank"
                         rel="noopener noreferrer"
-                        className="block p-4 rounded-2xl bg-white/[0.03] border border-white/10 hover:bg-white/[0.06] transition-all group"
+                        className="block p-4 rounded-2xl bg-secondary/50 border border-border hover:bg-secondary/80 transition-all group"
                       >
                         <div className="flex items-start gap-4">
-                          <div className="w-10 h-10 rounded-xl bg-white/5 flex items-center justify-center shrink-0">
-                            <Icon className="w-5 h-5 text-pink-500" />
+                          <div className="w-10 h-10 rounded-xl bg-background flex items-center justify-center shrink-0">
+                            <Icon className="w-5 h-5 text-primary" />
                           </div>
                           <div className="flex-1 min-w-0">
-                            <p className="text-[10px] font-black uppercase tracking-widest text-white/30 mb-1">
+                            <p className="text-[10px] font-black uppercase tracking-widest text-muted-foreground mb-1">
                               {resource.type}
                             </p>
-                            <p className="text-pink-400 font-semibold group-hover:text-pink-300 transition-colors truncate">
+                            <p className="text-primary font-semibold group-hover:opacity-80 transition-colors truncate">
                               {resource.title}
                             </p>
                             {resource.description && (
-                              <p className="text-white/50 text-sm mt-1 line-clamp-2">
+                              <p className="text-muted-foreground text-sm mt-1 line-clamp-2">
                                 {resource.description}
                               </p>
                             )}
@@ -145,17 +185,17 @@ export const VideoCard: React.FC<VideoCardProps> = (props) => {
                   })}
 
                   {/* Smart Analyser Upsell */}
-                  <div className="p-5 rounded-2xl bg-brand-gradient/10 border border-pink-500/20 mt-4">
+                  <div className="p-5 rounded-2xl bg-brand-gradient/10 border border-primary/20 mt-4">
                     <div className="flex items-center gap-3 mb-3">
                       <div className="w-10 h-10 rounded-xl bg-brand-gradient flex items-center justify-center">
                         <Sparkles className="w-5 h-5 text-white" />
                       </div>
                       <div>
-                        <p className="text-white font-bold">Smart Analyser</p>
-                        <p className="text-white/50 text-xs">AI-powered deep analysis</p>
+                        <p className="text-foreground font-bold">Smart Analyser</p>
+                        <p className="text-muted-foreground text-xs">AI-powered deep analysis</p>
                       </div>
                     </div>
-                    <p className="text-white/60 text-sm mb-4">
+                    <p className="text-foreground/70 text-sm mb-4">
                       Get comprehensive insights, related topics, and personalized learning paths.
                     </p>
                     <button className="w-full py-3 rounded-xl bg-brand-gradient text-white font-bold text-sm hover:opacity-90 transition-opacity">
@@ -165,10 +205,10 @@ export const VideoCard: React.FC<VideoCardProps> = (props) => {
                 </>
               ) : (
                 <div className="py-12 text-center">
-                  <div className="w-16 h-16 mx-auto rounded-2xl bg-white/5 flex items-center justify-center mb-4">
-                    <FileText className="w-8 h-8 text-white/20" />
+                  <div className="w-16 h-16 mx-auto rounded-2xl bg-secondary flex items-center justify-center mb-4">
+                    <FileText className="w-8 h-8 text-muted-foreground/20" />
                   </div>
-                  <p className="text-white/40 font-medium">No resources available</p>
+                  <p className="text-muted-foreground font-medium">No resources available</p>
                 </div>
               )}
             </div>
@@ -177,52 +217,52 @@ export const VideoCard: React.FC<VideoCardProps> = (props) => {
       case 'detail':
         return (
           <>
-            <div className="relative border-b border-white/5 pb-4 px-4">
+            <div className="relative border-b border-border pb-4 px-4">
               <div className="flex items-center gap-3 mb-3">
                 <img
                   src={creator_avatar}
                   alt={creator}
-                  className="w-10 h-10 rounded-full object-cover border-2 border-white/10"
+                  className="w-10 h-10 rounded-full object-cover border-2 border-border"
                 />
                 <div>
-                  <p className="text-white font-semibold">{creator}</p>
-                  <p className="text-white/40 text-sm">{creator_handle}</p>
+                  <p className="text-foreground font-semibold">{creator}</p>
+                  <p className="text-muted-foreground text-sm">{creator_handle}</p>
                 </div>
               </div>
 
-              <h2 className="text-xl font-black text-white tracking-tight">
+              <h2 className="text-xl font-black text-foreground tracking-tight">
                 {title}
               </h2>
             </div>
 
             <div className="p-4 space-y-4 overflow-y-auto max-h-[60vh]">
               {/* Master Insight CTA */}
-              <button className="w-full p-5 rounded-3xl bg-white/5 border border-white/10 flex items-center justify-between group hover:bg-white/10 hover:border-pink-500/30 transition-all duration-300 relative overflow-hidden">
+              <button className="w-full p-5 rounded-3xl bg-secondary/50 border border-border flex items-center justify-between group hover:bg-secondary/80 hover:border-primary/30 transition-all duration-300 relative overflow-hidden">
                 <div className="absolute inset-0 bg-brand-gradient/5 opacity-0 group-hover:opacity-100 transition-opacity" />
 
                 <div className="flex items-center gap-4 relative z-10">
-                  <div className="w-12 h-12 rounded-2xl bg-brand-gradient flex items-center justify-center shadow-lg shadow-pink-500/20 group-hover:scale-110 transition-transform duration-500">
+                  <div className="w-12 h-12 rounded-2xl bg-brand-gradient flex items-center justify-center shadow-lg shadow-primary/20 group-hover:scale-110 transition-transform duration-500">
                     <Sparkles className="w-6 h-6 text-white" />
                   </div>
                   <div className="text-left">
-                    <p className="text-white font-black tracking-tight">Master Insight</p>
-                    <p className="text-white/40 text-xs font-medium">Unlock deep AI analysis</p>
+                    <p className="text-foreground font-black tracking-tight">Master Insight</p>
+                    <p className="text-muted-foreground text-xs font-medium">Unlock deep AI analysis</p>
                   </div>
                 </div>
-                <ChevronRight className="w-5 h-5 text-white/40 group-hover:text-white group-hover:translate-x-1 transition-all duration-300 relative z-10" />
+                <ChevronRight className="w-5 h-5 text-muted-foreground group-hover:text-foreground group-hover:translate-x-1 transition-all duration-300 relative z-10" />
               </button>
 
               {/* Core Takeaways */}
               {insights && insights.length > 0 && (
-                <div className="p-5 rounded-2xl bg-white/[0.03] border border-white/10">
-                  <p className="text-[10px] font-black uppercase tracking-widest text-pink-500 mb-4">
+                <div className="p-5 rounded-2xl bg-secondary/30 border border-border">
+                  <p className="text-[10px] font-black uppercase tracking-widest text-primary mb-4">
                     Core Takeaways
                   </p>
                   <ul className="space-y-3">
                     {insights.map((insight, index) => (
                       <li key={index} className="flex items-start gap-3">
-                        <div className="w-1.5 h-1.5 rounded-full bg-pink-500 mt-2 shrink-0" />
-                        <span className="text-white/80">{insight}</span>
+                        <div className="w-1.5 h-1.5 rounded-full bg-primary mt-2 shrink-0" />
+                        <span className="text-muted-foreground font-medium">{insight}</span>
                       </li>
                     ))}
                   </ul>
@@ -231,11 +271,11 @@ export const VideoCard: React.FC<VideoCardProps> = (props) => {
 
               {/* Executive Summary */}
               {full_chapter_summary && (
-                <div className="p-5 rounded-2xl bg-white/[0.03] border border-white/10">
-                  <p className="text-[10px] font-black uppercase tracking-widest text-pink-500 mb-4">
+                <div className="p-5 rounded-2xl bg-secondary/30 border border-border">
+                  <p className="text-[10px] font-black uppercase tracking-widest text-primary mb-4">
                     Executive Summary
                   </p>
-                  <blockquote className="text-white/70 italic border-l-2 border-pink-500 pl-4">
+                  <blockquote className="text-muted-foreground italic border-l-2 border-primary pl-4 font-medium">
                     "{full_chapter_summary}"
                   </blockquote>
                 </div>
@@ -243,19 +283,19 @@ export const VideoCard: React.FC<VideoCardProps> = (props) => {
 
               {/* Stats */}
               <div className="grid grid-cols-2 gap-3">
-                <div className="p-4 rounded-2xl bg-white/[0.03] border border-white/10 text-center">
-                  <div className="w-10 h-10 mx-auto rounded-xl bg-emerald-500/10 flex items-center justify-center mb-2">
-                    <Clock className="w-5 h-5 text-emerald-400" />
+                <div className="p-4 rounded-2xl bg-secondary/50 border border-border text-center">
+                  <div className="w-10 h-10 mx-auto rounded-xl bg-green-500/10 flex items-center justify-center mb-2">
+                    <Clock className="w-5 h-5 text-green-500" />
                   </div>
-                  <p className="text-2xl font-black text-white">{duration}</p>
-                  <p className="text-[10px] font-black uppercase tracking-widest text-white/30">Time Saved</p>
+                  <p className="text-2xl font-black text-foreground">{duration}</p>
+                  <p className="text-[10px] font-black uppercase tracking-widest text-muted-foreground">Time Saved</p>
                 </div>
-                <div className="p-4 rounded-2xl bg-white/[0.03] border border-white/10 text-center">
-                  <div className="w-10 h-10 mx-auto rounded-xl bg-indigo-500/10 flex items-center justify-center mb-2">
-                    <Brain className="w-5 h-5 text-indigo-400" />
+                <div className="p-4 rounded-2xl bg-secondary/50 border border-border text-center">
+                  <div className="w-10 h-10 mx-auto rounded-xl bg-blue-500/10 flex items-center justify-center mb-2">
+                    <Brain className="w-5 h-5 text-blue-500" />
                   </div>
-                  <p className="text-2xl font-black text-white">94%</p>
-                  <p className="text-[10px] font-black uppercase tracking-widest text-white/30">Retention</p>
+                  <p className="text-2xl font-black text-foreground">94%</p>
+                  <p className="text-[10px] font-black uppercase tracking-widest text-muted-foreground">Retention</p>
                 </div>
               </div>
             </div>
@@ -290,23 +330,30 @@ export const VideoCard: React.FC<VideoCardProps> = (props) => {
             playsInline
           />
 
-          {/* Play/Pause Icon */}
-          {!isPlaying && (
-            <div className="absolute inset-0 flex items-center justify-center bg-black/40">
-              <Play className="w-20 h-20 text-white" />
+          {/* Action Icon Pulse Overlay */}
+          <div className={cn(
+            "absolute inset-0 flex items-center justify-center pointer-events-none z-50 transition-all duration-300",
+            showActionIcon ? "opacity-100 scale-100" : "opacity-0 scale-75"
+          )}>
+            <div className="w-20 h-20 rounded-full bg-black/40 backdrop-blur-md flex items-center justify-center border border-white/20">
+              {showActionIcon === 'play' ? (
+                <Play className="w-10 h-10 text-white fill-current translate-x-1" />
+              ) : (
+                <Pause className="w-10 h-10 text-white fill-current" />
+              )}
             </div>
-          )}
+          </div>
 
           {/* Gradient Overlay */}
-          <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-transparent to-transparent" />
+          <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-transparent to-transparent pointer-events-none" />
 
           {/* Category & Duration - Desktop only (top position) */}
           <div className="absolute top-4 left-4 hidden md:flex items-center gap-2">
-            <span className="px-3 py-1 bg-black/50 backdrop-blur-sm rounded-full text-xs font-medium text-foreground">
+            <span className="px-3 py-1 bg-black/50 backdrop-blur-sm rounded-full text-[10px] font-black uppercase tracking-widest text-white border border-white/10">
               {category}
             </span>
-            <span className="flex items-center gap-1.5 text-xs text-foreground">
-              <span className="w-1.5 h-1.5 bg-topic-green rounded-full animate-pulse" />
+            <span className="flex items-center gap-1.5 text-xs text-white font-medium">
+              <span className="w-1.5 h-1.5 bg-green-500 rounded-full animate-pulse shadow-[0_0_8px_rgba(34,197,94,0.6)]" />
               {duration}
             </span>
           </div>
@@ -319,32 +366,32 @@ export const VideoCard: React.FC<VideoCardProps> = (props) => {
           />
 
           {/* Author & Content Info */}
-          <div className="absolute bottom-20 max-md:bottom-24 left-4 right-16">
+          <div className="absolute bottom-20 max-md:bottom-24 left-4 right-16 pointer-events-none">
             {/* Category & Duration - Mobile only (before avatar) */}
             <div className="flex md:hidden items-center gap-2 mb-3">
-              <span className="px-3 py-1 bg-black/50 backdrop-blur-sm rounded-full text-xs font-medium text-foreground">
+              <span className="px-3 py-1 bg-black/50 backdrop-blur-sm rounded-full text-[10px] font-black uppercase tracking-widest text-white border border-white/10">
                 {category}
               </span>
-              <span className="flex items-center gap-1.5 text-xs text-foreground">
-                <span className="w-1.5 h-1.5 bg-topic-green rounded-full animate-pulse" />
+              <span className="flex items-center gap-1.5 text-xs text-white font-medium">
+                <span className="w-1.5 h-1.5 bg-green-500 rounded-full animate-pulse shadow-[0_0_8px_rgba(34,197,94,0.6)]" />
                 {duration}
               </span>
             </div>
 
             <div className="flex items-center gap-2 mb-2">
-              <Avatar className="w-10 h-10 border-2 border-foreground">
+              <Avatar className="w-10 h-10 border-2 border-white/20">
                 <AvatarImage src={creator_avatar} />
-                <AvatarFallback className="bg-primary text-primary-foreground text-sm">
+                <AvatarFallback className="bg-primary text-white text-sm">
                   {creator.charAt(0)}
                 </AvatarFallback>
               </Avatar>
-              <div>
-                <p className="font-semibold text-sm text-foreground">{creator}</p>
-                <p className="text-xs text-foreground/70">{creator_handle}</p>
+              <div className="flex flex-col">
+                <p className="font-bold text-[14px] text-white tracking-tight">{creator}</p>
+                <p className="text-[11px] text-white/60 font-medium">{creator_handle}</p>
               </div>
             </div>
-            <h3 className="font-bold text-foreground mb-1 line-clamp-2">{title}</h3>
-            <p className="text-sm text-foreground/80 line-clamp-2">{description}</p>
+            <h3 className="font-black text-white mb-1.5 line-clamp-2 tracking-tight text-[15px]">{title}</h3>
+            <p className="text-sm text-white/70 line-clamp-2 font-medium leading-snug">{description}</p>
           </div>
 
           {/* Bottom Left Actions */}

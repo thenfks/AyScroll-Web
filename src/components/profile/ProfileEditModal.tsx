@@ -13,16 +13,16 @@ const ProfileEditModal: React.FC<ProfileEditModalProps> = ({ isOpen, onClose, on
         <Sheet open={isOpen} onOpenChange={onClose}>
             <SheetContent
                 side="bottom"
-                className="h-[90vh] bg-[#0A0A0F] border-t border-white/10 rounded-t-[40px] p-0 overflow-hidden"
+                className="h-[90vh] bg-background border-t border-border rounded-t-[40px] p-0 overflow-hidden shadow-theme-lg"
             >
                 {/* Drag Handle */}
                 <div className="w-full flex justify-center pt-3 pb-2">
-                    <div className="w-12 h-1.5 rounded-full bg-white/20" />
+                    <div className="w-12 h-1.5 rounded-full bg-muted-foreground/20" />
                 </div>
 
                 {/* Header */}
-                <SheetHeader className="px-6 pb-4 border-b border-white/10">
-                    <SheetTitle className="text-2xl font-black text-white">Edit Profile</SheetTitle>
+                <SheetHeader className="px-6 pb-4 border-b border-border">
+                    <SheetTitle className="text-2xl font-black text-foreground">Edit Profile</SheetTitle>
                 </SheetHeader>
 
                 {/* Form Content */}

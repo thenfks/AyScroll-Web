@@ -194,9 +194,9 @@ const ProfileEditForm: React.FC<ProfileEditFormProps> = ({ onSave, onCancel, cla
     return (
         <div className={`flex flex-col h-full ${className}`}>
             {!isMobile && (
-                <div className="flex items-center justify-between mb-8 pb-4 border-b border-white/10">
-                    <h2 className="text-3xl font-black text-white tracking-tight">Edit Profile</h2>
-                    <Button variant="ghost" size="icon" onClick={onCancel} className="rounded-full hover:bg-white/10 text-white/60 hover:text-white">
+                <div className="flex items-center justify-between mb-8 pb-4 border-b border-border">
+                    <h2 className="text-3xl font-black text-foreground tracking-tight">Edit Profile</h2>
+                    <Button variant="ghost" size="icon" onClick={onCancel} className="rounded-full hover:bg-secondary text-muted-foreground hover:text-foreground">
                         <X className="w-5 h-5" />
                     </Button>
                 </div>
@@ -206,14 +206,14 @@ const ProfileEditForm: React.FC<ProfileEditFormProps> = ({ onSave, onCancel, cla
                 {/* Avatar Upload */}
                 <div className="flex flex-col items-center gap-6 mb-8">
                     <div className="relative group">
-                        <div className="w-32 h-32 md:w-40 md:h-40 rounded-full border-4 border-white/10">
+                        <div className="w-32 h-32 md:w-40 md:h-40 rounded-full border-4 border-border">
                             <img
                                 src={previewUrl || profile.avatar_url || user?.user_metadata?.avatar_url || user?.user_metadata?.picture || `https://ui-avatars.com/api/?name=${encodeURIComponent(profile.display_name || 'User')}&background=random`}
                                 className="w-full h-full rounded-full object-cover"
                                 alt="Avatar"
                             />
                         </div>
-                        <label className="absolute bottom-0 right-0 w-10 h-10 md:w-12 md:h-12 rounded-full bg-gradient-to-r from-pink-500 to-orange-500 flex items-center justify-center cursor-pointer hover:scale-110 transition-transform shadow-lg border border-white/10">
+                        <label className="absolute bottom-0 right-0 w-10 h-10 md:w-12 md:h-12 rounded-full bg-brand-gradient flex items-center justify-center cursor-pointer hover:scale-110 transition-transform shadow-theme-md border border-border">
                             <Camera className="w-5 h-5 md:w-6 md:h-6 text-white" />
                             <input
                                 type="file"
@@ -228,24 +228,24 @@ const ProfileEditForm: React.FC<ProfileEditFormProps> = ({ onSave, onCancel, cla
                 {/* Form Fields - Grid for Desktop */}
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                     <div className="space-y-2">
-                        <label className="text-sm font-bold text-white/60 ml-1">Display Name</label>
+                        <label className="text-sm font-bold text-muted-foreground ml-1">Display Name</label>
                         <input
                             type="text"
                             value={profile.display_name || ''}
                             onChange={(e) => setProfile({ ...profile, display_name: e.target.value })}
-                            className="w-full h-12 bg-white/5 border border-white/10 rounded-xl px-4 text-white focus:outline-none focus:border-pink-500/50 transition-colors placeholder:text-white/20"
+                            className="w-full h-12 bg-secondary/50 border border-border rounded-xl px-4 text-foreground focus:outline-none focus:border-primary/50 transition-colors placeholder:text-muted-foreground/30"
                             placeholder="Your display name"
                         />
                     </div>
 
                     <div className="space-y-2">
-                        <label className="text-sm font-bold text-white/60 ml-1">Username</label>
+                        <label className="text-sm font-bold text-muted-foreground ml-1">Username</label>
                         <div className="relative">
                             <input
                                 type="text"
                                 value={profile.username || ''}
                                 onChange={(e) => setProfile({ ...profile, username: e.target.value.toLowerCase().replace(/[^a-z0-9_]/g, '') })}
-                                className={`w-full h-12 bg-white/5 border ${usernameError ? 'border-red-500' : 'border-white/10'} rounded-xl px-4 text-white focus:outline-none focus:border-pink-500/50 transition-colors placeholder:text-white/20 pr-10`}
+                                className={`w-full h-12 bg-secondary/50 border ${usernameError ? 'border-destructive' : 'border-border'} rounded-xl px-4 text-foreground focus:outline-none focus:border-primary/50 transition-colors placeholder:text-muted-foreground/30 pr-10`}
                                 placeholder="username"
                             />
                             {isCheckingUsername && (
@@ -255,42 +255,42 @@ const ProfileEditForm: React.FC<ProfileEditFormProps> = ({ onSave, onCancel, cla
                             )}
                         </div>
                         {usernameError ? (
-                            <p className="text-xs text-red-500 mt-1 font-medium">{usernameError}</p>
+                            <p className="text-xs text-destructive mt-1 font-medium">{usernameError}</p>
                         ) : (
-                            <p className="text-xs text-white/30 mt-1 text-right">Lowercase letters, numbers, and underscores only</p>
+                            <p className="text-xs text-muted-foreground/30 mt-1 text-right">Lowercase letters, numbers, and underscores only</p>
                         )}
                     </div>
 
                     <div className="space-y-2 md:col-span-2">
-                        <label className="text-sm font-bold text-white/60 ml-1">Bio</label>
+                        <label className="text-sm font-bold text-muted-foreground ml-1">Bio</label>
                         <textarea
                             value={profile.bio || ''}
                             onChange={(e) => setProfile({ ...profile, bio: e.target.value })}
-                            className="w-full h-24 bg-white/5 border border-white/10 rounded-xl px-4 py-3 text-white focus:outline-none focus:border-pink-500/50 transition-colors resize-none placeholder:text-white/20"
+                            className="w-full h-24 bg-secondary/50 border border-border rounded-xl px-4 py-3 text-foreground focus:outline-none focus:border-primary/50 transition-colors resize-none placeholder:text-muted-foreground/30"
                             placeholder="Tell us about yourself..."
                             maxLength={160}
                         />
-                        <p className="text-xs text-white/30 text-right">{(profile.bio || '').length}/160</p>
+                        <p className="text-xs text-muted-foreground/30 text-right">{(profile.bio || '').length}/160</p>
                     </div>
 
                     <div className="space-y-2">
-                        <label className="text-sm font-bold text-white/60 ml-1">Location</label>
+                        <label className="text-sm font-bold text-muted-foreground ml-1">Location</label>
                         <input
                             type="text"
                             value={profile.location || ''}
                             onChange={(e) => setProfile({ ...profile, location: e.target.value })}
-                            className="w-full h-12 bg-white/5 border border-white/10 rounded-xl px-4 text-white focus:outline-none focus:border-pink-500/50 transition-colors placeholder:text-white/20"
+                            className="w-full h-12 bg-secondary/50 border border-border rounded-xl px-4 text-foreground focus:outline-none focus:border-primary/50 transition-colors placeholder:text-muted-foreground/30"
                             placeholder="City, Country"
                         />
                     </div>
 
                     <div className="space-y-2">
-                        <label className="text-sm font-bold text-white/60 ml-1">Website</label>
+                        <label className="text-sm font-bold text-muted-foreground ml-1">Website</label>
                         <input
                             type="url"
                             value={profile.website || ''}
                             onChange={(e) => setProfile({ ...profile, website: e.target.value })}
-                            className="w-full h-12 bg-white/5 border border-white/10 rounded-xl px-4 text-white focus:outline-none focus:border-pink-500/50 transition-colors placeholder:text-white/20"
+                            className="w-full h-12 bg-secondary/50 border border-border rounded-xl px-4 text-foreground focus:outline-none focus:border-primary/50 transition-colors placeholder:text-muted-foreground/30"
                             placeholder="https://yourwebsite.com"
                         />
                     </div>
@@ -298,18 +298,18 @@ const ProfileEditForm: React.FC<ProfileEditFormProps> = ({ onSave, onCancel, cla
             </div>
 
             {/* Actions */}
-            <div className={`mt-6 pt-6 border-t border-white/10 flex gap-4 ${isMobile ? 'px-6 pb-6 bg-[#0A0A0F]' : ''}`}>
+            <div className={`mt-6 pt-6 border-t border-border flex gap-4 ${isMobile ? 'px-6 pb-6 bg-background' : ''}`}>
                 <Button
                     onClick={onCancel}
                     variant="outline"
-                    className="flex-1 h-12 rounded-xl border-white/10 text-white/60 hover:text-white hover:bg-white/5 bg-transparent"
+                    className="flex-1 h-12 rounded-xl border-border text-muted-foreground hover:text-foreground hover:bg-secondary bg-transparent"
                 >
                     Cancel
                 </Button>
                 <Button
                     onClick={handleSave}
                     disabled={loading || uploadingImage}
-                    className="flex-1 h-12 rounded-xl bg-gradient-to-r from-pink-500 to-orange-500 hover:from-pink-600 hover:to-orange-600 text-white border-0 shadow-lg shadow-pink-500/20"
+                    className="flex-1 h-12 rounded-xl bg-brand-gradient text-white border-0 shadow-theme-md shadow-primary/20"
                 >
                     {loading ? (uploadingImage ? 'Uploading Image...' : 'Saving Profile...') : (
                         <>

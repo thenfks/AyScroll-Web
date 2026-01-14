@@ -1,7 +1,8 @@
-import { Search, Sparkles, Bell, Plus } from 'lucide-react';
+import { Search, Bell, Plus } from 'lucide-react';
 import { GradientButton } from '@/components/ui/GradientButton';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
+import { ThemeToggle } from '@/components/ui/theme-toggle';
 import { useAuth } from '@/contexts/AuthContext';
 import { useLocation, Link, useNavigate, useSearchParams } from 'react-router-dom';
 import { useState, useEffect } from 'react';
@@ -82,7 +83,7 @@ export const Header = () => {
       {/* Left Section: Title */}
       <div className="flex items-center w-1/4 min-w-fit">
         {pageTitle && (
-          <h1 className="text-2xl font-black text-white tracking-tight shrink-0">{pageTitle}</h1>
+          <h1 className="text-2xl font-black text-foreground tracking-tight shrink-0">{pageTitle}</h1>
         )}
       </div>
 
@@ -103,6 +104,9 @@ export const Header = () => {
 
       {/* Right Actions */}
       <div className="flex items-center justify-end w-1/4 gap-4 min-w-fit">
+        {/* Theme Toggle */}
+        <ThemeToggle />
+
         {/* Bell Icon */}
         <Button variant="ghost" className="w-10 h-10 rounded-full border border-border bg-background/50 hover:bg-accent shrink-0 flex items-center justify-center p-0">
           <Bell className="w-5 h-5 text-muted-foreground" />

@@ -33,22 +33,22 @@ const SecuritySection: React.FC = () => {
   return (
     <div className="space-y-6 animate-in fade-in slide-in-from-right-4 duration-500">
       <div className="flex items-center justify-between mb-3">
-        <h3 className="text-2xl font-black text-white tracking-tighter">Login & Security</h3>
-        <span className="px-4 py-1.5 bg-emerald-500/10 border border-emerald-500/20 text-emerald-400 rounded-full text-[10px] font-black uppercase tracking-widest flex items-center gap-2">
-          <div className="w-1.5 h-1.5 rounded-full bg-emerald-400"></div> All Systems Secure
+        <h3 className="text-2xl font-black text-foreground tracking-tighter">Login & Security</h3>
+        <span className="px-4 py-1.5 bg-green-500/10 border border-green-500/20 text-green-500 rounded-full text-[10px] font-black uppercase tracking-widest flex items-center gap-2">
+          <div className="w-1.5 h-1.5 rounded-full bg-grow-500"></div> All Systems Secure
         </span>
       </div>
 
       <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
         {/* Authentication Info */}
-        <section className="p-6 rounded-[40px] bg-white/[0.02] border border-white/5 shadow-xl">
+        <section className="p-6 rounded-[40px] bg-secondary/30 border border-border shadow-theme-md">
           <div className="flex items-center gap-4 mb-8">
-            <div className={`w-12 h-12 rounded-2xl flex items-center justify-center p-2.5 ${provider === 'google' ? 'bg-white' :
-              provider === 'nfks' ? 'bg-black border border-white/10' :
-                'bg-indigo-500/10 text-indigo-400'
+            <div className={`w-12 h-12 rounded-2xl flex items-center justify-center p-2.5 ${provider === 'google' ? 'bg-foreground' :
+              provider === 'nfks' ? 'bg-sidebar border border-border' :
+                'bg-primary/10 text-primary'
               }`}>
               {provider === 'google' ? (
-                <img src="/google_logo.svg" alt="Google" className="w-full h-full object-contain" />
+                <img src="/google_logo.svg" alt="Google" className="w-full h-full object-contain filter invert dark:invert-0" />
               ) : provider === 'nfks' ? (
                 <img src="/nfks-identity-logo.png" alt="nFKs" className="w-full h-full object-contain" />
               ) : (
@@ -56,8 +56,8 @@ const SecuritySection: React.FC = () => {
               )}
             </div>
             <div>
-              <h4 className="text-lg font-bold text-white leading-tight">Authentication</h4>
-              <p className="text-[10px] text-white/20 uppercase tracking-widest font-black">
+              <h4 className="text-lg font-bold text-foreground leading-tight">Authentication</h4>
+              <p className="text-[10px] text-muted-foreground uppercase tracking-widest font-black">
                 {provider === 'google' ? 'Google Account' :
                   provider === 'nfks' ? 'nFKs ID' :
                     'Email & Password'}
@@ -67,35 +67,35 @@ const SecuritySection: React.FC = () => {
 
           <div className="space-y-6">
             <div className="flex flex-col gap-1 px-2">
-              <span className="text-[10px] font-black text-white/20 uppercase tracking-widest">Email Address</span>
+              <span className="text-[10px] font-black text-muted-foreground uppercase tracking-widest">Email Address</span>
               <div className="flex items-center justify-between">
-                <span className="text-sm font-medium text-white/70">{maskedEmail}</span>
+                <span className="text-sm font-medium text-foreground/80">{maskedEmail}</span>
                 {provider === 'email' && (
-                  <button className="text-[10px] font-black text-pink-500 uppercase tracking-widest hover:text-pink-400 transition-colors">Change</button>
+                  <button className="text-[10px] font-black text-primary uppercase tracking-widest hover:opacity-80 transition-colors">Change</button>
                 )}
               </div>
             </div>
 
-            <div className="h-px bg-white/5"></div>
+            <div className="h-px bg-border"></div>
 
             {provider === 'email' ? (
               <div className="flex flex-col gap-1 px-2">
-                <span className="text-[10px] font-black text-white/20 uppercase tracking-widest">Password</span>
+                <span className="text-[10px] font-black text-muted-foreground uppercase tracking-widest">Password</span>
                 <div className="flex items-center justify-between">
-                  <span className="text-sm font-medium text-white/70">••••••••••••••</span>
-                  <button className="text-[10px] font-black text-pink-500 uppercase tracking-widest hover:text-pink-400 transition-colors">Update</button>
+                  <span className="text-sm font-medium text-foreground/70">••••••••••••••</span>
+                  <button className="text-[10px] font-black text-primary uppercase tracking-widest hover:opacity-80 transition-colors">Update</button>
                 </div>
               </div>
             ) : (
               <div className="flex flex-col gap-1 px-2">
-                <span className="text-[10px] font-black text-white/20 uppercase tracking-widest">Password Manager</span>
+                <span className="text-[10px] font-black text-muted-foreground uppercase tracking-widest">Password Manager</span>
                 <div className="flex items-center justify-between">
-                  <span className="text-sm font-medium text-white/50">Managed by {provider === 'google' ? 'Google' : 'nFKs'}</span>
+                  <span className="text-sm font-medium text-muted-foreground">Managed by {provider === 'google' ? 'Google' : 'nFKs'}</span>
                   <a
                     href={provider === 'google' ? 'https://myaccount.google.com/' : '#'}
                     target="_blank"
                     rel="noopener noreferrer"
-                    className="flex items-center gap-1.5 text-[10px] font-black text-white/40 uppercase tracking-widest hover:text-white transition-colors"
+                    className="flex items-center gap-1.5 text-[10px] font-black text-muted-foreground uppercase tracking-widest hover:text-foreground transition-colors"
                   >
                     <span>Manage</span>
                     <ExternalLink className="w-3 h-3" />
@@ -107,33 +107,33 @@ const SecuritySection: React.FC = () => {
         </section>
 
         {/* 2FA Section */}
-        <section className="p-6 rounded-[40px] bg-white/[0.02] border border-white/5 shadow-xl flex flex-col justify-between">
+        <section className="p-6 rounded-[40px] bg-secondary/30 border border-border shadow-theme-md flex flex-col justify-between">
           <div className="flex items-center gap-4 mb-6">
-            <div className="w-12 h-12 rounded-2xl bg-pink-500/10 flex items-center justify-center text-pink-400">
+            <div className="w-12 h-12 rounded-2xl bg-primary/10 flex items-center justify-center text-primary">
               <ShieldCheck className="w-6 h-6" />
             </div>
             <div>
-              <h4 className="text-lg font-bold text-white leading-tight">Two-Factor Auth</h4>
-              <p className="text-[10px] text-white/20 uppercase tracking-widest font-black">Enhanced Security</p>
+              <h4 className="text-lg font-bold text-foreground leading-tight">Two-Factor Auth</h4>
+              <p className="text-[10px] text-muted-foreground uppercase tracking-widest font-black">Enhanced Security</p>
             </div>
           </div>
 
-          <p className="text-[12px] text-white/30 font-medium leading-relaxed mb-6 px-2">
+          <p className="text-[12px] text-muted-foreground font-medium leading-relaxed mb-6 px-2">
             Add an extra layer of security to your account by requiring more than just a password to log in.
           </p>
 
-          <div className="flex items-center justify-between bg-white/[0.03] p-6 rounded-[28px] border border-white/5">
-            <span className="text-sm font-bold text-white/80">Protection Active</span>
+          <div className="flex items-center justify-between bg-secondary/50 p-6 rounded-[28px] border border-border">
+            <span className="text-sm font-bold text-foreground/80">Protection Active</span>
             <Toggle enabled={tfaEnabled} onChange={() => setTfaEnabled(!tfaEnabled)} />
           </div>
         </section>
       </div>
 
       {/* Login History / Devices */}
-      <section className="p-6 rounded-[40px] bg-white/[0.02] border border-white/5 shadow-xl">
+      <section className="p-6 rounded-[40px] bg-secondary/30 border border-border shadow-theme-md">
         <div className="flex items-center justify-between mb-8">
-          <h3 className="text-lg font-bold text-white tracking-tight">Active Devices</h3>
-          {/* <button className="text-[10px] font-black uppercase tracking-widest text-white/30 hover:text-pink-500 transition-colors">Revoke All Other Sessions</button> */}
+          <h3 className="text-lg font-bold text-foreground tracking-tight">Active Devices</h3>
+          {/* <button className="text-[10px] font-black uppercase tracking-widest text-muted-foreground hover:text-primary transition-colors">Revoke All Other Sessions</button> */}
         </div>
 
         <div className="space-y-6">
@@ -190,7 +190,7 @@ const ActiveSessions: React.FC = () => {
   }, [user]);
 
   if (sessions.length === 0) {
-    return <div className="text-white/40 text-sm">Loading sessions...</div>;
+    return <div className="text-muted-foreground text-sm">Loading sessions...</div>;
   }
 
   return (
@@ -202,17 +202,17 @@ const ActiveSessions: React.FC = () => {
         return (
           <div key={session.id} className="flex items-center justify-between group">
             <div className="flex items-center gap-6">
-              <div className={`w-14 h-14 rounded-2xl bg-white/[0.03] flex items-center justify-center ${isCurrent ? 'text-pink-500' : 'text-white/20'}`}>
+              <div className={`w-14 h-14 rounded-2xl bg-secondary/50 flex items-center justify-center ${isCurrent ? 'text-primary' : 'text-muted-foreground/20'}`}>
                 {isMobile ? <Smartphone className="w-6 h-6" /> : <Cpu className="w-6 h-6" />}
               </div>
               <div>
-                <h5 className="text-[15px] font-bold text-white/90">{session.browser} on {session.os}</h5>
-                <div className="flex items-center gap-2 text-[11px] text-white/20 font-medium">
+                <h5 className="text-[15px] font-bold text-foreground/90">{session.browser} on {session.os}</h5>
+                <div className="flex items-center gap-2 text-[11px] text-muted-foreground/50 font-medium">
                   <Globe className="w-3.5 h-3.5" />
                   <span>{session.location}</span>
                   <span>•</span>
                   {isCurrent ? (
-                    <span className="text-emerald-400 font-black">Active Now</span>
+                    <span className="text-green-500 font-black">Active Now</span>
                   ) : (
                     <span>Last active: {new Date(session.last_active).toLocaleDateString()}</span>
                   )}
@@ -225,7 +225,7 @@ const ActiveSessions: React.FC = () => {
                   await supabase.from('user_sessions').delete().eq('id', session.id);
                   setSessions(sessions.filter(s => s.id !== session.id));
                 }}
-                className="px-5 py-2 rounded-xl bg-white/5 text-[10px] font-black text-white/20 uppercase tracking-widest hover:bg-red-500/20 hover:text-red-400 transition-all opacity-0 group-hover:opacity-100"
+                className="px-5 py-2 rounded-xl bg-secondary text-[10px] font-black text-muted-foreground uppercase tracking-widest hover:bg-destructive/20 hover:text-destructive transition-all opacity-0 group-hover:opacity-100"
               >
                 Revoke
               </button>

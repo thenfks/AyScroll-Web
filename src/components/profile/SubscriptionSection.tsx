@@ -412,9 +412,9 @@ const SubscriptionSection: React.FC<SubscriptionSectionProps> = ({ initialView }
       {view === 'plans' ? (
         <>
           <div className="flex flex-col items-center text-center space-y-4">
-            <h3 className="text-2xl md:text-3xl font-black text-white tracking-tighter">Choose Your Subscription</h3>
+            <h3 className="text-2xl md:text-3xl font-black text-foreground tracking-tighter">Choose Your Subscription</h3>
 
-            <div className="flex bg-[#101010] p-1.5 rounded-xl border border-white/5 shadow-inner">
+            <div className="flex bg-secondary p-1.5 rounded-xl border border-border shadow-inner">
               {(['Annual', 'Monthly'] as const).map((cycle) => (
                 <GradientButton
                   key={cycle}
@@ -423,7 +423,7 @@ const SubscriptionSection: React.FC<SubscriptionSectionProps> = ({ initialView }
                   glow={billingCycle === cycle}
                   className={cn(
                     "px-6 md:px-8 py-2.5 text-[10px] uppercase tracking-widest",
-                    billingCycle !== cycle && "border-transparent bg-transparent hover:bg-white/5"
+                    billingCycle !== cycle && "border-transparent bg-transparent hover:bg-secondary-foreground/5"
                   )}
                 >
                   {cycle}
@@ -437,13 +437,13 @@ const SubscriptionSection: React.FC<SubscriptionSectionProps> = ({ initialView }
               <div
                 key={plan.name}
                 className={`relative p-6 md:p-8 rounded-[32px] flex flex-col transition-all duration-300 border hover:scale-[1.03] ${plan.highlight
-                  ? 'bg-[#151515] border-white/10 shadow-2xl shadow-orange-500/5'
-                  : 'bg-[#101010] border-white/5 hover:border-white/10'
+                  ? 'bg-card border-primary/20 shadow-theme-lg shadow-primary/5'
+                  : 'bg-secondary/30 border-border hover:border-primary/20'
                   }`}
               >
                 {plan.popular && (
                   <div className="absolute -top-4 left-1/2 -translate-x-1/2">
-                    <span className="px-4 py-1.5 rounded-full bg-gradient-to-r from-pink-500 to-orange-500 text-white text-[10px] font-black uppercase tracking-widest shadow-lg shadow-orange-500/20 border border-white/10">
+                    <span className="px-4 py-1.5 rounded-full bg-brand-gradient text-white text-[10px] font-black uppercase tracking-widest shadow-lg shadow-primary/20 border border-primary/20">
                       Most Popular
                     </span>
                   </div>
@@ -451,22 +451,22 @@ const SubscriptionSection: React.FC<SubscriptionSectionProps> = ({ initialView }
 
                 {plan.badge && plan.badge !== 'Most Popular' && plan.name !== 'Go' && (
                   <div className="absolute top-6 right-6">
-                    <span className={`px-3 py-1 rounded-full text-[9px] font-black uppercase tracking-widest flex items-center gap-1.5 ${plan.active ? 'bg-emerald-500/10 text-emerald-400 border border-emerald-500/20' : 'bg-orange-500/10 text-orange-400 border border-orange-500/20'}`}>
-                      <div className={`w-1.5 h-1.5 rounded-full ${plan.active ? 'bg-emerald-400' : 'bg-orange-400'}`}></div> {plan.badge}
+                    <span className={`px-3 py-1 rounded-full text-[9px] font-black uppercase tracking-widest flex items-center gap-1.5 ${plan.active ? 'bg-green-500/10 text-green-500 border border-green-500/20' : 'bg-orange-500/10 text-orange-500 border border-orange-500/20'}`}>
+                      <div className={`w-1.5 h-1.5 rounded-full ${plan.active ? 'bg-green-500' : 'bg-orange-500'}`}></div> {plan.badge}
                     </span>
                   </div>
                 )}
 
                 <div className={`text-center mb-8 pt-4 ${plan.popular ? 'mt-2' : ''}`}>
-                  <h4 className={`text-2xl font-black mb-2 text-white`}>{plan.name}</h4>
-                  <p className="text-white/40 text-[11px] font-bold uppercase tracking-widest mb-6 min-h-[16px]">{plan.description}</p>
+                  <h4 className={`text-2xl font-black mb-2 text-foreground`}>{plan.name}</h4>
+                  <p className="text-muted-foreground text-[11px] font-bold uppercase tracking-widest mb-6 min-h-[16px]">{plan.description}</p>
 
                   <div className="flex items-center justify-center gap-1">
-                    <span className="text-2xl font-black text-white self-start mt-2">₹</span>
-                    <span className="text-6xl font-black text-white tracking-tighter">{plan.price}</span>
+                    <span className="text-2xl font-black text-foreground self-start mt-2">₹</span>
+                    <span className="text-6xl font-black text-foreground tracking-tighter">{plan.price}</span>
                     <div className="flex flex-col items-start ml-2 text-left">
-                      {plan.originalPrice && <span className="text-sm text-white/30 line-through font-bold">₹{plan.originalPrice}</span>}
-                      <span className="text-[10px] text-white/40 font-bold uppercase tracking-widest">{plan.period}</span>
+                      {plan.originalPrice && <span className="text-sm text-muted-foreground/50 line-through font-bold">₹{plan.originalPrice}</span>}
+                      <span className="text-[10px] text-muted-foreground font-bold uppercase tracking-widest">{plan.period}</span>
                     </div>
                   </div>
                 </div>
@@ -474,10 +474,10 @@ const SubscriptionSection: React.FC<SubscriptionSectionProps> = ({ initialView }
                 <div className="space-y-4 flex-1 mb-8 px-2">
                   {plan.features.map((feature, i) => (
                     <div key={i} className="flex items-start gap-4 group">
-                      <div className={`w-5 h-5 rounded-full flex items-center justify-center shrink-0 mt-0.5 ${plan.highlight ? 'bg-gradient-to-br from-pink-500/20 to-orange-500/20 text-orange-400' : 'bg-white/5 text-white/40'}`}>
+                      <div className={`w-5 h-5 rounded-full flex items-center justify-center shrink-0 mt-0.5 ${plan.highlight ? 'bg-primary/10 text-primary' : 'bg-secondary text-muted-foreground'}`}>
                         <Check className="w-3 h-3 stroke-[3]" />
                       </div>
-                      <span className={`text-[13px] font-medium leading-tight ${plan.highlight ? 'text-white/80' : 'text-white/60'}`}>{feature}</span>
+                      <span className={`text-[13px] font-medium leading-tight ${plan.highlight ? 'text-foreground/80' : 'text-muted-foreground/80'}`}>{feature}</span>
                     </div>
                   ))}
                 </div>
@@ -555,56 +555,56 @@ const SubscriptionSection: React.FC<SubscriptionSectionProps> = ({ initialView }
       {/* Billing History Section */}
       <div className="max-w-7xl mx-auto mt-20">
         <div className="flex items-center justify-between mb-6">
-          <h3 className="text-xl font-black text-white flex items-center gap-2">
-            <FileText className="w-5 h-5 text-orange-500" />
+          <h3 className="text-xl font-black text-foreground flex items-center gap-2">
+            <FileText className="w-5 h-5 text-primary" />
             Billing History
           </h3>
 
           {billingHistory.length > 0 && (
             <button
               onClick={handleClearAllHistory}
-              className="text-xs font-bold text-red-400 hover:text-red-300 hover:bg-red-500/10 px-4 py-2 rounded-lg transition-colors border border-transparent hover:border-red-500/20"
+              className="text-xs font-bold text-destructive hover:opacity-80 transition-colors"
             >
               Clear All History
             </button>
           )}
         </div>
 
-        <div className="bg-[#101010] border border-white/5 rounded-[24px] overflow-hidden">
+        <div className="bg-secondary/30 border border-border rounded-[24px] overflow-hidden">
           <div className="overflow-x-auto">
             <table className="w-full text-left text-sm whitespace-nowrap">
               <thead>
-                <tr className="border-b border-white/5 bg-white/[0.02]">
-                  <th className="px-6 py-4 font-bold text-white/40 uppercase tracking-widest text-[10px]">Date</th>
-                  <th className="px-6 py-4 font-bold text-white/40 uppercase tracking-widest text-[10px]">Plan</th>
-                  <th className="px-6 py-4 font-bold text-white/40 uppercase tracking-widest text-[10px]">Amount</th>
-                  <th className="px-6 py-4 font-bold text-white/40 uppercase tracking-widest text-[10px]">Status</th>
-                  <th className="px-6 py-4 font-bold text-white/40 uppercase tracking-widest text-[10px] text-right">Invoice</th>
+                <tr className="border-b border-border bg-secondary/50">
+                  <th className="px-6 py-4 font-bold text-muted-foreground uppercase tracking-widest text-[10px]">Date</th>
+                  <th className="px-6 py-4 font-bold text-muted-foreground uppercase tracking-widest text-[10px]">Plan</th>
+                  <th className="px-6 py-4 font-bold text-muted-foreground uppercase tracking-widest text-[10px]">Amount</th>
+                  <th className="px-6 py-4 font-bold text-muted-foreground uppercase tracking-widest text-[10px]">Status</th>
+                  <th className="px-6 py-4 font-bold text-muted-foreground uppercase tracking-widest text-[10px] text-right">Invoice</th>
                 </tr>
               </thead>
-              <tbody className="divide-y divide-white/5">
+              <tbody className="divide-y divide-border">
                 {loadingHistory ? (
                   <tr>
-                    <td colSpan={5} className="px-6 py-12 text-center text-white/20 font-medium font-bold uppercase tracking-widest text-[10px]">Loading history...</td>
+                    <td colSpan={5} className="px-6 py-12 text-center text-muted-foreground/50 font-medium font-bold uppercase tracking-widest text-[10px]">Loading history...</td>
                   </tr>
                 ) : billingHistory.length === 0 ? (
                   <tr>
-                    <td colSpan={5} className="px-6 py-12 text-center text-white/20 font-medium font-bold uppercase tracking-widest text-[10px]">No transaction records found.</td>
+                    <td colSpan={5} className="px-6 py-12 text-center text-muted-foreground/50 font-medium font-bold uppercase tracking-widest text-[10px]">No transaction records found.</td>
                   </tr>
                 ) : (
                   billingHistory.map((invoice) => (
-                    <tr key={invoice.id} className="hover:bg-white/[0.02] transition-colors">
-                      <td className="px-6 py-4 text-white/80 font-medium">{new Date(invoice.created_at).toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' })}</td>
-                      <td className="px-6 py-4 text-white/80">{invoice.plan_name}</td>
-                      <td className="px-6 py-4 text-white/80">{invoice.amount}</td>
+                    <tr key={invoice.id} className="hover:bg-secondary/50 transition-colors">
+                      <td className="px-6 py-4 text-foreground/80 font-medium">{new Date(invoice.created_at).toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' })}</td>
+                      <td className="px-6 py-4 text-foreground/80">{invoice.plan_name}</td>
+                      <td className="px-6 py-4 text-foreground/80">{invoice.amount}</td>
                       <td className="px-6 py-4">
                         {(() => {
                           const status = (invoice.status || '').toLowerCase();
-                          let colors = "bg-slate-500/10 text-slate-400 border-slate-500/20";
+                          let colors = "bg-muted text-muted-foreground border-border";
 
-                          if (status === 'paid' || status === 'active') colors = "bg-emerald-500/10 text-emerald-400 border-emerald-500/20";
-                          if (status === 'cancelled' || status === 'canceled' || status === 'failed') colors = "bg-red-500/10 text-red-400 border-red-500/20";
-                          if (status === 'interrupted' || status === 'pending') colors = "bg-orange-500/10 text-orange-400 border-orange-500/20";
+                          if (status === 'paid' || status === 'active') colors = "bg-green-500/10 text-green-500 border-green-500/20";
+                          if (status === 'cancelled' || status === 'canceled' || status === 'failed') colors = "bg-red-500/10 text-red-500 border-red-500/20";
+                          if (status === 'interrupted' || status === 'pending') colors = "bg-orange-500/10 text-orange-500 border-orange-500/20";
 
                           return (
                             <span className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-[10px] font-bold uppercase tracking-widest border ${colors}`}>
@@ -617,14 +617,14 @@ const SubscriptionSection: React.FC<SubscriptionSectionProps> = ({ initialView }
                         <div className="flex items-center justify-end gap-4">
                           <button
                             onClick={() => handleDownloadInvoice(invoice)}
-                            className="text-white/40 hover:text-orange-500 transition-colors inline-flex items-center gap-1.5 text-xs font-medium group"
+                            className="text-muted-foreground hover:text-primary transition-colors inline-flex items-center gap-1.5 text-xs font-medium group"
                           >
                             <span>Download</span>
                             <Download className="w-3.5 h-3.5 group-hover:-translate-y-0.5 transition-transform" />
                           </button>
                           <button
                             onClick={() => handleDeleteInvoice(invoice.id)}
-                            className="text-white/20 hover:text-red-500 transition-colors p-1 group"
+                            className="text-muted-foreground/30 hover:text-destructive transition-colors p-1 group"
                             title="Delete Record"
                           >
                             <Trash2 className="w-3.5 h-3.5" />
@@ -647,23 +647,23 @@ const SubscriptionSection: React.FC<SubscriptionSectionProps> = ({ initialView }
             className="absolute inset-0 bg-black/60 backdrop-blur-sm animate-in fade-in duration-300"
             onClick={() => setSelectedInvoice(null)}
           />
-          <div className="relative w-full max-w-2xl bg-[#0A0A0B] border border-white/10 rounded-[40px] shadow-2xl overflow-hidden animate-in zoom-in-95 duration-300">
+          <div className="relative w-full max-w-2xl bg-card border border-border rounded-[40px] shadow-theme-lg overflow-hidden animate-in zoom-in-95 duration-300">
             {/* Modal Header */}
-            <div className="px-8 py-6 border-b border-white/5 flex items-center justify-between bg-white/[0.02]">
+            <div className="px-8 py-6 border-b border-border flex items-center justify-between bg-secondary/30">
               <div className="flex items-center gap-3">
-                <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-pink-500 to-orange-500 p-[1px]">
-                  <div className="w-full h-full rounded-xl bg-black/40 flex items-center justify-center">
-                    <FileText className="w-5 h-5 text-white" />
+                <div className="w-10 h-10 rounded-xl bg-brand-gradient p-[1px]">
+                  <div className="w-full h-full rounded-xl bg-card flex items-center justify-center">
+                    <FileText className="w-5 h-5 text-primary" />
                   </div>
                 </div>
                 <div>
-                  <h3 className="text-xl font-black text-white tracking-tight">Invoice Receipt</h3>
-                  <p className="text-[10px] font-bold text-white/30 uppercase tracking-widest">Transaction Statement</p>
+                  <h3 className="text-xl font-black text-foreground tracking-tight">Invoice Receipt</h3>
+                  <p className="text-[10px] font-bold text-muted-foreground uppercase tracking-widest">Transaction Statement</p>
                 </div>
               </div>
               <button
                 onClick={() => setSelectedInvoice(null)}
-                className="w-10 h-10 rounded-full bg-white/5 border border-white/10 flex items-center justify-center text-white/40 hover:text-white transition-colors"
+                className="w-10 h-10 rounded-full bg-secondary border border-border flex items-center justify-center text-muted-foreground hover:text-foreground transition-colors"
               >
                 <X className="w-5 h-5" />
               </button>
@@ -674,12 +674,12 @@ const SubscriptionSection: React.FC<SubscriptionSectionProps> = ({ initialView }
               <div className="flex flex-col md:flex-row justify-between gap-8">
                 <div className="space-y-4">
                   <div>
-                    <p className="text-[10px] font-black text-white/20 uppercase tracking-[0.2em] mb-1">Invoice ID</p>
-                    <p className="text-sm font-bold text-white font-mono uppercase">{selectedInvoice.invoice_id}</p>
+                    <p className="text-[10px] font-black text-muted-foreground uppercase tracking-[0.2em] mb-1">Invoice ID</p>
+                    <p className="text-sm font-bold text-foreground font-mono uppercase">{selectedInvoice.invoice_id}</p>
                   </div>
                   <div>
-                    <p className="text-[10px] font-black text-white/20 uppercase tracking-[0.2em] mb-1">Date Processed</p>
-                    <p className="text-sm font-bold text-white">
+                    <p className="text-[10px] font-black text-muted-foreground uppercase tracking-[0.2em] mb-1">Date Processed</p>
+                    <p className="text-sm font-bold text-foreground">
                       {new Date(selectedInvoice.created_at || Date.now()).toLocaleDateString('en-US', {
                         month: 'long',
                         day: 'numeric',
@@ -692,10 +692,10 @@ const SubscriptionSection: React.FC<SubscriptionSectionProps> = ({ initialView }
                 </div>
                 <div className="text-left md:text-right">
                   <div className="mb-4">
-                    <p className="text-[10px] font-black text-white/20 uppercase tracking-[0.2em] mb-1">Status</p>
+                    <p className="text-[10px] font-black text-muted-foreground uppercase tracking-[0.2em] mb-1">Status</p>
                     <span className={`inline-flex items-center px-4 py-1 rounded-full text-[11px] font-black uppercase tracking-widest border ${selectedInvoice.status?.toLowerCase() === 'paid'
-                      ? 'bg-emerald-500/10 text-emerald-400 border-emerald-500/20'
-                      : 'bg-orange-500/10 text-orange-400 border-orange-500/20'
+                      ? 'bg-green-500/10 text-green-500 border-green-500/20'
+                      : 'bg-orange-500/10 text-orange-500 border-orange-500/20'
                       }`}>
                       {selectedInvoice.status}
                     </span>
@@ -703,25 +703,25 @@ const SubscriptionSection: React.FC<SubscriptionSectionProps> = ({ initialView }
                 </div>
               </div>
 
-              <div className="rounded-[24px] bg-white/[0.02] border border-white/5 p-6 space-y-4">
-                <div className="flex justify-between items-center pb-4 border-b border-white/5">
-                  <p className="text-sm font-bold text-white/60">Subscription Plan</p>
-                  <p className="text-sm font-bold text-white">{selectedInvoice.plan_name}</p>
+              <div className="rounded-[24px] bg-secondary/50 border border-border p-6 space-y-4">
+                <div className="flex justify-between items-center pb-4 border-b border-border">
+                  <p className="text-sm font-bold text-muted-foreground">Subscription Plan</p>
+                  <p className="text-sm font-bold text-foreground">{selectedInvoice.plan_name}</p>
                 </div>
                 <div className="flex justify-between items-center text-2xl">
-                  <p className="font-black text-white/20 uppercase tracking-tighter">Total Amount</p>
-                  <p className="font-black text-white">{selectedInvoice.amount}</p>
+                  <p className="font-black text-muted-foreground uppercase tracking-tighter">Total Amount</p>
+                  <p className="font-black text-foreground">{selectedInvoice.amount}</p>
                 </div>
               </div>
 
               <div className="flex flex-col gap-4 pt-4">
                 <button
                   onClick={() => window.print()}
-                  className="w-full py-4 bg-white/5 border border-white/10 rounded-2xl font-black text-white uppercase tracking-widest text-xs flex items-center justify-center gap-2 hover:bg-white/[0.08] transition-all"
+                  className="w-full py-4 bg-secondary border border-border rounded-2xl font-black text-foreground uppercase tracking-widest text-xs flex items-center justify-center gap-2 hover:bg-secondary/80 transition-all font-bold"
                 >
                   <Printer className="w-4 h-4" /> Print Document
                 </button>
-                <p className="text-center text-[10px] font-medium text-white/20">
+                <p className="text-center text-[10px] font-medium text-muted-foreground">
                   This is a digital receipt for your cosmic journey at AyScroll.
                 </p>
               </div>

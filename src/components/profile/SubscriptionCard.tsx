@@ -59,8 +59,8 @@ const SubscriptionCard: React.FC<SubscriptionCardProps> = ({ onManageClick, onBi
 
     if (loading) {
         return (
-            <section className="p-6 rounded-[40px] bg-[#1A1A1A] border border-white/5 shadow-xl min-h-[200px] flex items-center justify-center">
-                <Loader2 className="w-6 h-6 text-pink-500 animate-spin" />
+            <section className="p-6 rounded-[40px] bg-secondary/30 border border-border shadow-theme-lg min-h-[200px] flex items-center justify-center">
+                <Loader2 className="w-6 h-6 text-primary animate-spin" />
             </section>
         );
     }
@@ -89,44 +89,44 @@ const SubscriptionCard: React.FC<SubscriptionCardProps> = ({ onManageClick, onBi
     const progressWidth = isPro ? '70%' : '100%';
 
     return (
-        <section className="p-6 rounded-[40px] bg-[#1A1A1A] border border-white/5 shadow-xl relative overflow-hidden group">
+        <section className="p-6 rounded-[40px] bg-secondary/30 border border-border shadow-theme-lg relative overflow-hidden group">
             {/* Background Gradient Effect */}
-            <div className={`absolute top-0 right-0 w-64 h-64 rounded-full blur-3xl -translate-y-1/2 translate-x-1/2 transition-all duration-500 ${isPro ? 'bg-pink-500/10 group-hover:bg-pink-500/15' : 'bg-gray-500/5 group-hover:bg-gray-500/10'}`}></div>
+            <div className={`absolute top-0 right-0 w-64 h-64 rounded-full blur-3xl -translate-y-1/2 translate-x-1/2 transition-all duration-500 ${isPro ? 'bg-primary/10 group-hover:bg-primary/15' : 'bg-muted/5 group-hover:bg-muted/10'}`}></div>
 
             <div className="flex items-center justify-between mb-6 relative z-10">
-                <h3 className="text-lg font-bold text-white">Subscription</h3>
-                <span className={`px-3 py-1 rounded-full text-[10px] font-black tracking-widest uppercase flex items-center gap-1.5 border ${subscription?.status === 'active' ? 'bg-green-500/10 text-green-500 border-green-500/20' : 'bg-gray-500/10 text-gray-500 border-gray-500/20'}`}>
-                    <span className={`w-1.5 h-1.5 rounded-full animate-pulse ${subscription?.status === 'active' ? 'bg-green-500' : 'bg-gray-500'}`}></span>
+                <h3 className="text-lg font-bold text-foreground">Subscription</h3>
+                <span className={`px-3 py-1 rounded-full text-[10px] font-black tracking-widest uppercase flex items-center gap-1.5 border ${subscription?.status === 'active' ? 'bg-green-500/10 text-green-500 border-green-500/20' : 'bg-muted text-muted-foreground border-border'}`}>
+                    <span className={`w-1.5 h-1.5 rounded-full animate-pulse ${subscription?.status === 'active' ? 'bg-green-500' : 'bg-muted-foreground'}`}></span>
                     {subscription?.status || 'Unknown'}
                 </span>
             </div>
 
-            <div className="relative z-10 p-5 rounded-3xl bg-white/[0.03] border border-white/5 mb-6">
+            <div className="relative z-10 p-5 rounded-3xl bg-secondary/50 border border-border mb-6">
                 <div className="flex items-center gap-4 mb-6">
-                    <div className={`w-12 h-12 rounded-2xl p-[1px] ${isPro ? 'bg-brand-gradient' : 'bg-white/10'}`}>
-                        <div className="w-full h-full rounded-2xl bg-black/40 backdrop-blur-sm flex items-center justify-center">
-                            <Diamond className={`w-5 h-5 ${isPro ? 'text-white fill-white/20' : 'text-white/40'}`} />
+                    <div className={`w-12 h-12 rounded-2xl p-[1px] ${isPro ? 'bg-brand-gradient' : 'bg-secondary'}`}>
+                        <div className="w-full h-full rounded-2xl bg-card/40 backdrop-blur-sm flex items-center justify-center">
+                            <Diamond className={`w-5 h-5 ${isPro ? 'text-primary fill-primary/20' : 'text-muted-foreground/40'}`} />
                         </div>
                     </div>
                     <div>
-                        <h4 className="text-base font-bold text-white">{displayTier}</h4>
-                        <p className="text-white/40 text-xs font-medium">{displayPrice}</p>
+                        <h4 className="text-base font-bold text-foreground">{displayTier}</h4>
+                        <p className="text-muted-foreground text-xs font-medium">{displayPrice}</p>
                     </div>
                 </div>
 
                 {isPro && subscription?.endDate ? (
                     <div className="space-y-2">
-                        <div className="flex items-center justify-between text-[11px] font-medium text-white/40">
+                        <div className="flex items-center justify-between text-[11px] font-medium text-muted-foreground">
                             <span>Renews in {daysRemaining} days</span>
-                            <span className="text-white/60">{formattedEndDate}</span>
+                            <span className="text-foreground/60">{formattedEndDate}</span>
                         </div>
-                        <div className="h-1.5 w-full bg-white/5 rounded-full overflow-hidden">
+                        <div className="h-1.5 w-full bg-muted rounded-full overflow-hidden">
                             <div className="h-full bg-brand-gradient rounded-full" style={{ width: progressWidth }}></div>
                         </div>
                     </div>
                 ) : !isPro ? (
                     <div className="space-y-2">
-                        <p className="text-[11px] font-medium text-white/40">Upgrade to Pro to unlock all features.</p>
+                        <p className="text-[11px] font-medium text-muted-foreground">Upgrade to Pro to unlock all features.</p>
                     </div>
                 ) : null}
             </div>
@@ -135,7 +135,7 @@ const SubscriptionCard: React.FC<SubscriptionCardProps> = ({ onManageClick, onBi
                 {isPro ? (
                     <button
                         onClick={onManageClick}
-                        className="w-full py-3.5 bg-white text-black rounded-2xl font-bold text-sm tracking-wide hover:scale-[1.02] active:scale-[0.98] transition-all flex items-center justify-center gap-2 shadow-lg shadow-white/5"
+                        className="w-full py-3.5 bg-foreground text-background rounded-2xl font-bold text-sm tracking-wide hover:scale-[1.02] active:scale-[0.98] transition-all flex items-center justify-center gap-2 shadow-theme-md"
                     >
                         Manage Subscription
                         <ArrowRight className="w-4 h-4" />
@@ -143,7 +143,7 @@ const SubscriptionCard: React.FC<SubscriptionCardProps> = ({ onManageClick, onBi
                 ) : (
                     <button
                         onClick={onUpgradeClick}
-                        className="w-full py-3.5 bg-brand-gradient text-white rounded-2xl font-bold text-sm tracking-wide hover:scale-[1.02] active:scale-[0.98] transition-all flex items-center justify-center gap-2 shadow-lg shadow-pink-500/20"
+                        className="w-full py-3.5 bg-brand-gradient text-white rounded-2xl font-bold text-sm tracking-wide hover:scale-[1.02] active:scale-[0.98] transition-all flex items-center justify-center gap-2 shadow-lg shadow-primary/20"
                     >
                         Upgrade to Pro
                         <Upload className="w-4 h-4" />
@@ -153,33 +153,33 @@ const SubscriptionCard: React.FC<SubscriptionCardProps> = ({ onManageClick, onBi
                 <div className="grid grid-cols-2 gap-3">
                     <button
                         onClick={onBillingClick}
-                        className="py-3 px-4 rounded-2xl bg-white/[0.03] border border-white/5 hover:bg-white/[0.05] transition-colors flex items-center justify-center gap-2 group/btn"
+                        className="py-3 px-4 rounded-2xl bg-secondary border border-border hover:bg-secondary/80 transition-colors flex items-center justify-center gap-2 group/btn"
                     >
-                        <Receipt className="w-4 h-4 text-white/40 group-hover/btn:text-white transition-colors" />
-                        <span className="text-xs font-bold text-white/60 group-hover/btn:text-white transition-colors">Billing Info</span>
+                        <Receipt className="w-4 h-4 text-muted-foreground group-hover/btn:text-foreground transition-colors" />
+                        <span className="text-xs font-bold text-muted-foreground group-hover/btn:text-foreground transition-colors">Billing Info</span>
                     </button>
                     <button
                         onClick={onUpgradeClick}
-                        className="py-3 px-4 rounded-2xl bg-white/[0.03] border border-white/5 hover:bg-white/[0.05] transition-colors flex items-center justify-center gap-2 group/btn"
+                        className="py-3 px-4 rounded-2xl bg-secondary border border-border hover:bg-secondary/80 transition-colors flex items-center justify-center gap-2 group/btn"
                     >
                         {isPro ? (
                             <>
-                                <Upload className="w-4 h-4 text-white/40 group-hover/btn:text-white transition-colors" />
-                                <span className="text-xs font-bold text-white/60 group-hover/btn:text-white transition-colors">Upgrade Plan</span>
+                                <Upload className="w-4 h-4 text-muted-foreground group-hover/btn:text-foreground transition-colors" />
+                                <span className="text-xs font-bold text-muted-foreground group-hover/btn:text-foreground transition-colors">Upgrade Plan</span>
                             </>
                         ) : (
                             <>
-                                <Diamond className="w-4 h-4 text-white/40 group-hover/btn:text-white transition-colors" />
-                                <span className="text-xs font-bold text-white/60 group-hover/btn:text-white transition-colors">Compare Plans</span>
+                                <Diamond className="w-4 h-4 text-muted-foreground group-hover/btn:text-foreground transition-colors" />
+                                <span className="text-xs font-bold text-muted-foreground group-hover/btn:text-foreground transition-colors">Compare Plans</span>
                             </>
                         )}
                     </button>
                 </div>
             </div>
 
-            <div className="mt-6 flex items-center justify-center gap-2 py-2 border-t border-white/[0.02]">
-                <ShieldCheck className="w-3.5 h-3.5 text-emerald-500/50" />
-                <span className="text-[10px] font-bold uppercase tracking-widest text-white/20">Secured by NFKS Pay</span>
+            <div className="mt-6 flex items-center justify-center gap-2 py-2 border-t border-border">
+                <ShieldCheck className="w-3.5 h-3.5 text-green-500/50" />
+                <span className="text-[10px] font-bold uppercase tracking-widest text-muted-foreground/30">Secured by NFKS Pay</span>
             </div>
         </section>
     );

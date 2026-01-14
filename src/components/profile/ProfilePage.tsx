@@ -245,15 +245,15 @@ const ProfilePage: React.FC = () => {
         {!isMobile && <Sidebar />}
         {isMobile && <MobileHeader onMenuClick={() => setMobileNavOpen(true)} />}
         <MobileNavDrawer open={mobileNavOpen} onOpenChange={setMobileNavOpen} />
-        <div className={`flex-1 flex flex-col items-center justify-center p-8 text-center bg-black/20 backdrop-blur-md ${isMobile ? 'pt-20' : ''}`}>
-          <div className="w-20 h-20 rounded-[32px] bg-white/[0.03] border border-white/10 flex items-center justify-center mb-8 shadow-2xl">
-            <User className="w-8 h-8 text-white/20" />
+        <div className={`flex-1 flex flex-col items-center justify-center p-8 text-center bg-background/20 backdrop-blur-md ${isMobile ? 'pt-20' : ''}`}>
+          <div className="w-20 h-20 rounded-[32px] bg-secondary/50 border border-border flex items-center justify-center mb-8 shadow-theme-lg">
+            <User className="w-8 h-8 text-muted-foreground" />
           </div>
-          <h1 className="text-2xl md:text-3xl font-black text-white mb-3 tracking-tight">Profile Locked</h1>
-          <p className="text-white/40 max-w-xs mb-10 text-sm font-medium leading-relaxed">Sign in to your AyScroll account to track your cosmic journey.</p>
+          <h1 className="text-2xl md:text-3xl font-black text-foreground mb-3 tracking-tight">Profile Locked</h1>
+          <p className="text-muted-foreground max-w-xs mb-10 text-sm font-medium leading-relaxed">Sign in to your AyScroll account to track your cosmic journey.</p>
           <button
             onClick={() => navigate('/login')}
-            className="px-8 md:px-12 py-4 md:py-5 bg-gradient-to-r from-pink-500 to-purple-600 rounded-2xl font-black text-white shadow-xl shadow-pink-500/20 hover:scale-[1.05] active:scale-[0.98] transition-all uppercase tracking-widest text-xs"
+            className="px-8 md:px-12 py-4 md:py-5 bg-brand-gradient rounded-2xl font-black text-white shadow-xl shadow-primary/20 hover:scale-[1.05] active:scale-[0.98] transition-all uppercase tracking-widest text-xs"
           >
             Sign In Now
           </button>
@@ -310,7 +310,7 @@ const ProfilePage: React.FC = () => {
               {activeTab === 'Personal Info' ? (
                 <PersonalInfoSection />
               ) : activeTab === 'Edit Profile' ? (
-                <div className="p-6 md:p-10 rounded-[32px] md:rounded-[48px] bg-white/[0.03] border border-white/10 shadow-2xl h-full animate-in fade-in slide-in-from-right-4 duration-300">
+                <div className="p-6 md:p-10 rounded-[32px] md:rounded-[48px] bg-secondary/30 border border-border shadow-theme-lg h-full animate-in fade-in slide-in-from-right-4 duration-300">
                   <ProfileEditForm
                     onSave={handleEditComplete}
                     onCancel={handleEditCancel}
@@ -323,12 +323,12 @@ const ProfilePage: React.FC = () => {
                 <SubscriptionSection initialView={subscriptionView} />
               ) : (
                 <div className="flex flex-col items-center justify-center h-[400px] md:h-[500px] text-center space-y-6 animate-in fade-in duration-500">
-                  <div className="w-16 h-16 md:w-20 md:h-20 rounded-2xl md:rounded-[32px] bg-white/[0.03] border border-white/10 flex items-center justify-center shadow-2xl">
-                    <Sparkles className="w-6 h-6 md:w-8 md:h-8 text-white/20" />
+                  <div className="w-16 h-16 md:w-20 md:h-20 rounded-2xl md:rounded-[32px] bg-secondary/50 border border-border flex items-center justify-center shadow-theme-lg">
+                    <Sparkles className="w-6 h-6 md:w-8 md:h-8 text-muted-foreground" />
                   </div>
-                  <h3 className="text-xl md:text-2xl font-black text-white tracking-tight">{activeTab} Coming Soon</h3>
-                  <p className="text-white/40 max-w-xs font-medium text-sm">We are currently building this section of the AyScroll experience.</p>
-                  <button onClick={() => setActiveTab('Personal Info')} className="px-8 md:px-12 py-3 md:py-3.5 bg-brand-gradient rounded-full text-[10px] md:text-[11px] font-black uppercase tracking-widest text-white shadow-xl shadow-pink-500/20 hover:scale-105 active:scale-95 transition-all">Return to Dashboard</button>
+                  <h3 className="text-xl md:text-2xl font-black text-foreground tracking-tight">{activeTab} Coming Soon</h3>
+                  <p className="text-muted-foreground max-w-xs font-medium text-sm">We are currently building this section of the AyScroll experience.</p>
+                  <button onClick={() => setActiveTab('Personal Info')} className="px-8 md:px-12 py-3 md:py-3.5 bg-brand-gradient rounded-full text-[10px] md:text-[11px] font-black uppercase tracking-widest text-white shadow-xl shadow-primary/20 hover:scale-105 active:scale-95 transition-all">Return to Dashboard</button>
                 </div>
               )}
 
@@ -350,8 +350,8 @@ const ProfilePage: React.FC = () => {
         </div>
 
         {/* Copyright Notice - Now at Absolute Bottom */}
-        <div className="mt-auto pb-10 pt-10 text-center border-t border-white/5 mx-8 shrink-0">
-          <p className="text-white/10 text-[11px] font-medium tracking-wide">
+        <div className="mt-auto pb-10 pt-10 text-center border-t border-border mx-8 shrink-0">
+          <p className="text-muted-foreground text-[11px] font-medium tracking-wide">
             &copy; Ayscroll 2025-2026. All rights reserved.
           </p>
         </div>
