@@ -60,6 +60,9 @@ const ProfilePage: React.FC = () => {
 
     if (!status || processedRef.current === paramsKey) return;
 
+    // WAIT for user to be loaded for success path
+    if (status === 'success' && !user) return;
+
     // Mark as processed immediately
     processedRef.current = paramsKey;
 
@@ -78,21 +81,45 @@ const ProfilePage: React.FC = () => {
           // Clear query params via React Router state
           setSearchParams({}, { replace: true });
 
-          console.log("🔄 Upgrading user profile...");
+          console.log(`[UPGRADE] Starting upgrade for ${planId}...`);
+          const normalizedPlanId = planId.toLowerCase() as any;
 
           // 1. Update User Metadata (Auth)
           const { error: authError } = await supabase.auth.updateUser({
-            data: { is_pro: true, tier: planId, last_payment_session: currentSessionId }
+            data: { is_pro: true, tier: normalizedPlanId, last_payment_session: currentSessionId }
           });
-          if (authError) console.error('Auth update error:', authError);
+          if (authError) console.error('[UPGRADE] Auth Meta Error:', authError);
 
           // 2. Update Profiles Table (DB)
           if (user?.id) {
+            const startDate = new Date();
+            const endDate = new Date();
+            if (cycle === 'Annual') {
+              endDate.setFullYear(startDate.getFullYear() + 1);
+            } else {
+              endDate.setMonth(startDate.getMonth() + 1);
+            }
+
+            console.log(`[UPGRADE] Writing to DB. Tier: ${normalizedPlanId}, Dates: ${startDate.toISOString()} -> ${endDate.toISOString()}`);
+
             const { error: dbError } = await supabase.from('user_profiles').update({
-              subscription_tier: planId,
-              subscription_status: 'active'
+              subscription_tier: normalizedPlanId,
+              subscription_status: 'active',
+              subscription_start_date: startDate.toISOString(),
+              subscription_end_date: endDate.toISOString()
             } as any).eq('id', user.id) as any;
-            if (dbError) console.error('DB update error:', dbError);
+
+            if (dbError) {
+              console.error('[UPGRADE] DB Update Error:', dbError);
+              toast({
+                title: "Database Update Failed",
+                description: `Supabase Error: ${dbError.message || 'Permission Denied'}. Please check RLS policies.`,
+                variant: "destructive"
+              });
+              return;
+            } else {
+              console.log('✅ [UPGRADE] User profile successfully updated in DB.');
+            }
 
             // 3. Log to Billing History (Frontend Fallback)
             try {
@@ -103,29 +130,39 @@ const ProfilePage: React.FC = () => {
                 status: 'Paid',
                 invoice_id: currentSessionId
               } as any);
-              if (billingError) console.error('Billing history insert error:', billingError);
-              else console.log('✅ Billing history record created');
+              if (billingError) console.error('[UPGRADE] Billing log error:', billingError);
+              else console.log('✅ [UPGRADE] Billing history record created.');
             } catch (err) {
-              console.error('Catch billing history error:', err);
+              console.error('[UPGRADE] Catch billing log error:', err);
             }
           }
 
           // 4. Refresh session to update UI
           await supabase.auth.refreshSession();
 
+          // Re-fetch profile data to be absolutely sure
+          const { data: updatedProfile } = await supabase
+            .from('user_profiles')
+            .select('subscription_tier, subscription_status')
+            .eq('id', user?.id)
+            .single();
+
+          console.log('[UPGRADE] Verification Check:', updatedProfile);
+
           toast({
-            title: 'Payment Successful!',
-            description: `Order ${currentSessionId.slice(-8)} processed successfully.`,
+            title: 'Welcome to ' + (normalizedPlanId === 'go' ? 'Go!' : 'Pro!'),
+            description: `Your subscription is now active. Order ID: ${currentSessionId.slice(-8)}`,
             variant: 'success',
           });
 
         } catch (e) {
-          console.error('Manual upgrade failed', e);
+          console.error('[UPGRADE] Manual process failed', e);
           toast({
-            title: 'Upgrade Failed',
-            description: 'Please contact support.',
+            title: 'Critical Error',
+            description: 'The upgrade process crashed. Refreshing page...',
             variant: 'destructive',
           });
+          setTimeout(() => window.location.reload(), 2000);
         }
       };
 

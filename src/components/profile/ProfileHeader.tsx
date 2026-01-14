@@ -62,7 +62,7 @@ const ProfileHeader: React.FC<ProfileHeaderProps> = ({ user, onEditClick }) => {
             </span>
             {isPro && (
               <span className="flex items-center gap-1.5 px-3 md:px-4 py-1.5 bg-emerald-500/10 border border-emerald-500/20 rounded-full text-[9px] md:text-[10px] font-black uppercase tracking-widest text-emerald-400">
-                <BadgeCheck className="w-3.5 h-3.5" /> Pro Member
+                <BadgeCheck className="w-3.5 h-3.5" /> {profile?.subscription_tier === 'go' ? 'Go Member' : 'Pro Member'}
               </span>
             )}
           </div>

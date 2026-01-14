@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { Check, FileText, Download, X, Printer } from 'lucide-react';
+import { Check, FileText, Download, X, Printer, Trash2 } from 'lucide-react';
 import { useAuth } from '@/contexts/AuthContext';
 import { useSearchParams } from 'react-router-dom';
 import { toast as sonnerToast } from 'sonner';
@@ -34,6 +34,7 @@ const SubscriptionSection: React.FC<SubscriptionSectionProps> = ({ initialView }
   const [dbTier, setDbTier] = useState<string | null>(null);
   const [loadingStatus, setLoadingStatus] = useState(true);
   const [showCancelDialog, setShowCancelDialog] = useState(false);
+  const [showClearHistoryDialog, setShowClearHistoryDialog] = useState(false);
 
   const isPro = dbTier === 'pro' || dbTier === 'premium' || dbTier === 'go';
   const [view, setView] = useState<'plans' | 'manage' | 'billing'>(initialView || 'plans');
@@ -121,8 +122,25 @@ const SubscriptionSection: React.FC<SubscriptionSectionProps> = ({ initialView }
 
     setIsUpgrading(true);
 
-    const monthlyPrice = parseInt(price.replace(/[^0-9]/g, ''));
-    const totalAmount = billingCycle === 'Annual' ? monthlyPrice * 12 : monthlyPrice;
+    const targetMonthlyPrice = parseInt(price.replace(/[^0-9]/g, ''));
+    let totalAmount = billingCycle === 'Annual' ? targetMonthlyPrice * 12 : targetMonthlyPrice;
+
+    // Smart Recalculation: If upgrading from Go to Pro
+    if (dbTier === 'go' && planName.toLowerCase() === 'pro') {
+      const currentGoPrice = billingCycle === 'Annual' ? 249 * 12 : 299;
+      const difference = totalAmount - currentGoPrice;
+
+      console.log(`Recalculating Upgrade: Pro (${totalAmount}) - Go (${currentGoPrice}) = ${difference}`);
+
+      // Ensure we don't charge negative (though unlikely with these prices)
+      totalAmount = Math.max(0, difference);
+
+      toast({
+        title: "Upgrade Recalculated",
+        description: `Upgrading to Pro for only ₹${totalAmount} (Difference adjusted).`,
+        variant: "success"
+      });
+    }
 
     await initiateCheckout({
       planId: planName.toLowerCase(),
@@ -147,6 +165,82 @@ const SubscriptionSection: React.FC<SubscriptionSectionProps> = ({ initialView }
     });
   };
 
+  const handleDeleteInvoice = async (invoiceId: string) => {
+    const { dismiss: dismissLoading } = toast({
+      title: "Deleting record...",
+      description: "Removing billing entry from your history.",
+      variant: "loading"
+    });
+
+    try {
+      const { error } = await supabase
+        .from('billing_history')
+        .delete()
+        .eq('id', invoiceId);
+
+      if (error) throw error;
+
+      // Update UI locally
+      setBillingHistory(prev => prev.filter(item => item.id !== invoiceId));
+
+      dismissLoading();
+      toast({
+        title: "Record Deleted",
+        description: "The transaction entry has been removed.",
+        variant: "success"
+      });
+    } catch (err: any) {
+      console.error("Delete history error:", err);
+      dismissLoading();
+      toast({
+        title: "Delete Failed",
+        description: err.message || "Could not remove the record.",
+        variant: "destructive"
+      });
+    }
+  };
+
+  const handleClearAllHistory = () => {
+    if (billingHistory.length === 0) return;
+    setShowClearHistoryDialog(true);
+  };
+
+  const executeClearHistory = async () => {
+    setShowClearHistoryDialog(false);
+    const { dismiss: dismissLoading } = toast({
+      title: "Clearing history...",
+      description: "Removing all billing records from our database.",
+      variant: "loading"
+    });
+
+    try {
+      const { error } = await supabase
+        .from('billing_history')
+        .delete()
+        .eq('user_id', user?.id);
+
+      if (error) throw error;
+
+      // Update UI locally
+      setBillingHistory([]);
+
+      dismissLoading();
+      toast({
+        title: "History Cleared",
+        description: "All transaction records have been permanently removed from Supabase.",
+        variant: "success"
+      });
+    } catch (err: any) {
+      console.error("Clear history error:", err);
+      dismissLoading();
+      toast({
+        title: "Action Failed",
+        description: err.message || "Could not clear history.",
+        variant: "destructive"
+      });
+    }
+  };
+
   const plans = [
     {
       name: 'Free',
@@ -161,10 +255,10 @@ const SubscriptionSection: React.FC<SubscriptionSectionProps> = ({ initialView }
         'Progress Tracker',
         'Mobile & web access'
       ],
-      cta: isPro ? 'Current Plan' : 'Start Free',
-      active: !isPro,
-      badge: !isPro ? 'Active' : null,
-      disabled: isPro
+      cta: dbTier === 'free' ? 'Current Plan' : 'Start Free',
+      active: dbTier === 'free',
+      badge: dbTier === 'free' ? 'Active' : null,
+      disabled: dbTier === 'free' || isPro
     },
     {
       name: 'Pro',
@@ -203,10 +297,11 @@ const SubscriptionSection: React.FC<SubscriptionSectionProps> = ({ initialView }
         'Offline support',
         'Progress Tracker'
       ],
-      cta: dbTier === 'go' ? 'Current Plan' : isUpgrading ? 'Proceed to Payment Gateway' : isPro ? 'Switch Plan' : 'Get Go',
+      cta: dbTier === 'go' ? 'Current Plan' : isUpgrading ? 'Proceed to Payment Gateway' : (dbTier === 'pro' || dbTier === 'premium') ? 'Plan Active' : 'Get Go',
       badge: 'Popular',
       highlight: true,
-      onClick: dbTier === 'go' ? undefined : () => handleUpgrade('Go', billingCycle === 'Annual' ? '249' : '299')
+      onClick: (dbTier === 'go' || dbTier === 'pro' || dbTier === 'premium') ? undefined : () => handleUpgrade('Go', billingCycle === 'Annual' ? '249' : '299'),
+      disabled: dbTier === 'go' || dbTier === 'pro' || dbTier === 'premium'
     }
   ];
 
@@ -424,6 +519,26 @@ const SubscriptionSection: React.FC<SubscriptionSectionProps> = ({ initialView }
         </AlertDialogContent>
       </AlertDialog>
 
+      <AlertDialog open={showClearHistoryDialog} onOpenChange={setShowClearHistoryDialog}>
+        <AlertDialogContent>
+          <AlertDialogHeader>
+            <AlertDialogTitle>Clear All Billing History?</AlertDialogTitle>
+            <AlertDialogDescription>
+              Are you sure you want to permanently delete your entire billing history from our database? This action cannot be revoked.
+            </AlertDialogDescription>
+          </AlertDialogHeader>
+          <AlertDialogFooter>
+            <AlertDialogCancel>Keep</AlertDialogCancel>
+            <AlertDialogAction
+              onClick={executeClearHistory}
+              className="bg-red-500 hover:bg-red-600 focus:ring-red-500"
+            >
+              Clear
+            </AlertDialogAction>
+          </AlertDialogFooter>
+        </AlertDialogContent>
+      </AlertDialog>
+
       {/* Billing History Section */}
       <div className="max-w-7xl mx-auto mt-20">
         <div className="flex items-center justify-between mb-6">
@@ -432,12 +547,12 @@ const SubscriptionSection: React.FC<SubscriptionSectionProps> = ({ initialView }
             Billing History
           </h3>
 
-          {isPro && (
+          {billingHistory.length > 0 && (
             <button
-              onClick={handleCancel}
+              onClick={handleClearAllHistory}
               className="text-xs font-bold text-red-400 hover:text-red-300 hover:bg-red-500/10 px-4 py-2 rounded-lg transition-colors border border-transparent hover:border-red-500/20"
             >
-              Cancel Subscription
+              Clear All History
             </button>
           )}
         </div>
@@ -486,13 +601,22 @@ const SubscriptionSection: React.FC<SubscriptionSectionProps> = ({ initialView }
                         })()}
                       </td>
                       <td className="px-6 py-4 text-right">
-                        <button
-                          onClick={() => handleDownloadInvoice(invoice)}
-                          className="text-white/40 hover:text-orange-500 transition-colors inline-flex items-center gap-1.5 text-xs font-medium group"
-                        >
-                          <span>Download</span>
-                          <Download className="w-3.5 h-3.5 group-hover:-translate-y-0.5 transition-transform" />
-                        </button>
+                        <div className="flex items-center justify-end gap-4">
+                          <button
+                            onClick={() => handleDownloadInvoice(invoice)}
+                            className="text-white/40 hover:text-orange-500 transition-colors inline-flex items-center gap-1.5 text-xs font-medium group"
+                          >
+                            <span>Download</span>
+                            <Download className="w-3.5 h-3.5 group-hover:-translate-y-0.5 transition-transform" />
+                          </button>
+                          <button
+                            onClick={() => handleDeleteInvoice(invoice.id)}
+                            className="text-white/20 hover:text-red-500 transition-colors p-1 group"
+                            title="Delete Record"
+                          >
+                            <Trash2 className="w-3.5 h-3.5" />
+                          </button>
+                        </div>
                       </td>
                     </tr>
                   ))

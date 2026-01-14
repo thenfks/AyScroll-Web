@@ -38,9 +38,9 @@ serve(async (req) => {
         // Assuming standard format: payload.customer.user_id OR payload.metadata.user_id
         const data = body.payload || body.data || body;
 
-        // Look for user_id in likely places
+        // Look for user_id and plan_id in likely places
         const userId = data.customer?.user_id || data.metadata?.user_id || data.user_id;
-        const planId = data.plan_id || data.metadata?.plan_id || 'pro'; // Default to Pro if missing
+        const planId = data.metadata?.plan_id || data.plan_id || 'pro'; // Check metadata first
 
         if (!userId) {
             throw new Error("Missing user_id in webhook payload");
@@ -48,14 +48,27 @@ serve(async (req) => {
 
         console.log(`Processing Upgrade for User: ${userId} to Plan: ${planId}`);
 
-        // 4. Update Database (RLS Bypassed via Service Role)
+        // 4. Calculate Subscription Dates
+        const cycle = data.metadata?.billingCycle || (data.amount > 1000 ? 'Annual' : 'Monthly');
+        const startDate = new Date();
+        const endDate = new Date();
+
+        if (cycle === 'Annual') {
+            endDate.setFullYear(startDate.getFullYear() + 1);
+        } else {
+            endDate.setMonth(startDate.getMonth() + 1);
+        }
+
+        console.log(`Setting Subscription Dates for ${cycle} cycle: Start: ${startDate.toISOString()}, End: ${endDate.toISOString()}`);
+
+        // 5. Update Database (RLS Bypassed via Service Role)
         const { error: dbError } = await supabaseClient
             .from('user_profiles')
             .update({
                 subscription_tier: planId,
                 subscription_status: 'active',
-                subscription_start_date: new Date().toISOString(),
-                subscription_end_date: null, // or calculate +1 month/year
+                subscription_start_date: startDate.toISOString(),
+                subscription_end_date: endDate.toISOString(),
             })
             .eq('id', userId);
 

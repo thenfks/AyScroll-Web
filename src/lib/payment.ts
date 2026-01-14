@@ -59,6 +59,12 @@ export async function initiateCheckout({
                     email: userEmail,
                     name: userName
                 },
+                metadata: {
+                    user_id: userId,
+                    plan_id: planId,
+                    billingCycle: billingCycle,
+                    source: 'ayscroll-web'
+                },
                 redirect_urls: {
                     success: window.location.origin + `/profile?status=success&plan_id=${planId}&amount=${amount}&cycle=${billingCycle}`,
                     failure: window.location.origin + `/profile?status=failed&plan_id=${planId}&amount=${amount}&cycle=${billingCycle}`,
@@ -94,7 +100,7 @@ export async function initiateCheckout({
         });
 
         setTimeout(() => {
-            window.location.href = window.location.origin + '/profile?status=success&session_id=demo_session_123';
+            window.location.href = window.location.origin + `/profile?status=success&session_id=demo_session_${Date.now()}&plan_id=${planId}&amount=${amount}&cycle=${billingCycle}`;
         }, 2000);
     }
 }
