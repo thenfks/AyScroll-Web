@@ -31,18 +31,17 @@ const SubscriptionCard: React.FC<SubscriptionCardProps> = ({ onManageClick, onBi
                 .from('user_profiles')
                 .select('subscription_tier, subscription_status, subscription_end_date')
                 .eq('id', user?.id)
-                .single();
+                .single() as any;
 
-            // Strict Logic: Check both Metadata and DB
-            // Metadata is the source of truth for immediate access control
-            // DB is the source of truth for billing cycle details
-            const isPro = user?.user_metadata?.is_pro === true;
+            // Direct DB check
             const dbTier = data?.subscription_tier || 'free';
+            const dbStatus = data?.subscription_status || 'inactive';
 
-            console.log("Subscription Check:", { isPro, dbTier });
+            console.log("Subscription Card DB Check:", { dbTier, dbStatus });
 
-            const effectiveTier = isPro ? (dbTier === 'free' ? 'pro' : dbTier) : 'free';
-            const effectiveStatus = isPro ? 'active' : (data?.subscription_status || 'inactive');
+            const isActuallyPro = dbTier === 'pro' || dbTier === 'premium' || dbTier === 'go';
+            const effectiveTier = isActuallyPro ? dbTier : 'free';
+            const effectiveStatus = isActuallyPro ? 'active' : dbStatus;
 
             setSubscription({
                 tier: effectiveTier,

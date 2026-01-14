@@ -13,22 +13,22 @@ import {
 import { useAuth } from '@/contexts/AuthContext';
 
 interface ManageSubscriptionProps {
+    tier: string;
+    status: string;
     onViewPlans: () => void;
     onBillingClick: () => void;
     onCancel: () => void;
 }
 
-const ManageSubscription: React.FC<ManageSubscriptionProps> = ({ onViewPlans, onBillingClick, onCancel }) => {
-    const { user } = useAuth();
-    const tier = user?.user_metadata?.tier || 'Pro';
-    const isPro = user?.user_metadata?.is_pro === true;
+const ManageSubscription: React.FC<ManageSubscriptionProps> = ({ tier, status, onViewPlans, onBillingClick, onCancel }) => {
+    const isPro = tier?.toLowerCase() === 'pro' || tier?.toLowerCase() === 'premium' || tier?.toLowerCase() === 'go';
     const isGo = tier?.toLowerCase() === 'go';
 
     // Real data mixed with some mock for UX
     const subscription = {
-        status: isPro ? 'Active' : 'Canceled',
+        status: isPro ? 'Active' : (status === 'inactive' ? 'Canceled' : 'Free'),
         plan: isPro ? `AyScroll ${isGo ? 'Go' : 'Pro'}` : 'AyScroll Free',
-        price: isGo ? '₹299' : (isPro ? '₹499' : '₹0'),
+        price: isGo ? '₹249' : (isPro ? '₹499' : '₹0'),
         period: isPro ? 'Monthly' : 'Forever',
         nextBilling: isPro ? 'Feb 13, 2026' : 'N/A',
         card: {

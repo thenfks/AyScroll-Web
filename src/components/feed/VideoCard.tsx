@@ -197,17 +197,19 @@ export const VideoCard: React.FC<VideoCardProps> = (props) => {
 
             <div className="p-4 space-y-4 overflow-y-auto max-h-[60vh]">
               {/* Master Insight CTA */}
-              <button className="w-full p-4 rounded-2xl bg-gradient-to-r from-pink-500 to-orange-500 flex items-center justify-between group hover:opacity-90 transition-opacity">
-                <div className="flex items-center gap-3">
-                  <div className="w-10 h-10 rounded-xl bg-white/20 flex items-center justify-center">
-                    <Sparkles className="w-5 h-5 text-white" />
+              <button className="w-full p-5 rounded-3xl bg-white/5 border border-white/10 flex items-center justify-between group hover:bg-white/10 hover:border-pink-500/30 transition-all duration-300 relative overflow-hidden">
+                <div className="absolute inset-0 bg-gradient-to-br from-pink-500/5 to-purple-500/5 opacity-0 group-hover:opacity-100 transition-opacity" />
+
+                <div className="flex items-center gap-4 relative z-10">
+                  <div className="w-12 h-12 rounded-2xl bg-gradient-to-br from-pink-500 to-purple-600 flex items-center justify-center shadow-lg shadow-pink-500/20 group-hover:scale-110 transition-transform duration-500">
+                    <Sparkles className="w-6 h-6 text-white" />
                   </div>
                   <div className="text-left">
-                    <p className="text-white font-bold">Master Insight</p>
-                    <p className="text-white/70 text-sm">Get AI-powered deep analysis</p>
+                    <p className="text-white font-black tracking-tight">Master Insight</p>
+                    <p className="text-white/40 text-xs font-medium">Unlock deep AI analysis</p>
                   </div>
                 </div>
-                <ChevronRight className="w-5 h-5 text-white group-hover:translate-x-1 transition-transform" />
+                <ChevronRight className="w-5 h-5 text-white/40 group-hover:text-white group-hover:translate-x-1 transition-all duration-300 relative z-10" />
               </button>
 
               {/* Core Takeaways */}
@@ -287,7 +289,7 @@ export const VideoCard: React.FC<VideoCardProps> = (props) => {
             loop
             playsInline
           />
-          
+
           {/* Play/Pause Icon */}
           {!isPlaying && (
             <div className="absolute inset-0 flex items-center justify-center bg-black/40">
@@ -328,7 +330,7 @@ export const VideoCard: React.FC<VideoCardProps> = (props) => {
                 {duration}
               </span>
             </div>
-            
+
             <div className="flex items-center gap-2 mb-2">
               <Avatar className="w-10 h-10 border-2 border-foreground">
                 <AvatarImage src={creator_avatar} />

@@ -56,17 +56,15 @@ const Analysis = () => {
     const checkSubscriptionAndFetch = async () => {
       try {
         // 1. Check Subscription
-        const { data: profileError } = await supabase
+        const { data: profileData } = await supabase
           .from('user_profiles')
           .select('subscription_tier')
           .eq('id', user.id)
-          .single()
-          .then(({ data, error }) => {
-            if (data) {
-              setIsPro(data.subscription_tier === 'pro' || data.subscription_tier === 'premium');
-            }
-            return { data, error };
-          });
+          .single() as any;
+
+        if (profileData) {
+          setIsPro(profileData.subscription_tier === 'pro' || profileData.subscription_tier === 'premium');
+        }
 
         // 2. Fetch Activity (only if needed, but we can fetch it usually or skip if locked logic is strictly enforced above. 
         // However, to keep it simple, we fetch logic here but UI handles display)
@@ -86,15 +84,15 @@ const Analysis = () => {
         }
 
         // Fetch real data
-        const { data } = await supabase
+        const { data: activityLogs } = await supabase
           .from('daily_learning_activity')
           .select('activity_date, minutes_spent')
           .eq('user_id', user.id)
-          .gte('activity_date', last7Days[0].dateStr);
+          .gte('activity_date', last7Days[0].dateStr) as any;
 
         // Map to chart format
         const chartData = last7Days.map(d => {
-          const record = data?.find(r => r.activity_date === d.dateStr);
+          const record = activityLogs?.find((r: any) => r.activity_date === d.dateStr);
           return {
             day: d.dayLabel,
             minutes: record ? record.minutes_spent : 0
@@ -379,17 +377,19 @@ const Analysis = () => {
           </div>
 
           {/* Generate Path CTA */}
-          <button className="w-full p-5 rounded-2xl bg-gradient-to-r from-pink-500 to-purple-500 flex items-center justify-between group hover:opacity-90 transition-opacity">
-            <div className="flex items-center gap-4">
-              <div className="w-12 h-12 rounded-xl bg-white/20 flex items-center justify-center">
-                <Sparkles className="w-6 h-6 text-white" />
+          <button className="w-full p-6 rounded-3xl bg-white/5 border border-white/10 flex items-center justify-between group hover:bg-white/10 hover:border-pink-500/30 transition-all duration-300 relative overflow-hidden">
+            <div className="absolute inset-0 bg-gradient-to-br from-pink-500/5 to-purple-500/5 opacity-0 group-hover:opacity-100 transition-opacity" />
+
+            <div className="flex items-center gap-5 relative z-10">
+              <div className="w-14 h-14 rounded-2xl bg-gradient-to-br from-pink-500 to-purple-600 flex items-center justify-center shadow-lg shadow-pink-500/20 group-hover:scale-110 transition-transform duration-500">
+                <Sparkles className="w-7 h-7 text-white" />
               </div>
               <div className="text-left">
-                <p className="text-white font-bold text-lg">Generate Custom Learning Path</p>
-                <p className="text-white/70 text-sm">AI-powered personalized curriculum</p>
+                <p className="text-white font-black text-xl tracking-tight">Generate Custom Learning Path</p>
+                <p className="text-white/40 text-sm font-medium">AI-powered personalized curriculum</p>
               </div>
             </div>
-            <ChevronRight className="w-6 h-6 text-white group-hover:translate-x-1 transition-transform" />
+            <ChevronRight className="w-6 h-6 text-white/40 group-hover:text-white group-hover:translate-x-1 transition-all duration-300 relative z-10" />
           </button>
         </div>
       </MainLayout>

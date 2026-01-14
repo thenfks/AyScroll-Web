@@ -1,4 +1,4 @@
-import { Search, Plus, Bell } from 'lucide-react';
+import { Search, Sparkles, Bell, Plus } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { useAuth } from '@/contexts/AuthContext';
@@ -50,7 +50,7 @@ export const Header = () => {
       .from('user_profiles')
       .select('avatar_url, display_name')
       .eq('id', user.id)
-      .single();
+      .single() as any;
 
     if (error) {
       console.error('Error loading user profile:', error);
@@ -121,8 +121,11 @@ export const Header = () => {
           </>
         ) : (
           <>
-            <Button className="w-12 h-12 rounded-full bg-gradient-to-r from-pink-500 to-orange-500 hover:from-pink-600 hover:to-orange-600 border-0 p-0 flex items-center justify-center shadow-lg shadow-pink-500/20">
-              <Plus className="w-5 h-5" />
+            <Button className="w-10 h-10 rounded-xl bg-white/5 border border-white/10 hover:bg-white/10 hover:border-pink-500/50 transition-all duration-300 p-0 flex items-center justify-center group relative overflow-hidden">
+              {/* Subtle Glow Background */}
+              <div className="absolute inset-0 bg-gradient-to-tr from-pink-500/10 to-orange-500/10 opacity-0 group-hover:opacity-100 transition-opacity" />
+
+              <Sparkles className="w-5 h-5 text-white/70 group-hover:text-pink-500 transition-colors relative z-10" />
             </Button>
           </>
         )}

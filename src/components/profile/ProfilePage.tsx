@@ -6,7 +6,8 @@ import { useNavigate, useLocation, useSearchParams } from 'react-router-dom';
 import { useIsMobile } from '@/hooks/use-mobile';
 import { MobileHeader } from '../layout/MobileHeader';
 import { MobileNavDrawer } from '../layout/MobileNavDrawer';
-import { toast } from 'sonner';
+import { toast as sonnerToast } from 'sonner';
+import { useToast } from '@/hooks/use-toast';
 import { supabase } from '@/integrations/supabase/client';
 
 // Import the new sub-components
@@ -48,24 +49,30 @@ const ProfilePage: React.FC = () => {
   }, [location.state]);
 
   // Handle Payment Return
-  const [searchParams] = useSearchParams();
+  const [searchParams, setSearchParams] = useSearchParams();
+  const { toast } = useToast();
+  const processedRef = React.useRef<string | null>(null);
 
   useEffect(() => {
     const status = searchParams.get('status');
-    const sessionId = searchParams.get('session_id');
+    const sessionId = searchParams.get('session_id') || 'unknown';
+    const paramsKey = `${status}-${sessionId}`;
 
-    // Relaxed check: Allow success even if session_id is missing (for easier testing/gateway compat)
+    if (!status || processedRef.current === paramsKey) return;
+
+    // Mark as processed immediately
+    processedRef.current = paramsKey;
+
     if (status === 'success') {
-      const currentSessionId = sessionId || 'unknown_session';
+      const currentSessionId = sessionId === 'unknown' ? `SESS-${Date.now().toString().slice(-6)}` : sessionId;
       console.log(`✅ Payment Success Detected! Session ID: ${currentSessionId}`);
       setActiveTab('Subscription');
 
       const upgradeUser = async () => {
-        // Clear query params immediately to prevent reload loops
-        const newUrl = window.location.pathname;
-        window.history.replaceState({}, '', newUrl);
-
         try {
+          // Clear query params via React Router state
+          setSearchParams({}, { replace: true });
+
           console.log("🔄 Upgrading user profile...");
 
           // 1. Update User Metadata (Auth)
@@ -79,7 +86,7 @@ const ProfilePage: React.FC = () => {
             const { error: dbError } = await supabase.from('user_profiles').update({
               subscription_tier: 'pro',
               subscription_status: 'active'
-            } as any).eq('id', user.id);
+            } as any).eq('id', user.id) as any;
             if (dbError) console.error('DB update error:', dbError);
 
             // 3. Log to Billing History (Frontend Fallback)
@@ -92,30 +99,40 @@ const ProfilePage: React.FC = () => {
             } as any);
           }
 
-          // 4. Refresh session to update UI immediately
+          // 4. Refresh session to update UI
           await supabase.auth.refreshSession();
 
-          toast.success('Payment Successful!', {
-            description: `Order ${currentSessionId.slice(-6)} processed.`,
-            duration: 3000,
+          toast({
+            title: 'Payment Successful!',
+            description: `Order ${currentSessionId.slice(-8)} processed successfully.`,
+            variant: 'success',
           });
 
-          // No longer need a hard reload since we refreshed the session
         } catch (e) {
           console.error('Manual upgrade failed', e);
-          toast.error('Upgrade failed. Please contact support.');
+          toast({
+            title: 'Upgrade Failed',
+            description: 'Please contact support.',
+            variant: 'destructive',
+          });
         }
       };
 
       upgradeUser();
-    } else if (status === 'failed') {
-      console.warn(`❌ Payment Failed for Session ID: ${sessionId || 'unknown'}`);
+    } else if (status === 'failed' || status === 'cancelled') {
+      console.warn(`❌ Payment ${status.toUpperCase()} for Session ID: ${sessionId}`);
       setActiveTab('Subscription');
-      toast.error('Payment Failed', {
-        description: 'The transaction could not be completed.',
+
+      // Clear params
+      setSearchParams({}, { replace: true });
+
+      toast({
+        title: status === 'cancelled' ? 'Payment Cancelled' : 'Payment Failed',
+        description: status === 'cancelled' ? 'You have cancelled the payment process.' : 'The transaction could not be completed.',
+        variant: 'destructive',
       });
     }
-  }, [searchParams, user]);
+  }, [searchParams, user, setSearchParams]);
 
   const handleEditClick = () => {
     if (isMobile) {

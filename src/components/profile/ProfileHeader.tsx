@@ -33,8 +33,8 @@ const ProfileHeader: React.FC<ProfileHeaderProps> = ({ user, onEditClick }) => {
     }
   };
 
-  // Check if user has pro status from metadata or database
-  const isPro = (profile?.subscription_tier === 'pro' || profile?.subscription_tier === 'premium' || user.user_metadata?.is_pro === true) && profile?.subscription_tier !== 'free';
+  // Strictly use Database Profile Tier
+  const isPro = profile?.subscription_tier === 'pro' || profile?.subscription_tier === 'premium' || profile?.subscription_tier === 'go';
 
   return (
     <header className="relative p-6 md:p-10 rounded-2xl md:rounded-[40px] bg-white/[0.03] border border-white/10 overflow-hidden flex flex-col lg:flex-row items-center justify-between gap-6 md:gap-8 shadow-2xl">

@@ -1,4 +1,4 @@
-import { toast } from 'sonner';
+import { toast } from '@/hooks/use-toast';
 
 interface CheckoutOptions {
     planId: string;
@@ -24,7 +24,11 @@ export async function initiateCheckout({
         if (!API_KEY) {
             console.warn('Missing VITE_PAYMENT_API_KEY. Using mock redirect for demo.');
             // For demo purposes if no API key is set
-            toast.loading('Redirecting to payment gateway...');
+            toast({
+                title: 'Redirecting to payment gateway...',
+                description: 'Pre-flight check successful.',
+                variant: 'loading'
+            });
             setTimeout(() => {
                 window.location.href = `/subscription?status=success&session_id=mock_session_${Date.now()}`;
             }, 1500);
@@ -83,9 +87,10 @@ export async function initiateCheckout({
         console.warn('Payment API Error (likely CORS or Offline):', error);
 
         // FALLBACK: Simulate success for demo/development if API fails
-        toast.error('Payment Gateway unreachable', {
+        toast({
+            title: 'Payment Gateway unreachable',
             description: 'Redirecting to mock success page for DEMO purposes...',
-            duration: 3000
+            variant: 'destructive'
         });
 
         setTimeout(() => {

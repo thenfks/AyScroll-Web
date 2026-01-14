@@ -43,7 +43,7 @@ export const Sidebar = () => {
       .from('user_profiles')
       .select('username, avatar_url, display_name, subscription_tier')
       .eq('id', user.id)
-      .single();
+      .single() as any;
 
     if (error) {
       console.error('Error loading user profile:', error);
@@ -54,7 +54,7 @@ export const Sidebar = () => {
       setUsername(data.username);
       setAvatarUrl(data.avatar_url);
       setDisplayName(data.display_name);
-      setIsPro(data.subscription_tier === 'pro' || data.subscription_tier === 'premium');
+      setIsPro(data.subscription_tier === 'pro' || data.subscription_tier === 'premium' || data.subscription_tier === 'go');
     }
   };
 

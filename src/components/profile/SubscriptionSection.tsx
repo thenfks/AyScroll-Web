@@ -2,11 +2,22 @@ import React, { useState, useEffect } from 'react';
 import { Check, FileText, Download } from 'lucide-react';
 import { useAuth } from '@/contexts/AuthContext';
 import { useSearchParams } from 'react-router-dom';
-import { toast } from 'sonner';
+import { toast as sonnerToast } from 'sonner';
+import { useToast } from '@/hooks/use-toast';
 import { initiateCheckout } from '@/lib/payment';
 import { supabase } from '@/integrations/supabase/client';
 import ManageSubscription from './ManageSubscription';
 import BillingInfo from './BillingInfo';
+import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+} from "@/components/ui/alert-dialog";
 
 interface SubscriptionSectionProps {
   initialView?: 'plans' | 'manage' | 'billing';
@@ -14,14 +25,18 @@ interface SubscriptionSectionProps {
 
 const SubscriptionSection: React.FC<SubscriptionSectionProps> = ({ initialView }) => {
   const { user } = useAuth();
+  const { toast } = useToast();
   const [billingCycle, setBillingCycle] = useState<'Annual' | 'Monthly'>('Annual');
   const [isUpgrading, setIsUpgrading] = useState(false);
   const [searchParams] = useSearchParams();
   const [billingHistory, setBillingHistory] = useState<any[]>([]);
   const [loadingHistory, setLoadingHistory] = useState(true);
+  const [dbTier, setDbTier] = useState<string | null>(null);
+  const [loadingStatus, setLoadingStatus] = useState(true);
+  const [showCancelDialog, setShowCancelDialog] = useState(false);
 
-  const isPro = user?.user_metadata?.is_pro === true;
-  const [view, setView] = useState<'plans' | 'manage' | 'billing'>(initialView || (isPro ? 'manage' : 'plans'));
+  const isPro = dbTier === 'pro' || dbTier === 'premium' || dbTier === 'go';
+  const [view, setView] = useState<'plans' | 'manage' | 'billing'>(initialView || 'plans');
 
   useEffect(() => {
     if (initialView) {
@@ -30,8 +45,37 @@ const SubscriptionSection: React.FC<SubscriptionSectionProps> = ({ initialView }
   }, [initialView]);
 
   useEffect(() => {
-    const fetchHistory = async () => {
-      if (!user) return;
+    const fetchStatus = async () => {
+      if (!user) {
+        setLoadingStatus(false); // Ensure loading status is set to false if no user
+        return;
+      }
+
+      try {
+        // Fetch profile to verify tier
+        const { data: profile } = await supabase
+          .from('user_profiles')
+          .select('subscription_tier')
+          .eq('id', user.id)
+          .single() as any;
+
+        if (profile) {
+          const tier = profile.subscription_tier;
+          setDbTier(tier);
+
+          const actuallyPro = tier === 'pro' || tier === 'premium' || tier === 'go';
+
+          // Only auto-switch view if no initialView was provided
+          if (!initialView) {
+            setView(actuallyPro ? 'manage' : 'plans');
+          }
+        }
+      } catch (err) {
+        console.error("Error fetching status:", err);
+      } finally {
+        setLoadingStatus(false);
+      }
+
       const { data, error } = await supabase
         .from('billing_history')
         .select('*')
@@ -43,12 +87,16 @@ const SubscriptionSection: React.FC<SubscriptionSectionProps> = ({ initialView }
       setLoadingHistory(false);
     };
 
-    fetchHistory();
-  }, [user]);
+    fetchStatus();
+  }, [user, initialView]);
 
   const handleUpgrade = async (planName: string, price: string) => {
     if (!user) {
-      toast.error('Please login to upgrade');
+      toast({
+        title: 'Authentication Required',
+        description: 'Please login to upgrade your plan.',
+        variant: 'destructive',
+      });
       return;
     }
 
@@ -131,22 +179,32 @@ const SubscriptionSection: React.FC<SubscriptionSectionProps> = ({ initialView }
   ];
 
   const handleCancel = async () => {
+    if (loadingStatus) return;
+
     // Robust check for Pro status
-    const currentIsPro = user?.user_metadata?.is_pro === true;
-    if (!currentIsPro) {
-      toast.error("You don't have an active Pro subscription to cancel.");
+    if (!isPro) {
+      toast({
+        title: 'Action Denied',
+        description: "You don't have an active Pro subscription to cancel.",
+        variant: 'destructive',
+      });
       return;
     }
 
-    const confirmed = window.confirm("Are you sure you want to cancel your Pro subscription? You will lose access to Pro features immediately.");
-    if (!confirmed) return;
+    setShowCancelDialog(true);
+  };
 
-    const toastId = toast.loading("Canceling subscription...");
+  const executeCancel = async () => {
+    const { dismiss: dismissLoading } = toast({
+      title: "Canceling subscription...",
+      description: "Moving your account to the Free plan.",
+      variant: "loading"
+    });
     console.log("Starting cancellation for user:", user?.id);
 
     try {
-      // 1. Update Auth User Metadata
-      const { data: authData, error: authError } = await supabase.auth.updateUser({
+      // 1. Update Auth User Metadata as a courtesy, but DB is primary
+      const { error: authError } = await supabase.auth.updateUser({
         data: { is_pro: false, tier: 'free' }
       });
 
@@ -157,8 +215,8 @@ const SubscriptionSection: React.FC<SubscriptionSectionProps> = ({ initialView }
       if (user?.id) {
         const { error: dbError } = await supabase.from('user_profiles').update({
           subscription_tier: 'free',
-          subscription_status: 'canceled'
-        } as any).eq('id', user.id);
+          subscription_status: 'cancelled'
+        } as any).eq('id', user.id) as any;
 
         if (dbError) throw dbError;
         console.log("DB profile updated successfully");
@@ -191,9 +249,11 @@ const SubscriptionSection: React.FC<SubscriptionSectionProps> = ({ initialView }
       // 4. Force session refresh to update local context
       await supabase.auth.refreshSession();
 
-      toast.dismiss(toastId);
-      toast.success("Subscription canceled.", {
-        description: "Your account has been moved to the Free plan."
+      dismissLoading();
+      toast({
+        title: 'Subscription Canceled',
+        description: 'Your account has been moved to the Free plan.',
+        variant: 'success',
       });
 
       // Reload after a short delay to ensure everything is synced
@@ -203,9 +263,11 @@ const SubscriptionSection: React.FC<SubscriptionSectionProps> = ({ initialView }
 
     } catch (e: any) {
       console.error("Cancel failed:", e);
-      toast.dismiss(toastId);
-      toast.error("Cancellation failed", {
-        description: e.message || "Please try again or contact support."
+      dismissLoading();
+      toast({
+        title: 'Cancellation Failed',
+        description: e.message || "Please try again or contact support.",
+        variant: 'destructive',
       });
     }
   };
@@ -299,6 +361,8 @@ const SubscriptionSection: React.FC<SubscriptionSectionProps> = ({ initialView }
       ) : view === 'manage' ? (
         <div className="max-w-4xl mx-auto w-full animate-in fade-in slide-in-from-bottom-4 duration-500">
           <ManageSubscription
+            tier={dbTier || 'free'}
+            status={isPro ? 'active' : 'inactive'}
             onViewPlans={() => setView('plans')}
             onBillingClick={() => setView('billing')}
             onCancel={handleCancel}
@@ -309,6 +373,24 @@ const SubscriptionSection: React.FC<SubscriptionSectionProps> = ({ initialView }
           <BillingInfo onBack={() => setView('manage')} />
         </div>
       )}
+
+      {/* Confirmation Dialog */}
+      <AlertDialog open={showCancelDialog} onOpenChange={setShowCancelDialog}>
+        <AlertDialogContent>
+          <AlertDialogHeader>
+            <AlertDialogTitle>Cancel Subscription?</AlertDialogTitle>
+            <AlertDialogDescription>
+              Are you sure you want to cancel your Pro subscription? You will lose access to Pro features immediately.
+            </AlertDialogDescription>
+          </AlertDialogHeader>
+          <AlertDialogFooter>
+            <AlertDialogCancel>Keep Membership</AlertDialogCancel>
+            <AlertDialogAction onClick={executeCancel}>
+              Yes, Cancel
+            </AlertDialogAction>
+          </AlertDialogFooter>
+        </AlertDialogContent>
+      </AlertDialog>
 
       {/* Billing History Section */}
       <div className="max-w-7xl mx-auto mt-20">

@@ -32,7 +32,7 @@ export interface UserProfile {
     following_count: number;
 
     // Subscription
-    subscription_tier: 'free' | 'pro' | 'premium';
+    subscription_tier: 'free' | 'pro' | 'premium' | 'go';
     subscription_status: 'active' | 'cancelled' | 'expired' | 'trial';
     subscription_start_date: string | null;
     subscription_end_date: string | null;

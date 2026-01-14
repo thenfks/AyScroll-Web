@@ -86,7 +86,7 @@ const ProfileEditForm: React.FC<ProfileEditFormProps> = ({ onSave, onCancel, cla
             .from('user_profiles')
             .select('*')
             .eq('id', user.id)
-            .single();
+            .single() as any;
 
         if (error) {
             console.error('Error loading profile:', error);
@@ -162,14 +162,15 @@ const ProfileEditForm: React.FC<ProfileEditFormProps> = ({ onSave, onCancel, cla
                     location: profile.location,
                     website: profile.website,
                     avatar_url: avatarUrl,
-                })
-                .eq('id', user.id);
+                } as any)
+                .eq('id', user.id) as any;
 
             if (error) throw error;
 
             toast({
                 title: 'Profile Updated',
                 description: 'Your changes have been saved successfully.',
+                variant: 'success',
             });
 
             onSave();
