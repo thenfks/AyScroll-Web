@@ -79,6 +79,7 @@ const SubscriptionSection: React.FC<SubscriptionSectionProps> = ({ initialView }
       const { data, error } = await supabase
         .from('billing_history')
         .select('*')
+        .eq('user_id', user.id)
         .order('created_at', { ascending: false });
 
       if (!error && data) {
@@ -226,7 +227,7 @@ const SubscriptionSection: React.FC<SubscriptionSectionProps> = ({ initialView }
           user_id: user.id,
           plan_name: 'AyScroll Pro (Monthly)',
           amount: '₹0',
-          status: 'Canceled',
+          status: 'Cancelled',
           invoice_id: `CAN-${Date.now().toString().slice(-6)}`
         } as any);
 
@@ -362,7 +363,7 @@ const SubscriptionSection: React.FC<SubscriptionSectionProps> = ({ initialView }
         <div className="max-w-4xl mx-auto w-full animate-in fade-in slide-in-from-bottom-4 duration-500">
           <ManageSubscription
             tier={dbTier || 'free'}
-            status={isPro ? 'active' : 'inactive'}
+            status={isPro ? 'active' : (billingHistory[0]?.status?.toLowerCase() === 'cancelled' ? 'cancelled' : 'inactive')}
             onViewPlans={() => setView('plans')}
             onBillingClick={() => setView('billing')}
             onCancel={handleCancel}
@@ -438,9 +439,20 @@ const SubscriptionSection: React.FC<SubscriptionSectionProps> = ({ initialView }
                       <td className="px-6 py-4 text-white/80">{invoice.plan_name}</td>
                       <td className="px-6 py-4 text-white/80">{invoice.amount}</td>
                       <td className="px-6 py-4">
-                        <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-[10px] font-bold uppercase tracking-widest bg-emerald-500/10 text-emerald-400 border border-emerald-500/20">
-                          {invoice.status}
-                        </span>
+                        {(() => {
+                          const status = (invoice.status || '').toLowerCase();
+                          let colors = "bg-slate-500/10 text-slate-400 border-slate-500/20";
+
+                          if (status === 'paid' || status === 'active') colors = "bg-emerald-500/10 text-emerald-400 border-emerald-500/20";
+                          if (status === 'cancelled' || status === 'canceled' || status === 'failed') colors = "bg-red-500/10 text-red-400 border-red-500/20";
+                          if (status === 'interrupted' || status === 'pending') colors = "bg-orange-500/10 text-orange-400 border-orange-500/20";
+
+                          return (
+                            <span className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-[10px] font-bold uppercase tracking-widest border ${colors}`}>
+                              {invoice.status}
+                            </span>
+                          );
+                        })()}
                       </td>
                       <td className="px-6 py-4 text-right">
                         <button className="text-white/40 hover:text-orange-500 transition-colors inline-flex items-center gap-1.5 text-xs font-medium group">

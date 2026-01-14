@@ -120,11 +120,27 @@ const ProfilePage: React.FC = () => {
 
       upgradeUser();
     } else if (status === 'failed' || status === 'cancelled') {
-      console.warn(`❌ Payment ${status.toUpperCase()} for Session ID: ${sessionId}`);
+      const currentSessionId = sessionId || `SESS-ERR-${Date.now().toString().slice(-6)}`;
+      console.warn(`❌ Payment ${status.toUpperCase()} for Session ID: ${currentSessionId}`);
       setActiveTab('Subscription');
 
       // Clear params
       setSearchParams({}, { replace: true });
+
+      // Log the interrupted/cancelled transaction to history
+      const logInterruptedTransaction = async () => {
+        if (user?.id) {
+          await supabase.from('billing_history').insert({
+            user_id: user.id,
+            plan_name: 'AyScroll Pro (Monthly)',
+            amount: '₹0',
+            status: status === 'cancelled' ? 'Cancelled' : 'Interrupted',
+            invoice_id: currentSessionId
+          } as any);
+        }
+      };
+
+      logInterruptedTransaction();
 
       toast({
         title: status === 'cancelled' ? 'Payment Cancelled' : 'Payment Failed',

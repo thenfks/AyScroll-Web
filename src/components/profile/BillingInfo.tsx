@@ -10,7 +10,7 @@ import {
     CreditCard
 } from 'lucide-react';
 import { useAuth } from '@/contexts/AuthContext';
-import { toast } from 'sonner';
+import { useToast } from '@/hooks/use-toast';
 
 interface BillingInfoProps {
     onBack: () => void;
@@ -18,6 +18,7 @@ interface BillingInfoProps {
 
 const BillingInfo: React.FC<BillingInfoProps> = ({ onBack }) => {
     const { user } = useAuth();
+    const { toast } = useToast();
 
     const [formData, setFormData] = useState({
         businessName: user?.user_metadata?.business_name || '',
@@ -36,7 +37,11 @@ const BillingInfo: React.FC<BillingInfoProps> = ({ onBack }) => {
         setIsSaving(true);
         // Simulate API delay
         await new Promise(resolve => setTimeout(resolve, 800));
-        toast.success('Billing information updated successfully');
+        toast({
+            title: 'Billing Information Updated',
+            description: 'Your tax and business details have been saved.',
+            variant: 'success'
+        });
         setIsSaving(false);
     };
 

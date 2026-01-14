@@ -21,16 +21,30 @@ interface ManageSubscriptionProps {
 }
 
 const ManageSubscription: React.FC<ManageSubscriptionProps> = ({ tier, status, onViewPlans, onBillingClick, onCancel }) => {
+    const { user } = useAuth();
     const isPro = tier?.toLowerCase() === 'pro' || tier?.toLowerCase() === 'premium' || tier?.toLowerCase() === 'go';
     const isGo = tier?.toLowerCase() === 'go';
 
-    // Real data mixed with some mock for UX
+    // Format billing date from profile if available
+    const getFormattedBillingDate = () => {
+        if (!isPro) return 'N/A';
+        const endDate = user?.user_metadata?.subscription_end_date;
+        if (endDate) {
+            return new Date(endDate).toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' });
+        }
+        // Fallback to a future date if not set (for demo)
+        const demoDate = new Date();
+        demoDate.setMonth(demoDate.getMonth() + 1);
+        return demoDate.toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' });
+    };
+
+    // Data mixing real data with some UX placeholders
     const subscription = {
-        status: isPro ? 'Active' : (status === 'inactive' ? 'Canceled' : 'Free'),
+        status: isPro ? 'Active' : (status === 'inactive' || status === 'cancelled' ? 'Canceled' : 'Free'),
         plan: isPro ? `AyScroll ${isGo ? 'Go' : 'Pro'}` : 'AyScroll Free',
         price: isGo ? '₹249' : (isPro ? '₹499' : '₹0'),
         period: isPro ? 'Monthly' : 'Forever',
-        nextBilling: isPro ? 'Feb 13, 2026' : 'N/A',
+        nextBilling: getFormattedBillingDate(),
         card: {
             brand: 'Visa',
             last4: '4242'
@@ -122,7 +136,12 @@ const ManageSubscription: React.FC<ManageSubscriptionProps> = ({ tier, status, o
                                     <p className="text-[10px] font-medium text-white/20">Expires 12/28</p>
                                 </div>
                             </div>
-                            <button className="text-[10px] font-black uppercase tracking-widest text-orange-500 hover:text-orange-400 transition-colors">Edit</button>
+                            <button
+                                onClick={onBillingClick}
+                                className="text-[10px] font-black uppercase tracking-widest text-orange-500 hover:text-orange-400 transition-colors"
+                            >
+                                Edit
+                            </button>
                         </div>
                     </div>
 
