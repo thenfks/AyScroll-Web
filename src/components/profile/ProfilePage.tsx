@@ -18,6 +18,7 @@ import ProfileHeader from './ProfileHeader';
 import AccountNavigation from './AccountNavigation';
 import SubscriptionCard from './SubscriptionCard';
 import PreferencesSection from './PreferencesSection';
+import MinimalistMobileAccount from './MinimalistMobileAccount';
 import PersonalInfoSection from './PersonalInfoSection';
 import ProfileEditModal from './ProfileEditModal';
 import ProfileEditForm from './ProfileEditForm';
@@ -254,35 +255,41 @@ const ProfilePage: React.FC = () => {
       {isMobile && <MobileHeader onMenuClick={() => setMobileNavOpen(true)} />}
       <MobileNavDrawer open={mobileNavOpen} onOpenChange={setMobileNavOpen} />
 
-      <div className={`flex-1 flex flex-col min-w-0 overflow-y-auto no-scrollbar pb-32 ${isMobile ? 'pt-16' : 'pl-[240px]'}`}>
-        <div className="px-4 md:px-8 py-6 max-w-[1400px] mx-auto w-full space-y-6">
+      <div className={`flex-1 flex flex-col min-w-0 overflow-y-auto no-scrollbar ${isMobile ? 'pt-16' : 'pl-[240px]'}`}>
+        <div className={`flex-1 max-w-[1400px] mx-auto w-full ${isMobile ? 'px-3 py-4 space-y-4' : 'px-4 md:px-8 py-6 space-y-6'}`}>
 
           <ProfileHeader key={refreshKey} user={user} onEditClick={handleEditClick} />
 
           <div className="grid grid-cols-12 gap-4 md:gap-6">
             {/* Left Column: Account & Preferences */}
             <div className="col-span-12 lg:col-span-4 space-y-4 md:space-y-6">
-              <SubscriptionCard
-                onManageClick={() => {
-                  setSubscriptionView('manage');
-                  setActiveTab('Subscription');
-                }}
-                onBillingClick={() => {
-                  setSubscriptionView('billing');
-                  setActiveTab('Subscription');
-                }}
-                onUpgradeClick={() => {
-                  setSubscriptionView('plans');
-                  setActiveTab('Subscription');
-                }}
-              />
-              <AccountNavigation activeTab={activeTab === 'Edit Profile' ? 'Personal Info' : activeTab} setActiveTab={setActiveTab} logout={signOut} />
-              <PreferencesSection
-                darkMode={darkMode}
-                setDarkMode={setDarkMode}
-                autoDownload={autoDownload}
-                setAutoDownload={setAutoDownload}
-              />
+              {!isMobile && (
+                <SubscriptionCard
+                  onManageClick={() => {
+                    setSubscriptionView('manage');
+                    setActiveTab('Subscription');
+                  }}
+                  onBillingClick={() => {
+                    setSubscriptionView('billing');
+                    setActiveTab('Subscription');
+                  }}
+                  onUpgradeClick={() => {
+                    setSubscriptionView('plans');
+                    setActiveTab('Subscription');
+                  }}
+                />
+              )}
+              {!isMobile && (
+                <>
+                  <AccountNavigation activeTab={activeTab === 'Edit Profile' ? 'Personal Info' : activeTab} setActiveTab={setActiveTab} logout={signOut} />
+                  <PreferencesSection
+                    darkMode={darkMode}
+                    setDarkMode={setDarkMode}
+                    autoDownload={autoDownload}
+                    setAutoDownload={setAutoDownload}
+                  />
+                </>
+              )}
             </div>
 
             {/* Right Column: Content Dashboard */}
@@ -311,12 +318,29 @@ const ProfilePage: React.FC = () => {
                   <button onClick={() => setActiveTab('Personal Info')} className="px-8 md:px-12 py-3 md:py-3.5 bg-gradient-to-r from-pink-500 to-purple-600 rounded-2xl text-[10px] md:text-[11px] font-black uppercase tracking-widest text-white shadow-xl shadow-pink-500/20 hover:scale-105 active:scale-95 transition-all">Return to Dashboard</button>
                 </div>
               )}
+
+              {isMobile && (
+                <div className="mt-5">
+                  <MinimalistMobileAccount
+                    activeTab={activeTab === 'Edit Profile' ? 'Personal Info' : activeTab}
+                    setActiveTab={setActiveTab}
+                    darkMode={darkMode}
+                    setDarkMode={setDarkMode}
+                    autoDownload={autoDownload}
+                    setAutoDownload={setAutoDownload}
+                    logout={signOut}
+                  />
+                </div>
+              )}
             </div>
           </div>
-          {/* Copyright Notice */}
-          <div className="text-center text-white/30 text-xs mt-10">
+        </div>
+
+        {/* Copyright Notice - Now at Absolute Bottom */}
+        <div className="mt-auto pb-10 pt-10 text-center border-t border-white/5 mx-8 shrink-0">
+          <p className="text-white/10 text-[11px] font-medium tracking-wide">
             &copy; Ayscroll 2025-2026. All rights reserved.
-          </div>
+          </p>
         </div>
       </div>
 

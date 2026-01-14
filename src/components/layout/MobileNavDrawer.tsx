@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { Sheet, SheetContent, SheetHeader, SheetTitle } from '@/components/ui/sheet';
-import { Home, Compass, Library, Bookmark, BarChart2, Settings, X, LogOut } from 'lucide-react';
+import { Home, Compass, Library, Bookmark, BarChart2, Settings, X, LogOut, ShieldCheck, Crown } from 'lucide-react';
 import { Link, useLocation, useNavigate } from 'react-router-dom';
 import { useAuth } from '@/contexts/AuthContext';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
@@ -29,6 +29,7 @@ export const MobileNavDrawer: React.FC<MobileNavDrawerProps> = ({ open, onOpenCh
   const [displayName, setDisplayName] = useState<string | null>(null);
   const [avatarUrl, setAvatarUrl] = useState<string | null>(null);
   const [isPro, setIsPro] = useState(false);
+  const [tier, setTier] = useState<string | null>(null);
 
   useEffect(() => {
     if (user) {
@@ -43,7 +44,7 @@ export const MobileNavDrawer: React.FC<MobileNavDrawerProps> = ({ open, onOpenCh
       .from('user_profiles')
       .select('username, avatar_url, display_name, subscription_tier')
       .eq('id', user.id)
-      .single();
+      .single() as any;
 
     if (error) {
       console.error('Error loading user profile:', error);
@@ -54,7 +55,8 @@ export const MobileNavDrawer: React.FC<MobileNavDrawerProps> = ({ open, onOpenCh
       setUsername(data.username);
       setDisplayName(data.display_name);
       setAvatarUrl(data.avatar_url);
-      setIsPro(data.subscription_tier === 'pro' || data.subscription_tier === 'premium');
+      setTier(data.subscription_tier);
+      setIsPro(data.subscription_tier === 'pro' || data.subscription_tier === 'premium' || data.subscription_tier === 'go');
     }
   };
 
@@ -79,10 +81,13 @@ export const MobileNavDrawer: React.FC<MobileNavDrawerProps> = ({ open, onOpenCh
     return true;
   });
 
+  const mainNavLinks = filteredNavItems.filter(i => i.label !== 'Settings');
+  const settingsNavLink = filteredNavItems.find(i => i.label === 'Settings');
+
   return (
     <Sheet open={open} onOpenChange={onOpenChange}>
-      <SheetContent side="left" className="w-[300px] bg-sidebar border-r border-border p-0">
-        <SheetHeader className="p-6 border-b border-border">
+      <SheetContent side="right" className="w-[300px] bg-sidebar border-l border-border p-0 scrollbar-hide overflow-hidden [&>button]:top-8">
+        <SheetHeader className="p-6 border-b border-white/5">
           <SheetTitle className="flex items-center gap-3">
             <img src="/ayscroll-official-logo.png" alt="AyScroll Logo" className="w-8 h-8" />
             <span className="text-xl font-bold text-foreground">AyScroll</span>
@@ -90,7 +95,7 @@ export const MobileNavDrawer: React.FC<MobileNavDrawerProps> = ({ open, onOpenCh
         </SheetHeader>
 
         <nav className="p-4 space-y-1">
-          {filteredNavItems.map((item) => {
+          {mainNavLinks.map((item) => {
             const Icon = item.icon;
             const isActive = location.pathname === item.path;
 
@@ -110,7 +115,38 @@ export const MobileNavDrawer: React.FC<MobileNavDrawerProps> = ({ open, onOpenCh
               </button>
             );
           })}
+
+          {/* Minimalist Manage Subscription Option */}
+          {user && (
+            <button
+              onClick={() => handleNavClick('/profile')}
+              className={cn(
+                "w-full flex items-center gap-4 px-4 py-3.5 rounded-2xl transition-all text-white/60 hover:bg-white/5 hover:text-white",
+                location.pathname === '/profile' && "bg-white/5 text-white"
+              )}
+            >
+              <ShieldCheck className="w-5 h-5" />
+              <span className="font-medium">Manage Subscription</span>
+            </button>
+          )}
         </nav>
+
+        {settingsNavLink && (
+          <nav className="p-4 pt-1 space-y-1">
+            <button
+              onClick={() => handleNavClick(settingsNavLink.path)}
+              className={cn(
+                "w-full flex items-center gap-4 px-4 py-3.5 rounded-2xl transition-all",
+                location.pathname === settingsNavLink.path
+                  ? "bg-gradient-to-r from-pink-500/20 to-orange-500/20 text-pink-500 border border-pink-500/20"
+                  : "text-white/60 hover:bg-white/5 hover:text-white"
+              )}
+            >
+              <settingsNavLink.icon className="w-5 h-5" />
+              <span className="font-medium">{settingsNavLink.label}</span>
+            </button>
+          </nav>
+        )}
 
         {/* User Section */}
         <div className="absolute bottom-0 left-0 right-0 p-4 border-t border-white/5 bg-[#0A0A0F]">
@@ -124,11 +160,21 @@ export const MobileNavDrawer: React.FC<MobileNavDrawerProps> = ({ open, onOpenCh
                 {user ? (displayName || user.user_metadata?.name)?.charAt(0).toUpperCase() : 'G'}
               </AvatarFallback>
             </Avatar>
-            <div className="flex-1 text-left">
-              <p className="text-white font-semibold truncate">
-                {user ? (displayName || user.user_metadata?.name || 'User') : 'Guest'}
-              </p>
-              <p className="text-white/40 text-sm">
+            <div className="flex-1 text-left min-w-0">
+              <div className="flex items-center gap-2 mb-0.5">
+                <p className="text-white font-semibold truncate leading-none">
+                  {user ? (displayName || user.user_metadata?.name || 'User') : 'Guest'}
+                </p>
+                {user && isPro && (
+                  <span className={cn(
+                    "px-1.5 py-0.5 rounded-md text-[8px] font-black uppercase tracking-tighter shrink-0 leading-none",
+                    "bg-gradient-to-r from-pink-500 to-orange-500 text-white shadow-lg shadow-pink-500/20"
+                  )}>
+                    {tier?.toUpperCase() || 'PRO'}
+                  </span>
+                )}
+              </div>
+              <p className="text-white/40 text-sm truncate">
                 {user ? `@${username || 'loading...'}` : 'Sign in to continue'}
               </p>
             </div>
