@@ -33,19 +33,26 @@ const Saved = () => {
           </div>
 
           {/* Collections */}
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-8">
+          <div className="space-y-3 mb-10">
             {collections.map((col, i) => {
               const Icon = col.icon;
               return (
                 <div
                   key={i}
-                  className="p-5 rounded-2xl bg-secondary/30 border border-border hover:bg-secondary/50 transition-all cursor-pointer group"
+                  className="group flex items-center justify-between p-3 rounded-2xl bg-card border border-border/50 hover:border-border transition-all cursor-pointer shadow-sm"
                 >
-                  <div className={`w-12 h-12 rounded-xl ${col.color} flex items-center justify-center mb-4 group-hover:scale-110 transition-transform`}>
-                    <Icon className="w-6 h-6 text-white" />
+                  <div className="flex items-center gap-4">
+                    <div className={`w-12 h-12 rounded-xl ${col.color} flex items-center justify-center`}>
+                      <Icon className="w-6 h-6 text-white transform group-hover:scale-110 transition-transform" />
+                    </div>
+                    <div>
+                      <h3 className="font-bold text-foreground text-base">{col.name}</h3>
+                      <p className="text-[10px] font-bold text-muted-foreground uppercase tracking-widest">{col.items} ITEMS</p>
+                    </div>
                   </div>
-                  <h3 className="text-lg font-bold text-foreground mb-1 group-hover:text-primary transition-colors">{col.name}</h3>
-                  <p className="text-[11px] font-bold uppercase tracking-widest text-muted-foreground">{col.items} items</p>
+                  <svg className="w-4 h-4 text-muted-foreground group-hover:text-foreground transition-colors" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
+                  </svg>
                 </div>
               );
             })}

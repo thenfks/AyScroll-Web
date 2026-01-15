@@ -7,7 +7,7 @@ import { Sidebar } from '@/components/layout/Sidebar';
 import { MobileHeader } from '@/components/layout/MobileHeader';
 import { MobileNavDrawer } from '@/components/layout/MobileNavDrawer';
 import { useIsMobile } from '@/hooks/use-mobile';
-import { User, ShieldCheck, Flame, Calendar, Users, Video, LayoutGrid, GitFork, Shapes, Rocket, Sparkles } from 'lucide-react';
+import { User, ShieldCheck, Flame, Calendar, Users, Video, LayoutGrid, GitFork, Shapes, Rocket, Sparkles, Palette, Heart, ChevronRight } from 'lucide-react';
 import { Avatar, AvatarImage, AvatarFallback } from '@/components/ui/avatar';
 import { GradientButton } from '@/components/ui/GradientButton';
 
@@ -323,9 +323,28 @@ const Profile = () => {
               )}
 
               {activeTab === 'collections' && (
-                <div className="flex flex-col items-center justify-center h-64 text-gray-500">
-                  <LayoutGrid className="w-12 h-12 mb-4 opacity-20" />
-                  <p className="text-sm font-bold uppercase tracking-widest opacity-50">No Collections Yet</p>
+                <div className="space-y-3 animate-in fade-in slide-in-from-bottom-4 duration-500">
+                  {[
+                    { id: 1, title: 'Tech Trends', count: 12, icon: Rocket, color: 'bg-orange-500', text: 'text-orange-500' },
+                    { id: 2, title: 'Design Inspo', count: 48, icon: Palette, color: 'bg-orange-500', text: 'text-orange-500' }, // Using orange to match image warm tone
+                    { id: 3, title: 'Favorites', count: 154, icon: Heart, color: 'bg-red-500', text: 'text-red-500' }
+                  ].map((collection) => (
+                    <div
+                      key={collection.id}
+                      className="group flex items-center justify-between p-3 rounded-2xl bg-white dark:bg-[#1A1D1F] border border-gray-100 dark:border-white/5 hover:border-gray-200 dark:hover:border-white/10 transition-all cursor-pointer shadow-sm"
+                    >
+                      <div className="flex items-center gap-4">
+                        <div className={`w-10 h-10 rounded-xl ${collection.text} bg-current/10 flex items-center justify-center`}>
+                          <collection.icon className="w-5 h-5 text-current transform group-hover:scale-110 transition-transform" />
+                        </div>
+                        <div>
+                          <h3 className="font-bold text-gray-900 dark:text-white text-sm md:text-base">{collection.title}</h3>
+                          <p className="text-[10px] font-bold text-gray-400 uppercase tracking-widest">{collection.count} ITEMS</p>
+                        </div>
+                      </div>
+                      <ChevronRight className="w-4 h-4 text-gray-300 dark:text-gray-600 group-hover:text-gray-900 dark:group-hover:text-white transition-colors" />
+                    </div>
+                  ))}
                 </div>
               )}
 

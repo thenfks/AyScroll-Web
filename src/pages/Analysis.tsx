@@ -187,20 +187,18 @@ const Analysis = () => {
               <h1 className="text-2xl md:text-3xl font-black text-foreground tracking-tighter">Analysis</h1>
             </div>
 
-            <div className="flex items-center gap-1 p-1 bg-secondary/50 rounded-xl border border-border">
+            <div className="flex items-center gap-1 p-1 bg-secondary/50 rounded-2xl border border-border">
               <GradientButton
-                className="px-4 py-2 text-[10px]"
+                className="px-6 py-2.5 text-xs font-bold uppercase tracking-wide"
                 gradient="brand"
               >
                 Week
               </GradientButton>
-              <GradientButton
-                className="px-4 py-2 text-[10px] text-muted-foreground hover:text-foreground"
-                gradient="dark"
-                glow={false}
+              <button
+                className="px-6 py-2.5 text-xs font-bold uppercase tracking-wide text-muted-foreground hover:text-foreground transition-colors bg-transparent rounded-xl"
               >
                 Month
-              </GradientButton>
+              </button>
             </div>
           </div>
 
