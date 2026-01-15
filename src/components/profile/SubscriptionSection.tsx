@@ -60,7 +60,7 @@ const SubscriptionSection: React.FC<SubscriptionSectionProps> = ({ initialView }
           .from('user_profiles')
           .select('subscription_tier')
           .eq('id', user.id)
-          .single() as any;
+          .maybeSingle() as any;
 
         if (profile) {
           const tier = profile.subscription_tier;

@@ -56,6 +56,34 @@ const ProfilePage: React.FC = () => {
   const processedRef = React.useRef<string | null>(null);
 
   useEffect(() => {
+    // Re-fetch profile data on window focus to handle back-button navigation after cancellation
+    const handleFocus = () => {
+      setRefreshKey(prev => prev + 1);
+
+      // Check for pending transaction flag - this means user hit back button or closed tab
+      const isProcessing = sessionStorage.getItem('is_processing_payment');
+      if (isProcessing) {
+        console.warn("⚠️ Payment Abandoned: User navigated back without completion.");
+        sessionStorage.removeItem('is_processing_payment');
+
+        const realCheckoutId = sessionStorage.getItem('pending_checkout_id');
+        sessionStorage.removeItem('pending_checkout_id');
+
+        // Manually trigger the cancellation flow by setting params
+        // This ensures the user sees the feedback and the system logs it
+        setSearchParams({
+          status: 'cancelled',
+          session_id: realCheckoutId || 'abandoned_' + Date.now(),
+          plan_id: 'pro' // We can improve this if we stored plan_id, but generic fallback is okay
+        });
+      }
+    };
+
+    window.addEventListener('focus', handleFocus);
+    return () => window.removeEventListener('focus', handleFocus);
+  }, [setSearchParams]);
+
+  useEffect(() => {
     const status = searchParams.get('status');
     const sessionId = searchParams.get('session_id') || 'unknown';
     const paramsKey = `${status}-${sessionId}`;
@@ -165,7 +193,7 @@ const ProfilePage: React.FC = () => {
             .from('user_profiles')
             .select('subscription_tier, subscription_status')
             .eq('id', user?.id)
-            .single();
+            .maybeSingle();
 
           console.log('[UPGRADE] Verification Check:', updatedProfile);
 

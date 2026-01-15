@@ -222,15 +222,18 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
           const controller = new AbortController();
           const timeoutId = setTimeout(() => controller.abort(), 2000);
 
-          const res = await fetch('https://ipapi.co/json/', { signal: controller.signal });
+          // Use ipwho.is for better free tier support and CORS
+          const res = await fetch('https://ipwho.is/', { signal: controller.signal });
           if (res.ok) {
             const data = await res.json();
-            location = `${data.city}, ${data.country_code}`;
-            ip = data.ip;
+            if (data.success) {
+              location = `${data.city}, ${data.country_code}`;
+              ip = data.ip;
+            }
           }
           clearTimeout(timeoutId);
         } catch (e) {
-          console.warn('Location fetch skipped/failed', e);
+          console.warn('Location fetch skipped (CORS/Offline):', e);
         }
 
         // Detect details

@@ -31,7 +31,7 @@ const SubscriptionCard: React.FC<SubscriptionCardProps> = ({ onManageClick, onBi
                 .from('user_profiles')
                 .select('subscription_tier, subscription_status, subscription_end_date')
                 .eq('id', user?.id)
-                .single() as any;
+                .maybeSingle() as any;
 
             // Direct DB check
             const dbTier = data?.subscription_tier || 'free';

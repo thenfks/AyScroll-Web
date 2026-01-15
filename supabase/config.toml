@@ -21,3 +21,8 @@ enabled = true
 verify_jwt = false
 entrypoint = "./functions/subscription-emails/index.ts"
 
+[functions.payment-webhook]
+enabled = true
+verify_jwt = false
+entrypoint = "./functions/payment-webhook/index.ts"
+

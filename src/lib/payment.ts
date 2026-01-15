@@ -75,9 +75,9 @@ export async function initiateCheckout({
                     ...metadata
                 },
                 redirect_urls: {
-                    success: window.location.origin + `/profile?status=success&plan_id=${planId}&amount=${amount}&cycle=${billingCycle}`,
-                    failure: window.location.origin + `/profile?status=failed&plan_id=${planId}&amount=${amount}&cycle=${billingCycle}`,
-                    cancel: window.location.origin + `/profile?status=cancelled&plan_id=${planId}&amount=${amount}&cycle=${billingCycle}`
+                    success: `${window.location.origin}/profile?status=success&plan_id=${planId}&amount=${amount}&cycle=${billingCycle}`,
+                    failure: `${window.location.origin}/profile?status=failed&plan_id=${planId}&amount=${amount}&cycle=${billingCycle}`,
+                    cancel: `${window.location.origin}/profile?status=cancelled&plan_id=${planId}&amount=${amount}&cycle=${billingCycle}`
                 },
                 webhook_url: webhookUrl // Dynamic Webhook URL
             })
@@ -93,6 +93,12 @@ export async function initiateCheckout({
         let checkoutUrl = data.data.checkout_url;
         if (checkoutUrl.includes('localhost') && API_URL.includes('nfks.co.in')) {
             checkoutUrl = checkoutUrl.replace('http://localhost:3000', 'https://payments.nfks.co.in');
+        }
+
+        // Set flag for abandonment detection with REAL Checkout ID
+        sessionStorage.setItem('is_processing_payment', 'true');
+        if (data.data?.checkout_id) {
+            sessionStorage.setItem('pending_checkout_id', data.data.checkout_id);
         }
 
         // Redirect to Checkout

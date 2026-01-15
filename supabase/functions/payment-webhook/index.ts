@@ -25,12 +25,21 @@ serve(async (req) => {
         console.log("PAYMENT WEBHOOK RECEIVED:", JSON.stringify(body, null, 2));
 
         // 2. Validate Event Type
-        const eventType = body.event || body.type; // Adapt to gateway format
-        const data = body.payload || body.data || body;
+        const eventType = body.event || body.type;
+
+        // SUPPORT FOR NFKS GATEWAY SPEC: Extract the 'payment' object if it exists
+        const data = body.payment || body.payload || body.data || body;
+
+        console.log(`Processing Event: ${eventType}`);
 
         if (eventType === 'payment.failed') {
+            // NFKS Spec: data.customer.user_id OR legacy data.user_id
             const userId = data.customer?.user_id || data.metadata?.user_id || data.user_id;
-            const planId = data.metadata?.plan_id || data.plan_id || 'pro';
+
+            // NFKS Spec: data.plan.plan_id OR legacy data.plan_id
+            const planId = data.plan?.plan_id || data.metadata?.plan_id || data.plan_id || 'pro';
+
+            const amount = data.amount || data.payment?.amount;
 
             console.log(`Payment FAILED for User: ${userId}, Plan: ${planId}`);
 
@@ -42,6 +51,11 @@ serve(async (req) => {
 
                     const planLabel = `AyScroll ${planId.charAt(0).toUpperCase() + planId.slice(1)}`;
 
+                    // Determine failure type based on error code
+                    const errorCode = data.error?.code;
+                    const isCancellation = errorCode === 'user_cancelled';
+                    const emailType = isCancellation ? 'interrupted' : 'failed';
+
                     fetch(`${supabaseUrl}/functions/v1/subscription-emails`, {
                         method: 'POST',
                         headers: {
@@ -49,11 +63,11 @@ serve(async (req) => {
                             'Authorization': `Bearer ${serviceRoleKey}`
                         },
                         body: JSON.stringify({
-                            type: 'failed',
+                            type: emailType,
                             email: userData.user.email,
                             userName: userData.user.user_metadata?.full_name || 'User',
                             planName: planLabel,
-                            price: data.amount ? `₹${data.amount}` : 'N/A'
+                            price: amount ? `₹${amount}` : 'N/A'
                         })
                     }).catch(e => console.error("Failed Email trigger failed:", e));
                 }
