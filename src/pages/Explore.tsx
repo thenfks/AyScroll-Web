@@ -74,10 +74,10 @@ const Explore: React.FC = () => {
 
   return (
     <MainLayout showRightSidebar={false}>
-      <div className="max-w-7xl mx-auto pt-6 px-4 md:px-0">
+      <div className="max-w-7xl mx-auto pt-0 md:pt-6 px-4 md:px-0">
 
         {/* Premium Tabs */}
-        <div className="flex items-center gap-8 mb-8 border-b border-border/50 px-2">
+        <div className="hidden md:flex items-center gap-8 mb-8 border-b border-border/50 px-2">
           <button
             onClick={() => setActiveTab('content')}
             className={`pb-4 text-sm font-black uppercase tracking-widest transition-all ${activeTab === 'content' ? 'text-primary border-b-[3px] border-primary' : 'text-muted-foreground border-b-[3px] border-transparent hover:text-foreground'}`}
@@ -95,7 +95,7 @@ const Explore: React.FC = () => {
         {activeTab === 'content' ? (
           <>
             {/* Categories */}
-            <div className="flex items-center gap-2 md:gap-3 overflow-x-auto no-scrollbar pb-4 mb-6 -mx-4 px-4 md:mx-0 md:px-0">
+            <div className="flex items-center gap-2 md:gap-3 overflow-x-auto no-scrollbar pb-2 mb-4 -mx-4 px-4 md:mx-0 md:px-0">
               {categories.map((cat) => (
                 <GradientButton
                   key={cat.name}
