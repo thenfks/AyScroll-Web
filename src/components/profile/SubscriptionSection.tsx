@@ -372,7 +372,7 @@ const SubscriptionSection: React.FC<SubscriptionSectionProps> = ({ initialView }
               type: 'downgrade',
               email: user.email,
               userName: user.user_metadata?.full_name || 'User',
-              planName: 'Pro'
+              planName: dbTier ? dbTier.charAt(0).toUpperCase() + dbTier.slice(1) : 'Pro'
             }
           });
           console.log("Cancellation email triggered");

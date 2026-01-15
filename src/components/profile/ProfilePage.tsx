@@ -139,7 +139,25 @@ const ProfilePage: React.FC = () => {
             }
           }
 
-          // 4. Refresh session to update UI
+          // 4. Trigger Subscription Email (Frontend Fallback)
+          try {
+            await supabase.functions.invoke('subscription-emails', {
+              body: {
+                type: 'upgrade',
+                email: user.email,
+                userName: user.user_metadata?.full_name || 'User',
+                planName: planLabel,
+                price: `₹${amount}`,
+                invoiceId: currentSessionId,
+                date: new Date().toLocaleDateString('en-US', { month: 'long', day: 'numeric', year: 'numeric' })
+              }
+            });
+            console.log('✅ [UPGRADE] Success email triggered from frontend.');
+          } catch (emailErr) {
+            console.error('[UPGRADE] Failed to trigger success email:', emailErr);
+          }
+
+          // 5. Refresh session to update UI
           await supabase.auth.refreshSession();
 
           // Re-fetch profile data to be absolutely sure
@@ -172,6 +190,7 @@ const ProfilePage: React.FC = () => {
     } else if (status === 'failed' || status === 'cancelled') {
       const currentSessionId = sessionId || `SESS-ERR-${Date.now().toString().slice(-6)}`;
       const planId = searchParams.get('plan_id') || 'pro';
+      const amount = searchParams.get('amount');
       const cycle = searchParams.get('cycle') || 'Monthly';
       const planLabel = `AyScroll ${planId.charAt(0).toUpperCase() + planId.slice(1)} (${cycle})`;
 
@@ -202,7 +221,8 @@ const ProfilePage: React.FC = () => {
                 type: status === 'cancelled' ? 'interrupted' : 'failed',
                 email: user.email,
                 userName: user.user_metadata?.full_name || 'User',
-                planName: planId.charAt(0).toUpperCase() + planId.slice(1)
+                planName: planId.charAt(0).toUpperCase() + planId.slice(1),
+                price: amount ? `₹${amount}` : undefined
               }
             });
             console.log(`✅ ${status} email triggered`);

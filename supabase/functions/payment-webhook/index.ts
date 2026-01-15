@@ -40,6 +40,8 @@ serve(async (req) => {
                     const supabaseUrl = Deno.env.get('SUPABASE_URL') ?? '';
                     const serviceRoleKey = Deno.env.get('SUPABASE_SERVICE_ROLE_KEY') ?? '';
 
+                    const planLabel = `AyScroll ${planId.charAt(0).toUpperCase() + planId.slice(1)}`;
+
                     fetch(`${supabaseUrl}/functions/v1/subscription-emails`, {
                         method: 'POST',
                         headers: {
@@ -50,7 +52,7 @@ serve(async (req) => {
                             type: 'failed',
                             email: userData.user.email,
                             userName: userData.user.user_metadata?.full_name || 'User',
-                            planName: planId.charAt(0).toUpperCase() + planId.slice(1),
+                            planName: planLabel,
                             price: data.amount ? `₹${data.amount}` : 'N/A'
                         })
                     }).catch(e => console.error("Failed Email trigger failed:", e));

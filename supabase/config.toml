@@ -16,3 +16,8 @@ verify_jwt = false
 import_map = "./functions/send-welcome-email/deno.json"
 entrypoint = "./functions/send-welcome-email/index.ts"
 
+[functions.subscription-emails]
+enabled = true
+verify_jwt = false
+entrypoint = "./functions/subscription-emails/index.ts"
+
